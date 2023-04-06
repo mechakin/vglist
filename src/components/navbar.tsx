@@ -35,15 +35,17 @@ export const Navbar = () => {
   return (
     <PageLayout>
       <nav className="flex w-full justify-end bg-zinc-800">
-        <h1 className="flex w-full items-center px-5 py-3"><Link href={"/"}>vglist</Link></h1>
-        <ul className="flex gap-5 p-3">
+        <span className="flex w-full items-center py-3">
+          <Link href={"/"}>vglist</Link>
+        </span>
+        <ul className="flex gap-5 py-3">
           {!isSignedIn && (
             <>
               <li>
-                <Link href={"/login"}>Login</Link>
+                <Link href={"/login"}>login</Link>
               </li>
               <li>
-                <Link href={"/register"}>Register</Link>
+                <Link href={"/register"}>register</Link>
               </li>
             </>
           )}
@@ -53,14 +55,14 @@ export const Navbar = () => {
             </li>
           )}
           <li>
-            <Link href={"/games"}>Games</Link>
+            <Link href={"/games"}>games</Link>
           </li>
           <div className="flex rounded-lg bg-slate-100">
             <input
-              placeholder="Search"
+              placeholder="search"
               className="rounded-lg px-3 text-zinc-800 outline-none"
             />
-            <button className="px-2">
+            <button className="px-3">
               <SearchIcon />
             </button>
           </div>
