@@ -1,10 +1,6 @@
 import { type NextPage } from "next";
-import { SignIn, useUser } from "@clerk/nextjs";
-import { PageLayout } from "~/components/layout";
+import { SignIn } from "@clerk/nextjs";
 import { LoadingPage } from "~/components/loading";
-// import Link from "next/link";
-
-// import { api } from "~/utils/api";
 
 const UserPage: NextPage = () => {
   // const { isLoaded: userLoaded, isSignedIn } = useUser();

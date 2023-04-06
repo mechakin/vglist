@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
+import { PageLayout } from "./layout";
 
 export const SearchIcon = () => {
   return (
@@ -32,7 +33,7 @@ export const Navbar = () => {
   }
 
   return (
-    <>
+    <PageLayout>
       <nav className="flex w-full justify-end bg-zinc-800">
         <h1 className="flex w-full items-center px-5 py-3"><Link href={"/"}>vglist</Link></h1>
         <ul className="flex gap-5 p-3">
@@ -65,6 +66,6 @@ export const Navbar = () => {
           </div>
         </ul>
       </nav>
-    </>
+    </PageLayout>
   );
 };

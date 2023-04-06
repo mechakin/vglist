@@ -1,14 +1,7 @@
 import { type NextPage } from "next";
-import { useUser } from "@clerk/nextjs";
 import { SignUp } from "@clerk/nextjs";
-// import Link from "next/link";
-
-// import { api } from "~/utils/api";
 
 const Register: NextPage = () => {
-  // const { isLoaded: userLoaded, isSignedIn } = useUser();
-
-  // if (!userLoaded) return <div />;
 
   return (
     <>
