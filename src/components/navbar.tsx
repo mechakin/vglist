@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
 
 export const SearchIcon = () => {
   return (
@@ -19,23 +20,45 @@ export const SearchIcon = () => {
   );
 };
 
+export const Navbar = () => {
+  const { isSignedIn, user } = useUser();
 
-export const Navbar = (props: { isSignedIn: boolean | undefined }) => {
+  // check if  isLoaded: userLoaded, cache the username and navbar on the page
+
+  let userUrl = "/user";
+
+  if (user && user.username) {
+    userUrl = `/user/${user.username}`;
+  }
+
   return (
     <>
       <nav className="flex w-full justify-end bg-zinc-800">
-        <h1 className="flex w-full items-center px-5 py-3">vglist</h1>
+        <h1 className="flex w-full items-center px-5 py-3"><Link href={"/"}>vglist</Link></h1>
         <ul className="flex gap-5 p-3">
-          {!props.isSignedIn && (
+          {!isSignedIn && (
             <>
-              <li><Link href={'/login'}>Login</Link></li> 
-              <li><Link href={'/register'}>Register</Link></li>
+              <li>
+                <Link href={"/login"}>Login</Link>
+              </li>
+              <li>
+                <Link href={"/register"}>Register</Link>
+              </li>
             </>
           )}
-          {props.isSignedIn && <li>Logout</li>}
-          <li>Games</li>
-          <div className="flex bg-slate-100 rounded-lg">
-            <input placeholder="Search" className="px-3 text-black outline-none rounded-lg" />
+          {isSignedIn && (
+            <li>
+              <Link href={userUrl}>{user.username}</Link>
+            </li>
+          )}
+          <li>
+            <Link href={"/games"}>Games</Link>
+          </li>
+          <div className="flex rounded-lg bg-slate-100">
+            <input
+              placeholder="Search"
+              className="rounded-lg px-3 text-zinc-800 outline-none"
+            />
             <button className="px-2">
               <SearchIcon />
             </button>

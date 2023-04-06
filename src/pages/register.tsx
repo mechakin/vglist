@@ -1,6 +1,5 @@
 import { type NextPage } from "next";
 import { useUser } from "@clerk/nextjs";
-import { Navbar } from "~/components/navbar";
 import { SignUp } from "@clerk/nextjs";
 // import Link from "next/link";
 
@@ -13,10 +12,9 @@ const Register: NextPage = () => {
 
   return (
     <>
-      <Navbar isSignedIn={false} />
       <h1 className="text-4xl">this is a register page</h1>
       <div className="flex justify-center">
-        <SignUp/>
+        <SignUp path="/register" routing="path" signInUrl="/login"/>
       </div>
     </>
   );

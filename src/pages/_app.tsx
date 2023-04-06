@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "~/styles/globals.css";
 import { dark } from "@clerk/themes";
 import Head from "next/head";
+import { Navbar } from "~/components/navbar";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
@@ -16,6 +17,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Navbar />
       <Component {...pageProps} />
     </ClerkProvider>
   );
