@@ -10,8 +10,8 @@ const NotFound: NextPage = () => {
         <title>404 not found</title>
       </Head>
       <div className="flex flex-col items-center justify-center py-10">
-        <h1 className="py-10 text-8xl">Page not found :/</h1>
-        <p className="text-2xl">
+        <h1 className="py-4 text-6xl">Page not found :/</h1>
+        <p className="text-3xl">
           Click{" "}
           <span className="text-cyan-600">
             <Link href={"/"}>here</Link>

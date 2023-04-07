@@ -4,7 +4,7 @@ import { PageLayout } from "~/components/layout";
 const Home: NextPage = () => {
   return (
     <PageLayout>
-      <h1 className="text-4xl">this is a website</h1>
+      <h1 className="text-2xl">this is a website</h1>
     </PageLayout>
   );
 };
