@@ -118,7 +118,7 @@ export const Navbar = () => {
       </div>
 
       <div className={open ? "hidden md:hidden" : "md:hidden"}>
-        <div className="mb-3 xl:w-96">
+        <div className="mb-2 xl:w-96">
           <div className="relative flex w-full flex-wrap items-stretch">
             <input
               type="text"
