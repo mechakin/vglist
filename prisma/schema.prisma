@@ -12,9 +12,11 @@ generator client {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  reviews   Review[]
+  id              String   @id
+  createdAt       DateTime @default(now())
+  username        String   @unique
+  profileImageUrl String
+  reviews         Review[]
 }
 
 model Game {
@@ -28,7 +30,6 @@ model Game {
 model Review {
   id           String   @id @default(cuid())
   createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
   score        Float?
   description  String?
   hasPlayed    Boolean  @default(false)
