@@ -6,7 +6,7 @@ const Register: NextPage = () => {
 
   return (
     <PageLayout>
-      <div className="flex justify-center py-10">
+      <div className="flex justify-center md:py-10">
         <SignUp path="/register" routing="path" signInUrl="/login"/>
       </div>
     </PageLayout>
