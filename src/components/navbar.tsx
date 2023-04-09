@@ -66,10 +66,10 @@ export const Navbar = () => {
 
   // check if  isLoaded: userLoaded, cache the username and navbar on the page
 
-  let userUrl = "/user";
+  let userUrl = "/users";
 
   if (user && user.username) {
-    userUrl = `/user/${user.username}`;
+    userUrl = `/users/${user.username}`;
   }
 
   return (

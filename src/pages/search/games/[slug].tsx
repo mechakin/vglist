@@ -27,13 +27,13 @@ const GamesSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
             <li className="flex items-center underline">
               <Link href={`/search/games/${slug}`}>games</Link>
             </li>
-            <li className="flex items-center text-zinc-400 underline transition duration-75 hover:text-cyan-300">
+            <li className="flex items-center text-zinc-400 underline transition duration-75 hover:text-cyan-400">
               <Link href={`/search/users/${slug}`}>users</Link>
             </li>
           </ul>
         </nav>
 
-        <div className="flex border border-x-transparent border-b-zinc-600 border-t-transparent py-4">
+        <div className="flex border-b border-b-zinc-600 py-4">
           <Link href={"/games/name-of-game"}>
             <Image
               src={"/test.png"}
@@ -41,13 +41,14 @@ const GamesSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
               width={120}
               height={0}
               className="h-fit w-fit rounded-md"
+              priority
             />
           </Link>
           <div className="w-full px-4">
-            <p className="font-semibold transition duration-75 hover:text-zinc-400">
+            <p className="w-fit font-semibold transition duration-75">
               <Link
                 href={"/games/name-of-game"}
-                className="text-xl md:text-3xl"
+                className="text-xl hover:text-zinc-400 md:text-3xl"
               >
                 metroid prime remastered
               </Link>{" "}
