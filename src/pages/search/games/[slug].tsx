@@ -3,9 +3,6 @@ import { PageLayout } from "~/components/layout";
 import Link from "next/link";
 import Image from "next/image";
 import { Rating } from "react-simple-star-rating";
-import { FaGamepad, FaPlay } from "react-icons/fa";
-import { ImBooks } from "react-icons/im";
-import { GiDropWeapon } from "react-icons/gi";
 import { useUser } from "@clerk/nextjs";
 
 function handleStarValue(value: number) {
@@ -40,7 +37,7 @@ const GamesSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
               alt="game"
               width={120}
               height={0}
-              className="h-fit w-fit rounded-md"
+              className="h-fit w-fit rounded-md border border-zinc-600"
               priority
             />
           </Link>
@@ -57,7 +54,7 @@ const GamesSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
               </span>
             </p>
             {isSignedIn && (
-              <div className="md:py-2">
+              <div className="md:py-4">
                 <div className="flex justify-start md:justify-end">
                   <Rating
                     SVGclassName="inline -mx-0.5"
@@ -68,13 +65,6 @@ const GamesSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
                     fillColor="#22d3ee"
                     onClick={handleStarValue}
                   />
-                </div>
-
-                <div className="flex h-full justify-start gap-2.5 py-1 text-2xl md:justify-end">
-                  <FaGamepad />
-                  <FaPlay />
-                  <ImBooks />
-                  <GiDropWeapon />
                 </div>
               </div>
             )}

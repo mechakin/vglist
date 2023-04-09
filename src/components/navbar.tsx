@@ -60,7 +60,7 @@ export const Navbar = () => {
   const { isSignedIn, user } = useUser();
   const [open, setOpen] = useState(false);
 
-  function handleOpen() {
+  function handleMenu() {
     setOpen((prevState) => !prevState);
   }
 
@@ -90,12 +90,14 @@ export const Navbar = () => {
                 <Link
                   href="/login"
                   className="px-3 text-2xl transition duration-75 hover:text-zinc-400"
+                  onClick={handleMenu}
                 >
                   login
                 </Link>
                 <Link
                   href="/register"
                   className="px-3 text-2xl transition duration-75 hover:text-zinc-400"
+                  onClick={handleMenu}
                 >
                   register
                 </Link>
@@ -105,6 +107,7 @@ export const Navbar = () => {
               <Link
                 href={userUrl}
                 className="px-3 text-2xl transition duration-75 hover:text-zinc-400"
+                onClick={handleMenu}
               >
                 {user.username}
               </Link>
@@ -112,10 +115,11 @@ export const Navbar = () => {
             <Link
               href="/games"
               className="px-3 text-2xl transition duration-75 hover:text-zinc-400"
+              onClick={handleMenu}
             >
               games
             </Link>
-            <form className="mb-3 pt-4 xl:w-96">
+            <form className="mb-3 pt-4 xl:w-96" onSubmit={handleMenu}>
               <div className="relative flex w-full flex-wrap items-stretch">
                 <input
                   type="text"
@@ -137,14 +141,14 @@ export const Navbar = () => {
           </div>
 
           <div className="flex items-center md:hidden">
-            <button onClick={handleOpen}>
+            <button onClick={handleMenu}>
               <HamburgerIcon />
             </button>
           </div>
         </div>
       </div>
 
-      <div className={open ? "hidden md:hidden" : "md:hidden"}>
+      <div className={!open ? "hidden md:hidden" : "md:hidden"}>
         <div className="mb-2 xl:w-96">
           <form className="relative flex w-full flex-wrap items-stretch">
             <input
@@ -169,14 +173,14 @@ export const Navbar = () => {
             <Link
               href="/login"
               className="block w-full px-6 py-2 text-2xl transition duration-75 hover:bg-zinc-500"
-              onClick={handleOpen}
+              onClick={handleMenu}
             >
               login
             </Link>
             <Link
               href="/register"
               className="block w-full px-6 py-2 text-2xl transition duration-75 hover:bg-zinc-500"
-              onClick={handleOpen}
+              onClick={handleMenu}
             >
               register
             </Link>
@@ -185,16 +189,16 @@ export const Navbar = () => {
         {isSignedIn && (
           <Link
             href={userUrl}
-            className="block w-full px-6 py-2 text-2xl transition hover:bg-zinc-500"
-            onClick={handleOpen}
+            className="block w-full px-6 py-2 text-2xl transition duration-75 hover:bg-zinc-500"
+            onClick={handleMenu}
           >
             {user.username}
           </Link>
         )}
         <Link
           href={"/games"}
-          className="block w-full px-6 py-2 pb-4 text-2xl transition hover:bg-zinc-500"
-          onClick={handleOpen}
+          className="block w-full px-6 py-2 pb-4 text-2xl transition duration-75 hover:bg-zinc-500"
+          onClick={handleMenu}
         >
           games
         </Link>

@@ -32,10 +32,6 @@ model Review {
   createdAt    DateTime @default(now())
   score        Float?
   description  String?
-  hasPlayed    Boolean  @default(false)
-  isPlaying    Boolean  @default(false)
-  hasDropped   Boolean  @default(false)
-  isOnHold     Boolean  @default(false)
   hasOnBacklog Boolean  @default(false)
   author       User     @relation(fields: [authorId], references: [id])
   authorId     String

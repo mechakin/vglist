@@ -31,7 +31,7 @@ const UsersSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
               alt="profile"
               width={48}
               height={48}
-              className="h-fit w-fit rounded-md"
+              className="h-fit w-fit rounded-md border border-zinc-600"
               priority
             />
           </Link>
