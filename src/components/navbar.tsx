@@ -90,14 +90,12 @@ export const Navbar = () => {
                 <Link
                   href="/login"
                   className="px-3 text-2xl transition duration-75 hover:text-zinc-400"
-                  onClick={handleMenu}
                 >
                   login
                 </Link>
                 <Link
                   href="/register"
                   className="px-3 text-2xl transition duration-75 hover:text-zinc-400"
-                  onClick={handleMenu}
                 >
                   register
                 </Link>
@@ -107,19 +105,12 @@ export const Navbar = () => {
               <Link
                 href={userUrl}
                 className="px-3 text-2xl transition duration-75 hover:text-zinc-400"
-                onClick={handleMenu}
               >
                 {user.username}
               </Link>
             )}
-            <Link
-              href="/games"
-              className="px-3 text-2xl transition duration-75 hover:text-zinc-400"
-              onClick={handleMenu}
-            >
-              games
-            </Link>
-            <form className="mb-3 pt-4 xl:w-96" onSubmit={handleMenu}>
+
+            <form className="mb-3 pt-4 xl:w-96">
               <div className="relative flex w-full flex-wrap items-stretch">
                 <input
                   type="text"
@@ -195,13 +186,6 @@ export const Navbar = () => {
             {user.username}
           </Link>
         )}
-        <Link
-          href={"/games"}
-          className="block w-full px-6 py-2 pb-4 text-2xl transition duration-75 hover:bg-zinc-500"
-          onClick={handleMenu}
-        >
-          games
-        </Link>
       </div>
     </nav>
   );

@@ -12,7 +12,7 @@ generator client {
 }
 
 model User {
-  id              String   @id
+  id              String   @id 
   createdAt       DateTime @default(now())
   username        String   @unique
   profileImageUrl String
@@ -20,23 +20,55 @@ model User {
 }
 
 model Game {
-  id        String   @id @default(uuid())
-  name      String
-  summary   String
-  platforms String
-  reviews   Review[]
+  id                    Int        @id
+  name                  String
+  summary               String
+  slug                  String
+  releaseDate           DateTime
+  aggregatedRating      Decimal
+  aggregatedRatingCount Int
+  reviews               Review[]
+  genres                Genre[]
+  platform              Platform[]
+  cover                 Cover?
+}
+
+model Genre {
+  id     Int    @id
+  name   String
+  game   Game   @relation(fields: [gameId], references: [id])
+  gameId Int
+
+  @@index([gameId])
+}
+
+model Platform {
+  id     Int    @id
+  name   String
+  game   Game   @relation(fields: [gameId], references: [id])
+  gameId Int
+
+  @@index([gameId])
+}
+
+model Cover {
+  id     Int    @id
+  url    String
+  game   Game   @relation(fields: [gameId], references: [id])
+  gameId Int    @unique
+
+  @@index([gameId])
 }
 
 model Review {
-  id           String   @id @default(cuid())
-  createdAt    DateTime @default(now())
-  score        Float?
-  description  String?
-  hasOnBacklog Boolean  @default(false)
-  author       User     @relation(fields: [authorId], references: [id])
-  authorId     String
-  game         Game     @relation(fields: [gameId], references: [id])
-  gameId       String
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now())
+  score       Decimal?
+  description String?
+  author      User     @relation(fields: [authorId], references: [id])
+  authorId    String
+  game        Game     @relation(fields: [gameId], references: [id])
+  gameId      Int
 
   @@index([authorId])
   @@index([gameId])

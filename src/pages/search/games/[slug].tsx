@@ -54,7 +54,7 @@ const GamesSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
               </span>
             </p>
             {isSignedIn && (
-              <div className="md:py-4">
+              <div className="md:py-6">
                 <div className="flex justify-start md:justify-end">
                   <Rating
                     SVGclassName="inline -mx-0.5"
