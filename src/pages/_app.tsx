@@ -5,6 +5,7 @@ import "~/styles/globals.css";
 import { dark } from "@clerk/themes";
 import Head from "next/head";
 import { Navbar } from "~/components/navbar";
+import { Toaster } from "react-hot-toast";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
@@ -17,6 +18,16 @@ const MyApp: AppType = ({ Component, pageProps }) => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            borderRadius: "10px",
+            background: "#333",
+            color: "#fff",
+          },
+        }}
+      />
       <Navbar />
       <Component {...pageProps} />
     </ClerkProvider>
