@@ -33,7 +33,7 @@ const GamesSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
         <div className="flex border-b border-b-zinc-600 py-4">
           <Link href={"/games/name-of-game"}>
             <Image
-              src={"/test.png"}
+              src={"https://images.igdb.com/igdb/image/upload/t_1080p/co67qb.jpg"}
               alt="game"
               width={120}
               height={0}
@@ -70,7 +70,7 @@ const GamesSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
             )}
             {!isSignedIn && (
               <div>
-                <div className="md:py-2">
+                <div className="md:py-6">
                   <div className="flex justify-start md:justify-end">
                     <Link
                       href={"/login"}
