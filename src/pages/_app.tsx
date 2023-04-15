@@ -4,7 +4,6 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "~/styles/globals.css";
 import { dark } from "@clerk/themes";
 import Head from "next/head";
-import { Navbar } from "~/components/navbar";
 import { Toaster } from "react-hot-toast";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
@@ -28,7 +27,6 @@ const MyApp: AppType = ({ Component, pageProps }) => {
           },
         }}
       />
-      <Navbar />
       <Component {...pageProps} />
     </ClerkProvider>
   );

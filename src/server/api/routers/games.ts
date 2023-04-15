@@ -4,8 +4,8 @@ import { z } from "zod";
 import { filterUserForClient } from "~/server/helpers/filterUserForClient";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
-export const ratingsRouter = createTRPCRouter({
-  getUserByUsername: publicProcedure
+export const gameRouter = createTRPCRouter({
+  getGamesBySearch: publicProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ input }) => {
       const [user] = await clerkClient.users.getUserList({

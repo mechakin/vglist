@@ -3,15 +3,13 @@ import { PageLayout } from "~/components/layout";
 import Link from "next/link";
 import Image from "next/image";
 import { Rating } from "react-simple-star-rating";
-import { useUser } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 
 function handleStarValue(value: number) {
   console.log(value);
 }
 
 const GamesSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
-  const { isSignedIn } = useUser();
-
   return (
     <PageLayout>
       <div className="py-4">
@@ -33,7 +31,9 @@ const GamesSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
         <div className="flex border-b border-b-zinc-600 py-4">
           <Link href={"/games/name-of-game"}>
             <Image
-              src={"https://images.igdb.com/igdb/image/upload/t_1080p/co67qb.jpg"}
+              src={
+                "https://images.igdb.com/igdb/image/upload/t_1080p/co67qb.jpg"
+              }
               alt="game"
               width={120}
               height={0}
@@ -53,7 +53,7 @@ const GamesSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
                 (2023)
               </span>
             </p>
-            {isSignedIn && (
+            <SignedIn>
               <div className="md:py-6">
                 <div className="flex justify-start md:justify-end">
                   <Rating
@@ -67,8 +67,8 @@ const GamesSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
                   />
                 </div>
               </div>
-            )}
-            {!isSignedIn && (
+            </SignedIn>
+            <SignedOut>
               <div>
                 <div className="md:py-6">
                   <div className="flex justify-start md:justify-end">
@@ -81,7 +81,7 @@ const GamesSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
                   </div>
                 </div>
               </div>
-            )}
+            </SignedOut>
           </div>
         </div>
       </div>

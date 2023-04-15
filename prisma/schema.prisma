@@ -11,14 +11,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  id              String   @id
-  createdAt       DateTime @default(now())
-  username        String   @unique
-  profileImageUrl String
-  reviews         Review[]
-}
-
 model Game {
   id            Int      @id
   updatedAtIGDB Int
@@ -37,7 +29,6 @@ model Review {
   createdAt   DateTime @default(now())
   score       Decimal?
   description String?  @db.VarChar(15000)
-  author      User     @relation(fields: [authorId], references: [id])
   authorId    String
   game        Game     @relation(fields: [gameId], references: [id])
   gameId      Int

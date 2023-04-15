@@ -1,11 +1,13 @@
 import { type PropsWithChildren } from "react";
+import { Navbar } from "./navbar";
 
 export function PageLayout(props: PropsWithChildren) {
   return (
-    <div className="flex justify-center">
-      <div className="w-full px-6 lg:max-w-6xl">
-        {props.children}
+    <>
+      <Navbar />
+      <div className="flex justify-center">
+        <div className="w-full px-6 lg:max-w-6xl">{props.children}</div>
       </div>
-    </div>
+    </>
   );
 }
