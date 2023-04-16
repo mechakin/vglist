@@ -5,8 +5,9 @@ import "~/styles/globals.css";
 import { dark } from "@clerk/themes";
 import Head from "next/head";
 import { Toaster } from "react-hot-toast";
+import type { AppProps } from 'next/app'
 
-const MyApp: AppType = ({ Component, pageProps }) => {
+const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
   return (
     <ClerkProvider appearance={{ baseTheme: dark }} {...pageProps}>
       <Head>

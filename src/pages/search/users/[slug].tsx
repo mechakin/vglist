@@ -23,7 +23,6 @@ const UsersSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
             </li>
           </ul>
         </nav>
-
         <div className="flex border-b border-b-zinc-600 py-4">
           <Link href={user && user.username ? `/users/${user.username}` : `/`}>
             <Image
