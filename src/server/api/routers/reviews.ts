@@ -40,28 +40,28 @@ const addUserDataToReviews = async (reviews: Review[]) => {
 
 export const reviewRouter = createTRPCRouter({
   // make it if no star review, edit it if there is one
-  create: privateProcedure
-    .input(
-      z.object({
-        description: z.string().min(1).max(15000),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      const authorId = ctx.userId;
+  // create: privateProcedure
+  //   .input(
+  //     z.object({
+  //       description: z.string().min(1).max(15000),
+  //     })
+  //   )
+  //   .mutation(async ({ ctx, input }) => {
+  //     const authorId = ctx.userId;
 
-      const { success } = await ratelimit.limit(authorId);
+  //     const { success } = await ratelimit.limit(authorId);
 
-      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+  //     if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
-      const review = await ctx.prisma.review.create({
-        data: {
-          authorId,
-          description: input.description,
-        },
-      });
+  //     const review = await ctx.prisma.review.create({
+  //       data: {
+  //         authorId,
+  //         description: input.description,
+  //       },
+  //     });
 
-      return review;
-    }),
+  //     return review;
+  //   }),
 
   getReviewsByUserId: publicProcedure
     .input(z.object({ userId: z.string() }))
