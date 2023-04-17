@@ -21,16 +21,16 @@ const config = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'images.clerk.dev',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "images.clerk.dev",
+        port: "",
+        pathname: "/**",
       },
       {
-        protocol: 'https',
-        hostname: 'images.igdb.com',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "images.igdb.com",
+        port: "",
+        pathname: "/**",
       },
     ],
   },
