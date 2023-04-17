@@ -40,32 +40,34 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
           </li>
         </ul>
       </nav>
-      <div className="md:flex">
-        <div className="w-full md:px-4">
-          <h2 className="pb-4 text-4xl font-medium">games played</h2>
 
-          <Link href={"/link-to-game"}>
-            <Image
-              src={
-                "https://images.igdb.com/igdb/image/upload/t_1080p/co67qb.jpg"
-              }
-              alt="game"
-              width={120}
-              height={0}
-              className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-              priority
-            />
-          </Link>
-          <div className="flex flex-row px-5">
-            <Rating
-              SVGclassName="inline -mx-0.5"
-              allowFraction
-              readonly
-              size={22}
-              transition={false}
-              emptyColor="#a1a1aa"
-              fillColor="#22d3ee"
-            />
+      <div className="flex flex-col items-center md:px-4">
+        <h2 className="pb-4 text-4xl font-medium ">games played</h2>
+        <div className="grid max-w-fit grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
+          <div className="max-w-fit">
+            <Link href={"/link-to-game"}>
+              <Image
+                src={
+                  "https://images.igdb.com/igdb/image/upload/t_1080p/co67qb.jpg"
+                }
+                alt="game"
+                width={120}
+                height={0}
+                className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
+                priority
+              />
+            </Link>
+            <div className="flex items-center justify-center">
+              <Rating
+                SVGclassName="inline -mx-0.5"
+                allowFraction
+                readonly
+                size={20}
+                transition={false}
+                emptyColor="#a1a1aa"
+                fillColor="#22d3ee"
+              />
+            </div>
           </div>
         </div>
       </div>
