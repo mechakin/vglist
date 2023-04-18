@@ -1,4 +1,3 @@
-import { UserButton } from "@clerk/nextjs";
 import { type GetStaticProps, type NextPage } from "next";
 import Image from "next/image";
 import { api } from "~/utils/api";
@@ -6,27 +5,19 @@ import { PageLayout } from "~/components/layout";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import Link from "next/link";
 import { Rating } from "react-simple-star-rating";
+import NotFound from "~/components/404";
+import Profile from "~/components/profile";
 
 const ProfileReviewPage: NextPage<{ username: string }> = ({ username }) => {
   const { data } = api.profile.getUserByUsername.useQuery({
     username,
   });
 
-  // make it so you redirect to a 404 page
-  if (!data) return <div>404</div>;
+  if (!data) return <NotFound />;
 
   return (
     <PageLayout>
-      <div className="flex items-end">
-        <Image
-          src={data.profileImageUrl}
-          alt={`${username}'s profile picture`}
-          className="h-24 w-24 rounded-md"
-          width={56}
-          height={56}
-        />
-        <h1 className="px-4 text-2xl font-semibold">{username}</h1>
-      </div>
+      <Profile username={username} />
       <nav className="my-4 flex h-8 w-full rounded-md bg-zinc-500 px-2 align-middle text-zinc-300">
         <ul className="flex py-1 font-medium">
           <li className="px-4 decoration-2 underline-offset-8 hover:text-zinc-100 hover:underline">
@@ -41,64 +32,18 @@ const ProfileReviewPage: NextPage<{ username: string }> = ({ username }) => {
         </ul>
       </nav>
       <div className="md:flex">
-        <div className="rounded-md pt-2 md:w-64">
-          <div className="text-xl font-medium">games played</div>
-          <section className="pb-2 text-4xl font-medium text-zinc-300">
-            324
-          </section>
-          <div className="text-xl font-medium ">average score</div>
-          <section className="text-4xl font-medium text-zinc-300">7.4</section>
-          <div className="rounded-md py-2 md:w-64">
-            <span className="text-xl font-medium ">bio</span>
-            <section className="font-normal text-zinc-300 no-underline">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum
-              voluptas doloremque beatae aspernatur recusandae. Iste provident
-              quas recusandae consectetur, inventore et veniam saepe, est
-              tenetur voluptatibus expedita, mollitia quam quis.
-            </section>
-          </div>
-        </div>
         <div className="w-full md:px-4">
-          <h2 className="pb-4 text-4xl font-medium">recently played</h2>
-          <div className="flex gap-3 pb-4">
-            <div className="flex flex-col">
-              <Link href={"/link-to-game"}>
-                <Image
-                  src={
-                    "https://images.igdb.com/igdb/image/upload/t_1080p/co67qb.jpg"
-                  }
-                  alt="game"
-                  width={140}
-                  height={0}
-                  className="h-fit w-44 rounded-md border border-zinc-600 transition hover:brightness-50"
-                  priority
-                />
-              </Link>
-
-              <div className="flex flex-row items-center justify-between">
-                <span className="pt-1">Nov 23 </span>
-                <Rating
-                  SVGclassName="inline -mx-0.5"
-                  allowFraction
-                  readonly
-                  size={22}
-                  transition={false}
-                  emptyColor="#a1a1aa"
-                  fillColor="#22d3ee"
-                />
-              </div>
-            </div>
-          </div>
-          <h2 className="text-4xl font-medium">recently reviewed</h2>
+          <h2 className="text-4xl font-medium ">all reviews</h2>
+          <h3 className="pt-2 text-lg text-zinc-400">34 games</h3>
           <div className="border-b border-b-zinc-600 py-4 md:flex">
             <Image
               src={
                 "https://images.igdb.com/igdb/image/upload/t_1080p/co67qb.jpg"
               }
               alt="game"
-              width={140}
+              width={120}
               height={0}
-              className="mb-2 h-fit w-44 rounded-md border border-zinc-600"
+              className="mb-2 h-fit w-fit rounded-md border border-zinc-600"
               priority
             />
             <div className="flex flex-col gap-1 md:px-8">

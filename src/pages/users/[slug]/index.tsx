@@ -1,4 +1,3 @@
-import { UserButton } from "@clerk/nextjs";
 import { type GetStaticProps, type NextPage } from "next";
 import Image from "next/image";
 import { api } from "~/utils/api";
@@ -6,27 +5,19 @@ import { PageLayout } from "~/components/layout";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import Link from "next/link";
 import { Rating } from "react-simple-star-rating";
+import NotFound from "~/components/404";
+import Profile from "~/components/profile";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { data } = api.profile.getUserByUsername.useQuery({
     username,
   });
 
-  // make it so you redirect to a 404 page
-  if (!data) return <div>404</div>;
+  if (!data) return <NotFound />;
 
   return (
     <PageLayout>
-      <div className="flex items-end">
-        <Image
-          src={data.profileImageUrl}
-          alt={`${username}'s profile picture`}
-          className="h-24 w-24 rounded-md"
-          width={56}
-          height={56}
-        />
-        <h1 className="px-4 text-2xl font-semibold">{username}</h1>
-      </div>
+      <Profile username={username} />
       <nav className="my-4 flex h-8 w-full rounded-md bg-zinc-500 px-2 align-middle text-zinc-300">
         <ul className="flex py-1 font-medium">
           <li className="px-4 text-zinc-100 underline decoration-2 underline-offset-8">
@@ -59,36 +50,38 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           </div>
         </div>
         <div className="w-full md:px-4">
-          <h2 className="pb-4 text-4xl font-medium">recently played</h2>
-          <div className="flex gap-3 pb-4">
-            <div className="flex flex-col">
-              <Link href={"/link-to-game"}>
-                <Image
-                  src={
-                    "https://images.igdb.com/igdb/image/upload/t_1080p/co67qb.jpg"
-                  }
-                  alt="game"
-                  width={140}
-                  height={0}
-                  className="h-fit w-44 rounded-md border border-zinc-600 transition hover:brightness-50"
-                  priority
-                />
-              </Link>
-
-              <div className="flex flex-row items-center justify-between">
-                <span className="pt-1">Nov 23 </span>
-                <Rating
-                  SVGclassName="inline -mx-0.5"
-                  allowFraction
-                  readonly
-                  size={22}
-                  transition={false}
-                  emptyColor="#a1a1aa"
-                  fillColor="#22d3ee"
-                />
+          <div className="flex flex-col">
+            <h2 className="pb-4 text-4xl font-medium">recently played</h2>
+            <div className="grid max-w-fit grid-cols-2 gap-4 pb-4 sm:grid-cols-3 lg:grid-cols-4">
+              <div className="">
+                <Link href={"/link-to-game"}>
+                  <Image
+                    src={
+                      "https://images.igdb.com/igdb/image/upload/t_1080p/co67qb.jpg"
+                    }
+                    alt="game"
+                    width={120}
+                    height={0}
+                    className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
+                    priority
+                  />
+                </Link>
+                <div className="flex items-center justify-between">
+                  <span className="pt-2 text-zinc-300 ">Nov 23 </span>
+                  <Rating
+                    SVGclassName="inline -mx-0.5"
+                    allowFraction
+                    readonly
+                    size={19}
+                    transition={false}
+                    emptyColor="#a1a1aa"
+                    fillColor="#22d3ee"
+                  />
+                </div>
               </div>
             </div>
           </div>
+
           <h2 className="text-4xl font-medium">recently reviewed</h2>
           <div className="border-b border-b-zinc-600 py-4 md:flex">
             <Image
@@ -96,24 +89,26 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
                 "https://images.igdb.com/igdb/image/upload/t_1080p/co67qb.jpg"
               }
               alt="game"
-              width={140}
+              width={120}
               height={0}
-              className="mb-2 h-fit w-44 rounded-md border border-zinc-600"
+              className="mb-2 h-fit w-fit rounded-md border border-zinc-600"
               priority
             />
             <div className="flex flex-col gap-1 md:px-8">
-              <h3 className=" max-w-fit text-2xl font-medium text-zinc-400 transition duration-75 hover:text-zinc-100">
+              <h3 className="max-w-fit text-2xl font-medium text-zinc-400 transition duration-75 hover:text-zinc-100">
                 <Link href={"/link-to-game"}>destiny 2</Link>
               </h3>
+
               <Rating
                 SVGclassName="inline -mx-0.5"
                 allowFraction
                 readonly
-                size={22}
+                size={25}
                 transition={false}
                 emptyColor="#a1a1aa"
                 fillColor="#22d3ee"
               />
+
               <p className="text-zinc-300">
                 Lorem ipsum, dolor sit amet consectetur adipisicing elit.
                 Dolorem non veniam, laudantium vitae earum sed quam rerum sunt
