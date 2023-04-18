@@ -75,11 +75,9 @@ const Navbar = () => {
       <div className="mx-auto max-w-6xl px-4">
         <div className="flex justify-between">
           <div className="flex space-x-4">
-            <div>
-              <Link href="/" className="flex items-center px-2 py-5">
-                <Logo />
-              </Link>
-            </div>
+            <Link href="/" className="flex items-center px-2 py-5">
+              <Logo />
+            </Link>
           </div>
 
           <div className="hidden items-center md:flex">
