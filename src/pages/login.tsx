@@ -1,11 +1,13 @@
 import { type NextPage } from "next";
 import { SignIn } from "@clerk/nextjs";
 import { PageLayout } from "~/components/layout";
+import Head from "next/head";
 
 const Login: NextPage = () => {
 
   return (
     <PageLayout>
+      <Head><title>login</title></Head>
       <div className="flex justify-center items-center md:py-10">
         <SignIn path="/login" routing="path" signUpUrl="/register"/>
       </div>

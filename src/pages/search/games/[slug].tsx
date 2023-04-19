@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Rating } from "react-simple-star-rating";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
+import Head from "next/head";
 
 function handleStarValue(value: number) {
   console.log(value);
@@ -12,6 +13,9 @@ function handleStarValue(value: number) {
 const GamesSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
   return (
     <PageLayout>
+      <Head>
+        <title>{slug}</title>
+      </Head>
       <div className="py-4">
         <h1 className="text-center text-4xl">
           30 results for <span className="font-semibold">{`${slug}`}</span>

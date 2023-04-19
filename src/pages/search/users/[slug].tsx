@@ -3,11 +3,15 @@ import { PageLayout } from "~/components/layout";
 import Link from "next/link";
 import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
+import Head from "next/head";
 
 const UsersSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
   const { user } = useUser();
   return (
     <PageLayout>
+      <Head>
+        <title>{slug}</title>
+      </Head>
       <div className="py-4">
         <h1 className="text-center text-4xl">
           30 results for <span className="font-semibold">{`${slug}`}</span>
