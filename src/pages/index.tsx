@@ -2,8 +2,9 @@ import { type NextPage } from "next";
 import { PageLayout } from "~/components/layout";
 import Link from "next/link";
 import Image from "next/image";
-import { Rating } from "react-simple-star-rating";
 import { useUser } from "@clerk/nextjs";
+import Review from "~/components/review";
+
 const Home: NextPage = () => {
   const { isSignedIn } = useUser();
 
@@ -83,108 +84,83 @@ const Home: NextPage = () => {
 
       <p className="py-4 text-xl text-zinc-300">check out these games</p>
       <div className="grid grid-cols-2 place-items-center gap-6 xxs:grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-6">
-        <Image
-          src={
-            "https://images.igdb.com/igdb/image/upload/t_cover_big/co3p2d.png"
-          }
-          alt="game"
-          width={140}
-          height={0}
-          className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-          priority
-        />
-        <Image
-          src={
-            "https://images.igdb.com/igdb/image/upload/t_cover_big/co4jni.jpg"
-          }
-          alt="game"
-          width={140}
-          height={0}
-          className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-          priority
-        />
-        <Image
-          src={
-            "https://images.igdb.com/igdb/image/upload/t_cover_big/co6bo0.png"
-          }
-          alt="game"
-          width={140}
-          height={0}
-          className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-          priority
-        />
-        <Image
-          src={
-            "https://images.igdb.com/igdb/image/upload/t_cover_big/co1rgi.jpg"
-          }
-          alt="game"
-          width={140}
-          height={0}
-          className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-          priority
-        />
-        <Image
-          src={
-            "https://images.igdb.com/igdb/image/upload/t_cover_big/co5uu1.jpg"
-          }
-          alt="game"
-          width={140}
-          height={0}
-          className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-          priority
-        />
-        <Image
-          src={
-            "https://images.igdb.com/igdb/image/upload/t_cover_big/co49wj.png"
-          }
-          alt="game"
-          width={140}
-          height={0}
-          className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-          priority
-        />
+        <Link href={"/"}>
+          <Image
+            src={
+              "https://images.igdb.com/igdb/image/upload/t_cover_big/co3p2d.png"
+            }
+            alt="game"
+            width={140}
+            height={0}
+            className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
+            priority
+          />
+        </Link>
+        <Link href={"/"}>
+          <Image
+            src={
+              "https://images.igdb.com/igdb/image/upload/t_cover_big/co4jni.jpg"
+            }
+            alt="game"
+            width={140}
+            height={0}
+            className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
+            priority
+          />
+        </Link>
+        <Link href={"/"}>
+          <Image
+            src={
+              "https://images.igdb.com/igdb/image/upload/t_cover_big/co6bo0.png"
+            }
+            alt="game"
+            width={140}
+            height={0}
+            className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
+            priority
+          />
+        </Link>
+        <Link href={"/"}>
+          <Image
+            src={
+              "https://images.igdb.com/igdb/image/upload/t_cover_big/co1rgi.jpg"
+            }
+            alt="game"
+            width={140}
+            height={0}
+            className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
+            priority
+          />
+        </Link>
+        <Link href={"/"}>
+          <Image
+            src={
+              "https://images.igdb.com/igdb/image/upload/t_cover_big/co5uu1.jpg"
+            }
+            alt="game"
+            width={140}
+            height={0}
+            className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
+            priority
+          />
+        </Link>
+        <Link href={"/"}>
+          <Image
+            src={
+              "https://images.igdb.com/igdb/image/upload/t_cover_big/co49wj.png"
+            }
+            alt="game"
+            width={140}
+            height={0}
+            className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
+            priority
+          />
+        </Link>
       </div>
       <div className="md:flex">
         <div className="w-full">
           <h2 className="pt-12 text-xl text-zinc-300">some recent reviews</h2>
-          <div className="border-b border-b-zinc-600 py-4 md:flex">
-            <Image
-              src={
-                "https://images.igdb.com/igdb/image/upload/t_cover_big/co67qb.jpg"
-              }
-              alt="game"
-              width={120}
-              height={0}
-              className="mb-2 h-fit w-fit rounded-md border border-zinc-600"
-              priority
-            />
-
-            <div className="flex flex-col gap-1 md:px-8">
-              <h3 className=" max-w-fit text-2xl font-medium transition duration-75 hover:text-zinc-400">
-                <Link href={"/link-to-game"}>destiny 2</Link>
-              </h3>
-              <div className="flex items-center">
-                <p className="pr-4 pt-1 font-semibold text-zinc-400 transition duration-75 hover:text-zinc-100">
-                  <Link href={"/users/mechazol"}>mechazol</Link>
-                </p>
-                <Rating
-                  SVGclassName="inline -mx-0.5"
-                  allowFraction
-                  readonly
-                  size={22}
-                  transition={false}
-                  emptyColor="#a1a1aa"
-                  fillColor="#22d3ee"
-                />
-              </div>
-              <p className="text-zinc-300">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Dolorem non veniam, laudantium vitae earum sed quam rerum sunt
-                eius molestias. Quos accusamus deserunt earum. Voluptatum
-                suscipit quisquam expedita possimus eaque?
-              </p>
-            </div>
-          </div>
+          <Review />
         </div>
       </div>
     </PageLayout>
