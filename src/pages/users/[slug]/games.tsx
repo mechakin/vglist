@@ -40,7 +40,7 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
             <Link href={"/link-to-game"}>
               <Image
                 src={
-                  "https://images.igdb.com/igdb/image/upload/t_1080p/co67qb.jpg"
+                  "https://images.igdb.com/igdb/image/upload/t_cover_big/co67qb.jpg"
                 }
                 alt="game"
                 width={120}
