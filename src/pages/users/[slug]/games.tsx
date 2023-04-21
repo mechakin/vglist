@@ -32,10 +32,10 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
         </ul>
       </nav>
 
-      <div className="flex flex-col items-center md:items-start md:px-4">
+      <div className="flex flex-col md:px-4">
         <h2 className="pb-4 text-4xl font-medium">games played</h2>
         <h3 className="-mt-2 pb-4 text-lg text-zinc-400">34 games</h3>
-        <div className="grid max-w-fit grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
+        <div className="grid grid-cols-3 place-items-center gap-4 xxs:grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
           <div className="max-w-fit">
             <Link href={"/link-to-game"}>
               <Image

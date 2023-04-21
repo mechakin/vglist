@@ -94,6 +94,12 @@ const Navbar = () => {
               >
                 register
               </Link>
+              <Link
+                href={"/games"}
+                className="px-3 text-2xl transition duration-75 hover:text-zinc-400"
+              >
+                games
+              </Link>
             </SignedOut>
 
             <SignedIn>
@@ -102,6 +108,12 @@ const Navbar = () => {
                 className="px-3 text-2xl transition duration-75 hover:text-zinc-400"
               >
                 {user?.username}
+              </Link>
+              <Link
+                href={"/games"}
+                className="px-3 text-2xl transition duration-75 hover:text-zinc-400"
+              >
+                games
               </Link>
             </SignedIn>
 
@@ -170,15 +182,29 @@ const Navbar = () => {
           >
             register
           </Link>
+          <Link
+            href={"/games"}
+            className="block w-full px-6 py-2 text-2xl transition duration-75 hover:bg-zinc-500"
+            onClick={handleMenu}
+          >
+            games
+          </Link>
         </SignedOut>
 
         <SignedIn>
           <Link
             href={userUrl}
-            className="block w-full px-6 py-2 pb-6 text-2xl transition duration-75 hover:bg-zinc-500"
+            className="block w-full px-6 py-4 pb-6 text-2xl transition duration-75 hover:bg-zinc-500"
             onClick={handleMenu}
           >
             {user?.username}
+          </Link>
+          <Link
+            href={"/games"}
+            className="block w-full px-6 pb-6 text-2xl transition duration-75 hover:bg-zinc-500"
+            onClick={handleMenu}
+          >
+            games
           </Link>
         </SignedIn>
       </div>
