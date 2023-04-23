@@ -29,7 +29,7 @@ async function main() {
         "name,summary,slug,rating,rating_count,first_release_date,cover.url,updated_at"
       )
       .limit(2)
-      .offset(500 * i + 402)
+      .offset(500 * i)
       .sort("id", "asc")
       .request("/games");
 
