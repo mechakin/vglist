@@ -18,7 +18,7 @@ export default function Profile(props: { username: string }) {
       <Head>
         <title>{props.username}</title>
       </Head>
-      <div className="flex items-end">
+      <div className="flex items-end pt-4">
         {user?.username !== props.username && (
           <Image
             src={data.profileImageUrl}

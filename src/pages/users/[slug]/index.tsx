@@ -55,7 +55,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             <h2 className="pb-4 text-4xl font-medium">recently played</h2>
             <div className="grid max-w-fit grid-cols-2 gap-4 pb-4 sm:grid-cols-3 lg:grid-cols-4">
               <div className="">
-                <Link href={"/link-to-game"}>
+                <Link href={"/games/link-to-game"}>
                   <Image
                     src={
                       "https://images.igdb.com/igdb/image/upload/t_cover_big/co67qb.jpg"
@@ -68,7 +68,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
                   />
                 </Link>
                 <div className="flex items-center justify-between">
-                  <span className="pt-2 text-zinc-300 ">Nov 23 </span>
+                  <span className="pt-2 text-zinc-300">Nov 23 </span>
                   <Rating
                     SVGclassName="inline -mx-0.5"
                     allowFraction

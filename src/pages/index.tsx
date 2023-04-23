@@ -86,7 +86,7 @@ const Home: NextPage = () => {
 
       <p className="py-4 text-xl text-zinc-300">check out these games</p>
       <div className="grid grid-cols-2 place-items-center gap-4 xxs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
-        <Link href={"/"}>
+        <Link href={"/games"}>
           <Image
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co3p2d.png"
@@ -98,7 +98,7 @@ const Home: NextPage = () => {
             priority
           />
         </Link>
-        <Link href={"/"}>
+        <Link href={"/games"}>
           <Image
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co4jni.jpg"
@@ -110,7 +110,7 @@ const Home: NextPage = () => {
             priority
           />
         </Link>
-        <Link href={"/"}>
+        <Link href={"/games"}>
           <Image
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co6bo0.png"
@@ -122,7 +122,7 @@ const Home: NextPage = () => {
             priority
           />
         </Link>
-        <Link href={"/"}>
+        <Link href={"/games"}>
           <Image
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co1rgi.jpg"
@@ -134,7 +134,7 @@ const Home: NextPage = () => {
             priority
           />
         </Link>
-        <Link href={"/"}>
+        <Link href={"/games"}>
           <Image
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co5uu1.jpg"
@@ -146,7 +146,7 @@ const Home: NextPage = () => {
             priority
           />
         </Link>
-        <Link href={"/"}>
+        <Link href={"/games"}>
           <Image
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co49wj.png"

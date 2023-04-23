@@ -15,7 +15,7 @@ export default function Review() {
       />
       <div className="flex flex-col gap-1 md:px-8">
         <h3 className="max-w-fit text-2xl font-medium transition duration-75 hover:text-zinc-400">
-          <Link href={"/link-to-game"}>destiny 2</Link>
+          <Link href={"/games/link-to-game"}>destiny 2</Link>
         </h3>
         <div className="flex items-center">
           <p className="pr-4 pt-1 font-semibold text-zinc-400 transition duration-75 hover:text-zinc-100">

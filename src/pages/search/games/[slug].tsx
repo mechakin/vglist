@@ -78,7 +78,7 @@ const GamesSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
                   <div className="flex justify-start md:justify-end">
                     <Link
                       href={"/login"}
-                      className="rounded-md bg-zinc-600 px-2 text-xl"
+                      className="rounded-md bg-zinc-600 p-1 text-xl"
                     >
                       log in to review
                     </Link>
