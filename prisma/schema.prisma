@@ -12,23 +12,25 @@ generator client {
 }
 
 model Game {
-  id            Int      @id
-  updatedAtIGDB Int
-  name          String
-  summary       String?  @db.VarChar(15000)
-  slug          String
-  releaseDate   Int?
-  rating        Decimal  @default(0)
-  ratingCount   Int      @default(0)
-  reviews       Review[]
-  cover         String?
+  id              Int      @id
+  igdbUpdatedAt   BigInt   @db.BigInt
+  name            String
+  summary         String?  @db.VarChar(10000)
+  slug            String   @db.VarChar(1000)
+  releaseDate     BigInt?  @db.BigInt
+  igdbRating      Decimal?
+  igdbRatingCount Int?
+  rating          Decimal  @default(0)
+  ratingCount     Int      @default(0)
+  reviews         Review[]
+  cover           String?
 }
 
 model Review {
-  id          String   @id @default(uuid())
+  id          String   @id @default(cuid())
   createdAt   DateTime @default(now())
   score       Decimal?
-  description String?  @db.VarChar(15000)
+  description String?  @db.VarChar(10000)
   authorId    String
   game        Game     @relation(fields: [gameId], references: [id])
   gameId      Int

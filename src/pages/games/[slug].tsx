@@ -9,7 +9,7 @@ const IndividualGamePage: NextPage = () => {
   return (
     <PageLayout>
       <div className="py-4 md:flex">
-        <div className="flex flex-col pb-4">
+        <div className="flex min-w-fit flex-col pb-4">
           <Image
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co67qb.jpg"
