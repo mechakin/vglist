@@ -1,24 +1,29 @@
-import { clerkClient } from "@clerk/nextjs/server";
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { filterUserForClient } from "~/server/helpers/filterUserForClient";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const gameRouter = createTRPCRouter({
-  getGamesBySearch: publicProcedure
-    .input(z.object({ username: z.string() }))
-    .query(async ({ input }) => {
-      const [user] = await clerkClient.users.getUserList({
-        username: [input.username],
+  getAllGames: publicProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.number().nullish(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit ?? 64;
+      const { cursor } = input;
+      const games = await ctx.prisma.game.findMany({
+        take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
       });
-
-      if (!user) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User not found.",
-        });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (games.length > limit) {
+        const nextGame = games.pop();
+        nextCursor = nextGame?.id;
       }
-
-      return filterUserForClient(user);
+      return {
+        games,
+        nextCursor,
+      };
     }),
 });

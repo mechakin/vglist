@@ -86,72 +86,72 @@ const Home: NextPage = () => {
 
       <p className="py-4 text-xl text-zinc-300">check out these games</p>
       <div className="grid grid-cols-2 place-items-center gap-4 xxs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
-        <Link href={"/games"}>
+        <Link href={"/games/the-legend-of-zelda-breath-of-the-wild"}>
           <Image
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co3p2d.png"
             }
-            alt="game"
+            alt="breath of the wild"
             width={140}
             height={0}
             className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
             priority
           />
         </Link>
-        <Link href={"/games"}>
+        <Link href={"/games/elden-ring"}>
           <Image
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co4jni.jpg"
             }
-            alt="game"
+            alt="elden ring"
             width={140}
             height={0}
             className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
             priority
           />
         </Link>
-        <Link href={"/games"}>
+        <Link href={"/games/resident-evil-4--1"}>
           <Image
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co6bo0.png"
             }
-            alt="game"
+            alt="resident evil 4"
             width={140}
             height={0}
             className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
             priority
           />
         </Link>
-        <Link href={"/games"}>
+        <Link href={"/games/hollow-knight"}>
           <Image
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co1rgi.jpg"
             }
-            alt="game"
+            alt="hollow knight"
             width={140}
             height={0}
             className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
             priority
           />
         </Link>
-        <Link href={"/games"}>
+        <Link href={"/games/pizza-tower"}>
           <Image
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co5uu1.jpg"
             }
-            alt="game"
+            alt="pizza tower"
             width={140}
             height={0}
             className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
             priority
           />
         </Link>
-        <Link href={"/games"}>
+        <Link href={"/games/league-of-legends"}>
           <Image
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co49wj.png"
             }
-            alt="game"
+            alt="league of legends"
             width={140}
             height={0}
             className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"

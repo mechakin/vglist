@@ -9,7 +9,7 @@ const IndividualGamePage: NextPage = () => {
   return (
     <PageLayout>
       <div className="py-4 md:flex">
-        <div className="flex min-w-fit flex-col pb-4">
+        <div className="flex flex-col pb-4">
           <Image
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co67qb.jpg"
@@ -29,7 +29,7 @@ const IndividualGamePage: NextPage = () => {
               </Link>
             </SignedOut>
             <SignedIn>
-              <div className="h-fit rounded-md p-1 px-12 md:mt-2 md:bg-zinc-600 md:px-6">
+              <div className="mt-2 h-fit rounded-md bg-zinc-600 p-1 px-12 md:px-6">
                 <Rating
                   SVGclassName="inline -mx-0.5"
                   allowFraction
