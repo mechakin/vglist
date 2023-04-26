@@ -94,12 +94,16 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = generateSSGHelper();
 
-  const slug = context.params?.slug;
+  const username = context.params?.slug;
 
-  // make it so you return to a different page instead
-  if (typeof slug !== "string") throw new Error("No slug.");
-
-  const username = slug.replace("@", "");
+  if (typeof username !== "string") {
+    return {
+      redirect: {
+        permanent: true,
+        destination: "/",
+      },
+    };
+  }
 
   await ssg.profile.getUserByUsername.prefetch({ username });
 

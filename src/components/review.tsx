@@ -5,14 +5,19 @@ import Link from "next/link";
 export default function Review() {
   return (
     <div className="border-b border-b-zinc-600 py-4 md:flex">
-      <Image
-        src={"https://images.igdb.com/igdb/image/upload/t_cover_big/co67qb.jpg"}
-        alt="game"
-        width={120}
-        height={0}
-        className="mb-2 h-fit w-fit rounded-md border border-zinc-600"
-        priority
-      />
+      <Link href={"/"}>
+        <Image
+          src={
+            "https://images.igdb.com/igdb/image/upload/t_cover_big/co67qb.jpg"
+          }
+          alt="game"
+          width={120}
+          height={0}
+          className="mb-2 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-50 "
+          
+        />
+      </Link>
+
       <div className="flex flex-col gap-1 md:px-8">
         <h3 className="max-w-fit text-2xl font-medium transition duration-75 hover:text-zinc-400">
           <Link href={"/games/link-to-game"}>destiny 2</Link>

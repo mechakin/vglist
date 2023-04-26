@@ -3,39 +3,12 @@ import Image from "next/image";
 import { PageLayout } from "~/components/layout";
 import Link from "next/link";
 import { api } from "~/utils/api";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import LoadingSpinner from "~/components/loading";
-
-
-function useScrollPosition() {
-  const [scrollPosition, setScrollPosition] = useState(0);
-
-  function handleScroll() {
-    const height =
-      document.documentElement.scrollHeight -
-      document.documentElement.clientHeight;
-
-    const windowScroll =
-      document.body.scrollTop || document.documentElement.scrollTop;
-
-    const scrolled = (windowScroll / height) * 100;
-
-    setScrollPosition(scrolled);
-  }
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
-  return scrollPosition;
-}
+import { useInView } from "react-intersection-observer";
 
 const GamesPage: NextPage = () => {
-  const scrollPosition = useScrollPosition();
+  const { ref, inView } = useInView();
 
   const { data, hasNextPage, fetchNextPage, isFetching } =
     api.game.getAllGames.useInfiniteQuery(
@@ -50,15 +23,15 @@ const GamesPage: NextPage = () => {
   const games = data?.pages.flatMap((page) => page.games) ?? [];
 
   useEffect(() => {
-    if (scrollPosition > 90 && hasNextPage) {
+    if (inView && hasNextPage) {
       void fetchNextPage();
     }
-  }, [scrollPosition, hasNextPage, fetchNextPage]);
+  }, [inView, fetchNextPage, hasNextPage]);
 
   return (
     <PageLayout>
       <h2 className="pb-4 text-4xl font-medium">all games</h2>
-      <h3 className="-mt-2 pb-4 text-lg text-zinc-400">229675 games</h3>
+      <h3 className="-mt-2 pb-4 text-lg text-zinc-400">230287 games</h3>
       <div className="grid grid-cols-3 place-items-center gap-4 xxs:grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
         {games.map((game) => (
           <Link href={`/games/${game.slug}`} key={game.id}>
@@ -74,10 +47,13 @@ const GamesPage: NextPage = () => {
         ))}
       </div>
       {isFetching && (
-        <div className="flex justify-center pt-4 py-6">
+        <div className="flex justify-center py-6 pt-4">
           <LoadingSpinner size={55} />
         </div>
       )}
+      <span ref={ref} className="invisible">
+        intersection observer marker
+      </span>
     </PageLayout>
   );
 };

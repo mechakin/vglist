@@ -13,14 +13,14 @@ generator client {
 
 model Game {
   id              Int      @id
-  igdbUpdatedAt   BigInt   @db.BigInt
-  name            String
+  igdbUpdatedAt   BigInt
+  name            String   @db.VarChar(1000)
   summary         String?  @db.VarChar(10000)
-  slug            String   @db.VarChar(1000)
-  releaseDate     BigInt?  @db.BigInt
-  igdbRating      Decimal?
-  igdbRatingCount Int?
-  rating          Decimal  @default(0)
+  slug            String   @unique @db.VarChar(256)
+  releaseDate     BigInt?
+  igdbRating      Float    @default(0)
+  igdbRatingCount Int      @default(0)
+  rating          Float    @default(0)
   ratingCount     Int      @default(0)
   reviews         Review[]
   cover           String?

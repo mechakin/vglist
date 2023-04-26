@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
@@ -25,5 +26,15 @@ export const gameRouter = createTRPCRouter({
         games,
         nextCursor,
       };
+    }),
+  getGameBySlug: publicProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const game = await ctx.prisma.game.findUnique({
+        where: { slug: input.slug },
+      });
+      if (!game)
+        throw new TRPCError({ code: "NOT_FOUND", message: "Game not found." });
+      return game;
     }),
 });

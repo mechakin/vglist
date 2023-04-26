@@ -28,12 +28,12 @@ async function main() {
       .fields(
         "name,summary,slug,rating,rating_count,first_release_date,cover.url,updated_at"
       )
-      .limit(2)
+      .limit(500)
       .offset(500 * i)
       .sort("id", "asc")
       .request("/games");
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     const data = response.data.map((game: Game) => {
       const coverUrl = game.cover?.url;
 
@@ -52,7 +52,6 @@ async function main() {
           slug: game.slug,
         };
       }
-
       return {
         id: game.id,
         igdbUpdatedAt: game.updated_at,

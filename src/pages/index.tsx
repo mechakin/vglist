@@ -13,7 +13,7 @@ const Home: NextPage = () => {
       <div className="flex justify-center">
         <div className="flex flex-col items-center justify-center">
           {isSignedIn && (
-            <h1 className="py-8 text-4xl  text-zinc-300">
+            <h1 className="py-8 text-4xl">
               welcome back :{")"}
             </h1>
           )}

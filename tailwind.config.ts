@@ -12,6 +12,7 @@ export default {
         xs: "500px",
         xxs: "400px",
         ...defaultTheme.screens,
+        "3xl": "2000px",
       },
     },
   },
