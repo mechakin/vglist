@@ -10,7 +10,7 @@ const Home: NextPage = () => {
 
   return (
     <PageLayout>
-      <div className="flex justify-center">
+      <div className="flex justify-center pt-4">
         <div className="flex flex-col items-center justify-center">
           {isSignedIn && (
             <h1 className="py-8 text-4xl">

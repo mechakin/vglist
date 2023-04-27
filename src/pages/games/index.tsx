@@ -1,39 +1,21 @@
-import { type NextPage } from "next";
+import { type GetStaticProps, type NextPage } from "next";
 import Image from "next/image";
 import { PageLayout } from "~/components/layout";
 import Link from "next/link";
 import { api } from "~/utils/api";
-import { useEffect } from "react";
-import LoadingSpinner from "~/components/loading";
-import { useInView } from "react-intersection-observer";
+import NotFound from "~/components/404";
+import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
 const GamesPage: NextPage = () => {
-  const { ref, inView } = useInView();
+  const { data } = api.game.getSomeGames.useQuery();
 
-  const { data, hasNextPage, fetchNextPage, isFetching } =
-    api.game.getAllGames.useInfiniteQuery(
-      {
-        limit: 64,
-      },
-      {
-        getNextPageParam: (lastPage) => lastPage.nextCursor,
-      }
-    );
-
-  const games = data?.pages.flatMap((page) => page.games) ?? [];
-
-  useEffect(() => {
-    if (inView && hasNextPage) {
-      void fetchNextPage();
-    }
-  }, [inView, fetchNextPage, hasNextPage]);
+  if (!data) return <NotFound />;
 
   return (
     <PageLayout>
-      <h2 className="pb-4 text-4xl font-medium">all games</h2>
-      <h3 className="-mt-2 pb-4 text-lg text-zinc-400">230287 games</h3>
-      <div className="grid grid-cols-3 place-items-center gap-4 xxs:grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
-        {games.map((game) => (
+      <h2 className="pb-4 text-4xl font-medium">popular games</h2>
+      <div className="grid grid-cols-3 place-items-center gap-4 pb-4 xxs:grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
+        {data.map((game) => (
           <Link href={`/games/${game.slug}`} key={game.id}>
             <Image
               src={game.cover ? game.cover : "/test.png"}
@@ -46,16 +28,20 @@ const GamesPage: NextPage = () => {
           </Link>
         ))}
       </div>
-      {isFetching && (
-        <div className="flex justify-center pt-8">
-          <LoadingSpinner size={55} />
-        </div>
-      )}
-      <span ref={ref} className="invisible">
-        intersection observer marker
-      </span>
     </PageLayout>
   );
 };
 
 export default GamesPage;
+
+export const getStaticProps: GetStaticProps = async () => {
+  const ssg = generateSSGHelper();
+
+  await ssg.game.getSomeGames.prefetch();
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+  };
+};

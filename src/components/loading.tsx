@@ -1,3 +1,5 @@
+import { PageLayout } from "./layout";
+
 export default function LoadingSpinner(props: { size?: number }) {
   return (
     <div role="status">
@@ -26,8 +28,10 @@ export default function LoadingSpinner(props: { size?: number }) {
 
 export function LoadingPage() {
   return (
-    <div className="absolute top-0 right-0 flex h-screen w-screen items-center justify-center align-middle">
-      <LoadingSpinner size={60} />
-    </div>
+    <PageLayout>
+      <div className="flex justify-center pt-6">
+        <LoadingSpinner size={60} />
+      </div>
+    </PageLayout>
   );
 }

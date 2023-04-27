@@ -3,5 +3,22 @@
 @tailwind utilities;
 
 body {
-  @apply bg-zinc-800 text-zinc-100;
+  @apply bg-zinc-800 text-zinc-100 scrollbar;
+}
+
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: #27272a;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #a1a1aa;
+    border-radius: 100vh;
+  }
 }

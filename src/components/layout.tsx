@@ -175,7 +175,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      <div className={!open ? "hidden md:hidden" : "md:hidden pb-4"}>
+      <div className={!open ? "hidden md:hidden" : "pb-4 md:hidden"}>
         <div className="mb-2 xl:w-96">
           <form
             onSubmit={(event) => void handleMobileSubmit(onSubmit)(event)}
