@@ -5,7 +5,13 @@ import "~/styles/globals.css";
 import { dark } from "@clerk/themes";
 import Head from "next/head";
 import { Toaster } from "react-hot-toast";
-import type { AppProps } from 'next/app'
+import type { AppProps } from "next/app";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import bigIntSupport from "dayjs/plugin/bigIntSupport";
+
+dayjs.extend(relativeTime);
+dayjs.extend(bigIntSupport);
 
 const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
   return (

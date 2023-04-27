@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { SignedIn, SignedOut, useUser } from "@clerk/nextjs";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { useRouter } from "next/router";
 
 const SearchIcon = () => {
   return (
@@ -59,12 +62,24 @@ const Logo = () => {
   );
 };
 
+const schema = z.object({
+  input: z.string().min(1),
+});
+
+type typeSchema = z.infer<typeof schema>;
+
 const Navbar = () => {
   const { user } = useUser();
   const [open, setOpen] = useState(false);
+  const { register, handleSubmit } = useForm<typeSchema>();
+  const router = useRouter()
 
   function handleMenu() {
     setOpen((prevState) => !prevState);
+  }
+
+  function onSubmit(data: typeSchema) {
+    void router.push(`/search/games/${data.input}`)
   }
 
   let userUrl = "/users";
@@ -108,7 +123,6 @@ const Navbar = () => {
                 games
               </Link>
             </SignedOut>
-
             <SignedIn>
               <Link
                 href={userUrl}
@@ -124,9 +138,13 @@ const Navbar = () => {
               </Link>
             </SignedIn>
 
-            <form className="mb-3 pt-4 xl:w-96">
+            <form
+              className="mb-3 pt-4 xl:w-96"
+              onSubmit={(event) => void handleSubmit(onSubmit)(event)}
+            >
               <div className="relative flex w-full flex-wrap items-stretch">
                 <input
+                  {...register("input")}
                   type="text"
                   className="relative ml-5 block w-[1%] min-w-0 flex-auto rounded-l border border-r-0 border-solid border-zinc-600 bg-transparent bg-clip-padding px-3 py-1.5 text-2xl text-zinc-100 outline-none transition duration-300 ease-in-out placeholder:text-zinc-400 focus:outline-none"
                   placeholder="search"
@@ -157,13 +175,17 @@ const Navbar = () => {
 
       <div className={!open ? "hidden md:hidden" : "md:hidden"}>
         <div className="mb-2 xl:w-96">
-          <form className="relative flex w-full flex-wrap items-stretch">
+          <form
+            // onSubmit={(event) => void handleSubmit(onSubmit)(event)}
+            className="relative flex w-full flex-wrap items-stretch"
+          >
             <input
               type="text"
               className="relative ml-5 block w-[1%] min-w-0 flex-auto rounded-l border border-r-0 border-solid border-zinc-600 bg-transparent bg-clip-padding px-3 py-1.5 text-2xl text-zinc-100 outline-none placeholder:text-zinc-400 focus:outline-none"
               placeholder="search"
               aria-label="search"
               aria-describedby="button-addon"
+              // {...register("input")}
             />
 
             <button

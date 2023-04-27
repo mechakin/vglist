@@ -37,4 +37,33 @@ export const gameRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Game not found." });
       return game;
     }),
+  getGamesByName: publicProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.number().nullish(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit ?? 16;
+      const { cursor } = input;
+      const games = await ctx.prisma.game.findMany({
+        take: limit + 1,
+        where: { name: { contains: input.name } },
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: {
+          igdbRatingCount: "desc",
+        },
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (games.length > limit) {
+        const nextGame = games.pop();
+        nextCursor = nextGame?.id;
+      }
+      return {
+        games,
+        nextCursor,
+      };
+    }),
 });

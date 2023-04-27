@@ -47,7 +47,7 @@ const GamesPage: NextPage = () => {
         ))}
       </div>
       {isFetching && (
-        <div className="flex justify-center py-6 pt-4">
+        <div className="flex justify-center pt-8">
           <LoadingSpinner size={55} />
         </div>
       )}

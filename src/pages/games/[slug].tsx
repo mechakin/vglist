@@ -10,11 +10,7 @@ import { api } from "~/utils/api";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import NotFound from "~/components/404";
 import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import bigIntSupport from "dayjs/plugin/bigIntSupport";
-
-dayjs.extend(relativeTime);
-dayjs.extend(bigIntSupport);
+import Head from "next/head";
 
 type Props = {
   isOpen: boolean;
@@ -48,7 +44,6 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
     setShowModal(() => !showModal);
   }
 
-  // might refactor to seperate util function
   let weightedScore = (data.igdbRating / 10).toFixed(1);
 
   if (data.igdbRatingCount && data.igdbRating) {
@@ -65,8 +60,8 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
     }
   }
 
-  // also might refactor
-  let releaseDate;
+  // 0 is falsy and will not show up if there's no release date
+  let releaseDate = 0;
 
   if (data.releaseDate) {
     releaseDate = dayjs.unix(data.releaseDate).year();
@@ -74,6 +69,9 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
 
   return (
     <>
+      <Head>
+        <title>{data.name.toLowerCase()}</title>
+      </Head>
       {showModal &&
         createPortal(
           <Modal isOpen={showModal} handleClose={handleModal}>
@@ -81,7 +79,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
               <div className="flex items-end">
                 <h2 className="text-2xl font-medium">{data.name}</h2>
                 <span className="text-md pl-2 text-zinc-400">
-                  {releaseDate ? `(${releaseDate})` : ""}
+                  {releaseDate ? `(${releaseDate})` : "n/a"}
                 </span>
               </div>
               <button onClick={handleModal} className="text-2xl">
@@ -209,43 +207,8 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                 <Image
                   src={`/test3.png`}
                   alt="profile"
-                  width={72}
-                  height={72}
-                  className="mt-2 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-75"
-                  priority
-                />
-              </Link>
-
-              <div className="flex flex-col gap-1 md:pl-4">
-                <div className="flex items-center">
-                  <p className="pr-4 pt-1 text-lg font-semibold text-zinc-400 transition duration-75 hover:text-zinc-100">
-                    <Link href={"/users/mechazol"}>mechazol</Link>
-                  </p>
-                  <Rating
-                    SVGclassName="inline -mx-0.5"
-                    allowFraction
-                    readonly
-                    size={22}
-                    transition={false}
-                    emptyColor="#a1a1aa"
-                    fillColor="#22d3ee"
-                  />
-                </div>
-                <p className="text-zinc-300">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                  Dolorem non veniam, laudantium vitae earum sed quam rerum sunt
-                  eius molestias. Quos accusamus deserunt earum. Voluptatum
-                  suscipit quisquam expedita possimus eaque?
-                </p>
-              </div>
-            </div>
-            <div className="border-b border-b-zinc-600 py-4 md:flex">
-              <Link href={"/"}>
-                <Image
-                  src={`/test3.png`}
-                  alt="profile"
-                  width={72}
-                  height={72}
+                  width={56}
+                  height={56}
                   className="mt-2 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-75"
                   priority
                 />
