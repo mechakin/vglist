@@ -9,7 +9,7 @@ const SearchIcon = () => {
   return (
     <span
       className="input-group-text flex items-center whitespace-nowrap rounded py-1.5 text-center text-base font-normal text-neutral-700 dark:text-neutral-200"
-      id="basic-addon"
+      id="search-icon"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -72,14 +72,16 @@ const Navbar = () => {
   const { user } = useUser();
   const [open, setOpen] = useState(false);
   const { register, handleSubmit } = useForm<typeSchema>();
-  const router = useRouter()
+  const { register: registerMobile, handleSubmit: handleMobileSubmit } =
+    useForm<typeSchema>();
+  const router = useRouter();
 
   function handleMenu() {
     setOpen((prevState) => !prevState);
   }
 
   function onSubmit(data: typeSchema) {
-    void router.push(`/search/games/${data.input}`)
+    void router.push(`/search/games/${data.input}`);
   }
 
   let userUrl = "/users";
@@ -155,7 +157,7 @@ const Navbar = () => {
 
                 <button
                   className="mr-4 flex items-center whitespace-nowrap rounded-r border border-l-0 border-y-zinc-600 border-r-zinc-600 px-3 py-1.5 text-center"
-                  id="basic-addon"
+                  id="search-button"
                   type="submit"
                   aria-label="search-button"
                 >
@@ -173,10 +175,10 @@ const Navbar = () => {
         </div>
       </div>
 
-      <div className={!open ? "hidden md:hidden" : "md:hidden"}>
+      <div className={!open ? "hidden md:hidden" : "md:hidden pb-4"}>
         <div className="mb-2 xl:w-96">
           <form
-            // onSubmit={(event) => void handleSubmit(onSubmit)(event)}
+            onSubmit={(event) => void handleMobileSubmit(onSubmit)(event)}
             className="relative flex w-full flex-wrap items-stretch"
           >
             <input
@@ -185,12 +187,12 @@ const Navbar = () => {
               placeholder="search"
               aria-label="search"
               aria-describedby="button-addon"
-              // {...register("input")}
+              {...registerMobile("input")}
             />
 
             <button
               className="mr-4 flex items-center whitespace-nowrap rounded-r border border-l-0 border-y-zinc-600 border-r-zinc-600 px-3 py-1.5 text-center"
-              id="basic-addon"
+              id="submit-button"
               type="submit"
             >
               <SearchIcon />

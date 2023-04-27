@@ -43,6 +43,7 @@ export default function Profile(props: { username: string }) {
                 },
               },
             }}
+            afterSignOutUrl="/"
           />
         )}
         <h1 className="px-4 text-2xl font-semibold">{props.username}</h1>

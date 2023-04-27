@@ -9,7 +9,7 @@ const Login: NextPage = () => {
     <PageLayout>
       <Head><title>login</title></Head>
       <div className="flex justify-center items-center md:py-10">
-        <SignIn path="/login" routing="path" signUpUrl="/register"/>
+        <SignIn path="/login" signUpUrl="/register"/>
       </div>
     </PageLayout>
   );
