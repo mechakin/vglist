@@ -150,7 +150,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
         )}
       <PageLayout>
         <div className="py-4 md:flex">
-          <div className="flex flex-col pb-4">
+          <div className="flex min-w-max flex-col pb-4">
             <Image
               src={data.cover ? data.cover : "/test.png"}
               alt={data.name}
@@ -162,13 +162,13 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
             <div className="w-56 md:w-auto">
               <SignedOut>
                 <Link href={"/login"}>
-                  <button className="mt-2 w-full rounded-md bg-zinc-600 p-1 text-center text-xl">
+                  <button className="mt-2 w-full rounded-md bg-zinc-600 p-1 text-center text-xl transition duration-75 hover:bg-zinc-500">
                     login to review
                   </button>
                 </Link>
               </SignedOut>
               <SignedIn>
-                <div className="mt-2 h-fit rounded-md bg-zinc-600 p-1 px-12 md:px-6">
+                <div className="mt-2 h-fit rounded-md bg-zinc-600 p-1 px-12">
                   <Rating
                     SVGclassName="inline -mx-0.5"
                     allowFraction
