@@ -78,7 +78,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
             <div className="flex justify-between">
               <div className="flex items-end">
                 <h2 className="text-2xl font-medium">{data.name}</h2>
-                <span className="text-base pl-2 text-zinc-400">
+                <span className="pl-2 text-base text-zinc-400">
                   {releaseDate ? `(${releaseDate})` : ""}
                 </span>
               </div>
@@ -107,7 +107,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
             </div>
             <div className="sm:flex">
               <Image
-                src={data.cover ? data.cover : "/test.png"}
+                src={data.cover ? data.cover : "/game.png"}
                 alt={data.name}
                 width={120}
                 height={0}
@@ -152,7 +152,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
         <div className="py-4 md:flex">
           <div className="flex min-w-max flex-col pb-4">
             <Image
-              src={data.cover ? data.cover : "/test.png"}
+              src={data.cover ? data.cover : "/game.png"}
               alt={data.name}
               width={140}
               height={0}
@@ -205,7 +205,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
             <div className="border-b border-b-zinc-600 py-4 md:flex">
               <Link href={"/users/mechazol"}>
                 <Image
-                  src={`/test2.png`}
+                  src={"/user.png"}
                   alt="profile"
                   width={56}
                   height={56}

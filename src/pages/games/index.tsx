@@ -22,7 +22,7 @@ const GamesPage: NextPage = () => {
         {data.map((game) => (
           <Link href={`/games/${game.slug}`} key={game.id}>
             <Image
-              src={game.cover ? game.cover : "/test.png"}
+              src={game.cover ? game.cover : "/game.png"}
               alt={game.name}
               width={120}
               height={0}
