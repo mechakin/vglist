@@ -32,17 +32,11 @@ export const gameRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const limit = input.limit ?? 16;
       const { cursor } = input;
-      const [games, count] = await ctx.prisma.$transaction([
-        ctx.prisma.game.findMany({
-          take: limit + 1,
-          where: { name: { contains: input.name } },
-          cursor: cursor ? { id: cursor } : undefined,
-          orderBy: {
-            igdbRatingCount: "desc",
-          },
-        }),
-        ctx.prisma.game.count({ where: { name: { contains: input.name } } }),
-      ]);
+      const games = await ctx.prisma.game.findMany({
+        take: limit + 1,
+        where: { name: { contains: input.name } },
+        cursor: cursor ? { id: cursor } : undefined,
+      });
       let nextCursor: typeof cursor | undefined = undefined;
       if (games.length > limit) {
         const nextGame = games.pop();
@@ -50,7 +44,6 @@ export const gameRouter = createTRPCRouter({
       }
       return {
         games,
-        count,
         nextCursor,
       };
     }),

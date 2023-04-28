@@ -14,7 +14,7 @@ const UsersSearchPage: NextPage<{ slug: string }> = ({ slug }) => {
       </Head>
       <div className="py-4">
         <h1 className="text-center text-4xl">
-          30 results for <span className="font-semibold">{`${slug}`}</span>
+          results for <span className="font-semibold">{`${slug}`}</span>
         </h1>
         <nav className="text-2xl">
           <ul className="flex justify-center gap-4 py-2">

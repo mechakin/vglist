@@ -15,19 +15,17 @@ function handleStarValue(value: number) {
   console.log(value);
 }
 
-const GamesSearchPage: NextPage<{ search: string }> = ({ search }) => {
+const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
   const { ref, inView } = useInView();
-
   const { data, hasNextPage, fetchNextPage, isFetching } =
     api.game.getGamesByName.useInfiniteQuery(
-      { name: search, limit: 16 },
+      { name, limit: 16 },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
       }
     );
 
   const games = data?.pages.flatMap((page) => page.games) ?? [];
-  const results = data?.pages.flatMap((page) => page.count)[0] ?? '';
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -38,19 +36,21 @@ const GamesSearchPage: NextPage<{ search: string }> = ({ search }) => {
   return (
     <PageLayout>
       <Head>
-        <title>{search}</title>
+        <title>{name}</title>
       </Head>
       <div className="py-4">
-        <h1 className="text-center text-4xl">{`${results}`} results for {`${search}`}</h1>
+        <h1 className="text-center text-4xl">
+          {} results for {`${name}`}
+        </h1>
         <nav className="text-2xl">
           <ul className="flex justify-center gap-3 py-2 text-cyan-400">
             <li className="text-zinc-100">search for</li>
             <li className="flex items-center underline">
-              <Link href={`/search/games/${search}`}>games</Link>
+              <Link href={`/search/games/${name}`}>games</Link>
             </li>
             <li className="text-zinc-100">or</li>
             <li className="flex items-center text-zinc-400 underline transition duration-75 hover:text-cyan-400">
-              <Link href={`/search/users/${search}`}>users</Link>
+              <Link href={`/search/users/${name}`}>users</Link>
             </li>
           </ul>
         </nav>
@@ -118,7 +118,7 @@ const GamesSearchPage: NextPage<{ search: string }> = ({ search }) => {
           <LoadingSpinner size={55} />
         </div>
       )}
-      <span ref={ref} className="invisible">
+      <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
         intersection observer marker
       </span>
     </PageLayout>
@@ -128,9 +128,9 @@ const GamesSearchPage: NextPage<{ search: string }> = ({ search }) => {
 export default GamesSearchPage;
 
 export const getStaticProps: GetStaticProps = (context) => {
-  const search = context.params?.slug;
+  const name = context.params?.slug;
 
-  if (typeof search !== "string") {
+  if (typeof name !== "string") {
     return {
       redirect: {
         permanent: true,
@@ -141,7 +141,7 @@ export const getStaticProps: GetStaticProps = (context) => {
 
   return {
     props: {
-      search,
+      name,
     },
   };
 };
