@@ -8,7 +8,7 @@ import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import Head from "next/head";
 
 const GamesPage: NextPage = () => {
-  const { data } = api.game.getSomeGames.useQuery();
+  const { data } = api.game.getTopGames.useQuery();
 
   if (!data) return <NotFound />;
 
@@ -41,7 +41,7 @@ export default GamesPage;
 export const getStaticProps: GetStaticProps = async () => {
   const ssg = generateSSGHelper();
 
-  await ssg.game.getSomeGames.prefetch();
+  await ssg.game.getTopGames.prefetch();
 
   return {
     props: {

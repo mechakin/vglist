@@ -3,7 +3,7 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const gameRouter = createTRPCRouter({
-  getSomeGames: publicProcedure.query(async ({ ctx }) => {
+  getTopGames: publicProcedure.query(async ({ ctx }) => {
     const games = await ctx.prisma.game.findMany({
       take: 96,
       orderBy: { igdbRatingCount: "desc" },
