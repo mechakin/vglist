@@ -108,7 +108,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
             <div className="sm:flex">
               <Image
                 src={data.cover ? data.cover : "/test.png"}
-                alt="game"
+                alt={data.name}
                 width={120}
                 height={0}
                 className="mt-4 hidden h-fit w-fit rounded-md border border-zinc-600 border-b-transparent sm:block"
