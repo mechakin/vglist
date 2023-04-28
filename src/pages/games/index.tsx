@@ -5,6 +5,7 @@ import Link from "next/link";
 import { api } from "~/utils/api";
 import NotFound from "~/components/404";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
+import Head from "next/head";
 
 const GamesPage: NextPage = () => {
   const { data } = api.game.getSomeGames.useQuery();
@@ -13,6 +14,9 @@ const GamesPage: NextPage = () => {
 
   return (
     <PageLayout>
+      <Head>
+        <title>games</title>
+      </Head>
       <h2 className="pb-4 text-4xl font-medium">popular games</h2>
       <div className="grid grid-cols-3 place-items-center gap-4 pb-4 xxs:grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
         {data.map((game) => (
