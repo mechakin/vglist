@@ -78,8 +78,8 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
             <div className="flex justify-between">
               <div className="flex items-end">
                 <h2 className="text-2xl font-medium">{data.name}</h2>
-                <span className="text-md pl-2 text-zinc-400">
-                  {releaseDate ? `(${releaseDate})` : "n/a"}
+                <span className="text-base pl-2 text-zinc-400">
+                  {releaseDate ? `(${releaseDate})` : ""}
                 </span>
               </div>
               <button onClick={handleModal} className="text-2xl">

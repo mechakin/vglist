@@ -18,11 +18,11 @@ const UsersSearchPage: NextPage<{ name: string }> = ({ name }) => {
         <nav className="text-2xl">
           <ul className="flex justify-center gap-3 py-2">
             <li className="text-zinc-100">search for</li>
-            <li className="flex items-center text-zinc-400 underline transition duration-75 hover:text-cyan-400">
+            <li className="flex items-center text-zinc-400 transition duration-75 hover:text-cyan-400">
               <Link href={`/search/games/${name}`}>games</Link>
             </li>
             <li>or</li>
-            <li className="flex items-center text-cyan-400 underline">
+            <li className="flex items-center text-cyan-400">
               <Link href={`/search/users/${name}`}>users</Link>
             </li>
           </ul>

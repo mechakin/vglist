@@ -12,7 +12,7 @@ export default function NotFound() {
         <h1 className="py-4 text-5xl">page not found :/</h1>
         <p className="text-2xl">
           click{" "}
-          <span className="text-zinc-400 underline transition duration-75 hover:text-cyan-400">
+          <span className="text-zinc-400 transition duration-75 hover:text-cyan-400">
             <Link href={"/"}>here</Link>
           </span>{" "}
           to go back to vglist

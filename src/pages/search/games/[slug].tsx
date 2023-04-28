@@ -45,11 +45,11 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
         <nav className="text-2xl">
           <ul className="flex justify-center gap-3 py-2 text-cyan-400">
             <li className="text-zinc-100">search for</li>
-            <li className="flex items-center underline">
+            <li className="flex items-center">
               <Link href={`/search/games/${name}`}>games</Link>
             </li>
             <li className="text-zinc-100">or</li>
-            <li className="flex items-center text-zinc-400 underline transition duration-75 hover:text-cyan-400">
+            <li className="flex items-center text-zinc-400 transition duration-75 hover:text-cyan-400">
               <Link href={`/search/users/${name}`}>users</Link>
             </li>
           </ul>
@@ -74,10 +74,10 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
                 >
                   {game.name}
                 </Link>{" "}
-                <span className="md:text-md text-sm font-normal text-zinc-400">
+                <span className="md:text-base text-sm font-normal text-zinc-400">
                   {game?.releaseDate
                     ? `(${dayjs.unix(game.releaseDate).year()})`
-                    : "n/a"}
+                    : ""}
                 </span>
               </p>
               <SignedIn>
