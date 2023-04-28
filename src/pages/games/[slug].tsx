@@ -205,7 +205,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
             <div className="border-b border-b-zinc-600 py-4 md:flex">
               <Link href={"/users/mechazol"}>
                 <Image
-                  src={`/test3.png`}
+                  src={`/test2.png`}
                   alt="profile"
                   width={56}
                   height={56}

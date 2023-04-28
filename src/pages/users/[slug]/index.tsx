@@ -34,14 +34,14 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
       </nav>
       <div className="md:flex">
         <div className="rounded-md pt-2 md:w-64">
-          <div className="text-xl font-medium">games played</div>
-          <section className="pb-2 text-4xl font-medium text-zinc-300">
+          <div className="text-xl ">games played</div>
+          <section className="pb-4 text-4xl font-medium text-zinc-300">
             324
           </section>
-          <div className="text-xl font-medium ">average score</div>
+          <div className="text-xl  ">average score</div>
           <section className="text-4xl font-medium text-zinc-300">7.4</section>
-          <div className="rounded-md py-2 md:w-64">
-            <span className="text-xl font-medium ">bio</span>
+          <div className="rounded-md py-4 md:w-64">
+            <span className="text-xl  ">bio</span>
             <section className="font-normal text-zinc-300 no-underline">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum
               voluptas doloremque beatae aspernatur recusandae. Iste provident
@@ -52,7 +52,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         </div>
         <div className="w-full md:px-4">
           <div className="flex flex-col">
-            <h2 className="pb-4 text-4xl font-medium">recently played</h2>
+            <h2 className="pb-4 text-3xl font-medium">recently played</h2>
             <div className="grid max-w-fit grid-cols-2 gap-4 pb-4 sm:grid-cols-3 lg:grid-cols-4">
               <div className="">
                 <Link href={"/games/link-to-game"}>
@@ -83,7 +83,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             </div>
           </div>
 
-          <h2 className="text-4xl font-medium">recently reviewed</h2>
+          <h2 className="text-3xl font-medium">recently reviewed</h2>
           <Review />
         </div>
       </div>

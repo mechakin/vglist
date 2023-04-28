@@ -17,7 +17,7 @@ const GamesPage: NextPage = () => {
       <Head>
         <title>games</title>
       </Head>
-      <h2 className="pb-4 text-4xl font-medium">popular games</h2>
+      <h2 className="pb-4 text-3xl text-zinc-300">popular games</h2>
       <div className="grid grid-cols-3 place-items-center gap-4 pb-4 xxs:grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
         {data.map((game) => (
           <Link href={`/games/${game.slug}`} key={game.id}>

@@ -32,8 +32,8 @@ const ProfileReviewPage: NextPage<{ username: string }> = ({ username }) => {
       </nav>
       <div className="md:flex">
         <div className="w-full md:px-4">
-          <h2 className="text-4xl font-medium ">all reviews</h2>
-          <h3 className="pt-2 text-lg text-zinc-400">34 games</h3>
+          <h2 className="text-3xl font-medium ">all reviews</h2>
+          <h3 className="pt-1 text-lg text-zinc-400">34 games</h3>
           <Review />
         </div>
       </div>
