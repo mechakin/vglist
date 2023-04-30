@@ -131,4 +131,46 @@ export const reviewRouter = createTRPCRouter({
 
       return review;
     }),
+  updateReview: privateProcedure
+    .input(
+      z.object({
+        score: z.number().min(0).max(10).optional(),
+        description: z.string().min(1).max(10000),
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const authorId = ctx.userId;
+
+      const { success } = await ratelimit.limit(authorId);
+
+      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+
+      const review = await ctx.prisma.review.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          score: input.score,
+          description: input.description,
+        },
+      });
+
+      return review;
+    }),
+  deleteReview: privateProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const authorId = ctx.userId;
+
+      const { success } = await ratelimit.limit(authorId);
+
+      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+
+      await ctx.prisma.review.delete({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
 });

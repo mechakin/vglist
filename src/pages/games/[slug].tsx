@@ -17,6 +17,7 @@ import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import LoadingSpinner from "~/components/loading";
 import { useInView } from "react-intersection-observer";
+import { Modal } from "~/components/modal";
 
 const schema = z.object({
   score: z.number().min(0).max(5).optional(),
@@ -27,28 +28,6 @@ const schema = z.object({
 });
 
 type typeSchema = z.infer<typeof schema>;
-
-type Props = {
-  isOpen: boolean;
-  handleClose: () => void;
-  children: React.ReactNode;
-};
-
-function Modal(props: Props) {
-  if (!props.isOpen) return null;
-
-  return (
-    <>
-      <div
-        className="fixed left-0 top-0 z-40 h-screen w-screen bg-zinc-800 opacity-75"
-        onClick={props.handleClose}
-      />
-      <div className="fixed left-1/2 top-1/2 z-50 w-11/12 -translate-x-1/2 -translate-y-1/2 justify-center  rounded-md bg-zinc-600 p-4 md:top-1/3 md:w-10/12 lg:w-9/12 xl:w-7/12 2xl:w-6/12 3xl:w-5/12">
-        {props.children}
-      </div>
-    </>
-  );
-}
 
 const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
   const [showModal, setShowModal] = useState(false);
@@ -65,15 +44,10 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
       setShowModal(false);
       void ctx.review.getReviewsByGameId.invalidate();
     },
-    onError: (event) => {
-      const errorMessage = event.data?.zodError?.fieldErrors.content;
-      if (errorMessage && errorMessage[0]) {
-        toast.error(errorMessage[0]);
-      } else {
-        toast.error(
-          "edit or delete an existing review before creating a new one"
-        );
-      }
+    onError: () => {
+      toast.error(
+        "edit or delete an existing review before creating a new one"
+      );
     },
   });
 

@@ -15,7 +15,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
     username,
   });
 
-  if (isLoading) return <LoadingSpinner size={55}/>;
+  if (isLoading) return <LoadingSpinner size={55} />;
 
   if (!data) return <NotFound />;
 
@@ -86,7 +86,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
               </div>
             </div>
           </div>
-          <h2 className="text-3xl font-medium">recently reviewed</h2> 
+          <h2 className="text-3xl font-medium">recently reviewed</h2>
           <ReviewFeed authorId={data.id} />
         </div>
       </div>

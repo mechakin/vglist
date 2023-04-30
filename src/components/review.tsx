@@ -4,55 +4,337 @@ import Link from "next/link";
 import { type RouterOutputs, api } from "~/utils/api";
 import LoadingSpinner from "./loading";
 import { useInView } from "react-intersection-observer";
+import { useUser } from "@clerk/nextjs";
+import { useState } from "react";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, type FieldErrors, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { createPortal } from "react-dom";
+import { Modal } from "./modal";
+import dayjs from "dayjs";
 
 type ReviewWithUser =
   RouterOutputs["review"]["getReviewsByGameId"]["reviews"][number];
 
+const schema = z.object({
+  score: z.number().min(0).max(5).optional(),
+  description: z
+    .string()
+    .min(1, "review must contain at least one character")
+    .max(10000, "review must contain a max of 10000 characters"),
+});
+
+type typeSchema = z.infer<typeof schema>;
+
 export default function Review(props: ReviewWithUser) {
+  const { user } = useUser();
+
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const { register, handleSubmit, control } = useForm<typeSchema>({
+    resolver: zodResolver(schema),
+  });
+
+  const ctx = api.useContext();
+
+  const { mutate: mutateUpdate } = api.review.updateReview.useMutation({
+    onSuccess: () => {
+      setShowUpdateModal(false);
+      void ctx.review.invalidate();
+    },
+    onError: () => {
+      toast.error(
+        "there was an error in trying to update your review, please try again later"
+      );
+    },
+  });
+
+  const { mutate: mutateDelete } = api.review.deleteReview.useMutation({
+    onSuccess: () => {
+      setShowDeleteModal(false);
+      void ctx.review.invalidate();
+    },
+    onError: () => {
+      toast.error(
+        "there was an error in trying to delete your review, please try again later"
+      );
+    },
+  });
+
+  function handleUpdateModal() {
+    setShowUpdateModal(() => !showUpdateModal);
+  }
+
+  function handleDeleteModal() {
+    setShowDeleteModal(() => !showDeleteModal);
+  }
+
   const { review, author } = props;
+
   const { data: gameData } = api.game.getGameById.useQuery({
     id: review.gameId,
   });
 
   if (!gameData) return <div />;
 
-  return (
-    <div className="border-b border-b-zinc-600 py-4 md:flex">
-      <Link href={`/games/${gameData.name}`}>
-        <Image
-          src={gameData.cover ? gameData.cover : "/game.png"}
-          alt={gameData.name}
-          width={120}
-          height={0}
-          className="mb-2 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-50 "
-        />
-      </Link>
+  // 0 is falsy and will not show up if there's no release date
+  let releaseDate = 0;
 
-      <div className="flex flex-col md:px-8">
-        <h3 className="max-w-fit text-2xl font-medium transition duration-75 hover:text-zinc-400">
-          <Link href={`/games/${gameData.slug}`}>{gameData.name}</Link>
-        </h3>
-        <div className="flex items-center pb-1">
-          <p className="pr-4 pt-1 font-semibold text-zinc-400 transition duration-75 hover:text-zinc-100">
-            <Link href={`/users/${author.username}`}>{author.username}</Link>
-          </p>
-          {review.score && (
-            <Rating
-              SVGclassName="inline -mx-0.5"
-              allowFraction
-              readonly
-              size={22}
-              transition={false}
-              emptyColor="#a1a1aa"
-              fillColor="#22d3ee"
-              tooltipArray={[]}
-              initialValue={review.score / 2}
-            />
+  if (gameData.releaseDate) {
+    releaseDate = dayjs.unix(gameData.releaseDate).year();
+  }
+
+  function onSubmit(reviewData: typeSchema) {
+    if (gameData && reviewData.score) {
+      mutateUpdate({
+        score: reviewData.score * 2,
+        description: reviewData.description,
+        id: review.id,
+      });
+    } else if (gameData) {
+      mutateUpdate({
+        description: reviewData.description,
+        id: review.id,
+      });
+    }
+  }
+
+  function onError(error: FieldErrors<typeSchema>) {
+    const descriptionErrorMessage = error.description?.message;
+    const scoreErrorMessage = error.score?.message;
+
+    if (descriptionErrorMessage) toast.error(descriptionErrorMessage);
+    if (scoreErrorMessage) toast.error(scoreErrorMessage);
+  }
+
+  return (
+    <>
+      {showDeleteModal &&
+        createPortal(
+          <Modal isOpen={showDeleteModal} handleClose={handleDeleteModal}>
+            <div className="flex justify-between">
+              <div className="flex items-end">
+                <h2 className="text-2xl font-medium">{gameData.name}</h2>
+                <span className="pl-2 text-base text-zinc-400">
+                  {releaseDate ? `(${releaseDate})` : ""}
+                </span>
+              </div>
+              <button onClick={handleUpdateModal} className="text-2xl">
+                <svg
+                  height="20px"
+                  width="20px"
+                  version="1.1"
+                  id="Capa_1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlnsXlink="http://www.w3.org/1999/xlink"
+                  viewBox="0 0 460.775 460.775"
+                  xmlSpace="preserve"
+                  className="fill-zinc-400 transition duration-75 hover:fill-zinc-100"
+                >
+                  <path
+                    d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55
+	c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55
+	c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505
+	c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55
+	l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719
+	c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div className="sm:flex">
+              <Image
+                src={gameData.cover ? gameData.cover : "/game.png"}
+                alt={gameData.name}
+                width={120}
+                height={0}
+                className="mt-4 hidden h-fit w-fit rounded-md border border-zinc-600 border-b-transparent sm:block"
+              />
+
+              <div className="flex flex-col pt-4 text-2xl font-semibold sm:pl-4">
+                are you sure that you want to delete your review?
+              </div>
+            </div>
+            <div className="flex justify-end pt-4">
+              <button
+                className="mr-2 rounded-md bg-zinc-500 px-2 text-xl transition duration-75 hover:bg-zinc-400"
+                onClick={handleDeleteModal}
+              >
+                cancel
+              </button>
+              <button
+                className="rounded-md bg-red-700 px-2 text-xl transition duration-75 hover:bg-cyan-600"
+                onClick={() => mutateDelete({ id: review.id })}
+              >
+                delete
+              </button>
+            </div>
+          </Modal>,
+          document.getElementById("portal") as HTMLDivElement
+        )}
+      {showUpdateModal &&
+        createPortal(
+          <Modal isOpen={showUpdateModal} handleClose={handleUpdateModal}>
+            <form
+              onSubmit={(event) => void handleSubmit(onSubmit, onError)(event)}
+            >
+              <div className="flex justify-between">
+                <div className="flex items-end">
+                  <h2 className="text-2xl font-medium">{gameData.name}</h2>
+                  <span className="pl-2 text-base text-zinc-400">
+                    {releaseDate ? `(${releaseDate})` : ""}
+                  </span>
+                </div>
+                <button onClick={handleUpdateModal} className="text-2xl">
+                  <svg
+                    height="20px"
+                    width="20px"
+                    version="1.1"
+                    id="Capa_1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlnsXlink="http://www.w3.org/1999/xlink"
+                    viewBox="0 0 460.775 460.775"
+                    xmlSpace="preserve"
+                    className="fill-zinc-400 transition duration-75 hover:fill-zinc-100"
+                  >
+                    <path
+                      d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55
+	c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55
+	c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505
+	c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55
+	l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719
+	c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div className="sm:flex">
+                <Image
+                  src={gameData.cover ? gameData.cover : "/game.png"}
+                  alt={gameData.name}
+                  width={120}
+                  height={0}
+                  className="mt-4 hidden h-fit w-fit rounded-md border border-zinc-600 border-b-transparent sm:block"
+                />
+                <div className="flex flex-col pt-4 text-xl sm:pl-4">
+                  <p>rating</p>
+                  <Controller
+                    name="score"
+                    control={control}
+                    render={({ field: { onChange, value } }) => (
+                      <Rating
+                        SVGclassName="inline -mx-0.5"
+                        allowFraction
+                        size={30}
+                        transition={false}
+                        emptyColor="#a1a1aa"
+                        fillColor="#22d3ee"
+                        initialValue={value}
+                        onClick={onChange}
+                        tooltipArray={[]}
+                      />
+                    )}
+                  />
+                </div>
+                <div className="flex flex-col pt-4 sm:pl-4">
+                  <p className="pb-2 text-xl">review</p>
+                  <textarea
+                    cols={100}
+                    rows={5}
+                    className="w-full overflow-auto rounded-md bg-zinc-400 p-2 text-zinc-800 outline-none"
+                    {...register("description")}
+                  ></textarea>
+                </div>
+              </div>
+              <div className="flex justify-end pt-4">
+                <button
+                  className="mr-2 rounded-md bg-zinc-500 px-2 text-xl transition duration-75 hover:bg-zinc-400"
+                  onClick={handleUpdateModal}
+                >
+                  cancel
+                </button>
+                <button className="rounded-md bg-cyan-700 px-2 text-xl transition duration-75 hover:bg-cyan-600">
+                  update
+                </button>
+              </div>
+            </form>
+          </Modal>,
+          document.getElementById("portal") as HTMLDivElement
+        )}
+      <div className="border-b border-b-zinc-600 py-4 md:flex">
+        <Link href={`/games/${gameData.slug}`}>
+          <Image
+            src={gameData.cover ? gameData.cover : "/game.png"}
+            alt={gameData.name}
+            width={120}
+            height={0}
+            className="mb-2 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-50 "
+          />
+        </Link>
+
+        <div className="flex flex-col md:px-8">
+          <h3 className="max-w-fit text-2xl font-medium transition duration-75 hover:text-zinc-400">
+            <Link href={`/games/${gameData.slug}`}>{gameData.name}</Link>
+          </h3>
+          <div className="flex items-center pb-1">
+            <p className="pr-4 pt-1 font-semibold text-zinc-400 transition duration-75 hover:text-zinc-100">
+              <Link href={`/users/${author.username}`}>{author.username}</Link>
+            </p>
+            {review.score && (
+              <Rating
+                SVGclassName="inline -mx-0.5"
+                allowFraction
+                readonly
+                size={22}
+                transition={false}
+                emptyColor="#a1a1aa"
+                fillColor="#22d3ee"
+                tooltipArray={[]}
+                initialValue={review.score / 2}
+              />
+            )}
+          </div>
+          <p className="">{review.description}</p>
+          {user?.id === author.id && (
+            <button
+              className="mt-4 flex max-w-fit text-zinc-400 hover:text-zinc-100"
+              onClick={handleUpdateModal}
+            >
+              edit review
+            </button>
           )}
         </div>
-        <p className="text-zinc-300">{review.description}</p>
+        {user?.id === author.id && (
+          <button
+            className="flex w-full min-w-fit flex-col items-end pt-2"
+            onClick={handleDeleteModal}
+          >
+            <svg
+              height="20px"
+              width="20px"
+              version="1.1"
+              id="Capa_1"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlnsXlink="http://www.w3.org/1999/xlink"
+              viewBox="0 0 460.775 460.775"
+              xmlSpace="preserve"
+              className="fill-zinc-400 transition duration-75 hover:fill-zinc-100"
+            >
+              <path
+                d="M285.08,230.397L456.218,59.27c6.076-6.077,6.076-15.911,0-21.986L423.511,4.565c-2.913-2.911-6.866-4.55-10.992-4.55
+c-4.127,0-8.08,1.639-10.993,4.55l-171.138,171.14L59.25,4.565c-2.913-2.911-6.866-4.55-10.993-4.55
+c-4.126,0-8.08,1.639-10.992,4.55L4.558,37.284c-6.077,6.075-6.077,15.909,0,21.986l171.138,171.128L4.575,401.505
+c-6.074,6.077-6.074,15.911,0,21.986l32.709,32.719c2.911,2.911,6.865,4.55,10.992,4.55c4.127,0,8.08-1.639,10.994-4.55
+l171.117-171.12l171.118,171.12c2.913,2.911,6.866,4.55,10.993,4.55c4.128,0,8.081-1.639,10.992-4.55l32.709-32.719
+c6.074-6.075,6.074-15.909,0-21.986L285.08,230.397z"
+              />
+            </svg>
+          </button>
+        )}
       </div>
-    </div>
+    </>
   );
 }
 
@@ -86,7 +368,7 @@ export const ReviewFeed = (props: { authorId?: string }) => {
         ))}
         {isFetching && <LoadingSpinner size={55} />}
         {reviews.length === 0 && !isFetching && authorData?.username && (
-          <div className="py-2 text-lg">{`${authorData.username} hasn't reviewed a game :(`}</div>
+          <div className="py-2 text-lg">{`${authorData?.username} hasn't reviewed a game :(`}</div>
         )}
         <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
           intersection observer marker
