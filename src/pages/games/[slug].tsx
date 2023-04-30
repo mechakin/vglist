@@ -40,7 +40,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
     resolver: zodResolver(schema),
   });
 
-  const { mutate } = api.review.createReview.useMutation({
+  const { mutate, isLoading } = api.review.createReview.useMutation({
     onSuccess: () => {
       setShowModal(false);
       void ctx.review.getReviewsByGameId.invalidate();
@@ -195,6 +195,11 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                 <button className="rounded-md bg-cyan-700 px-2 text-xl transition duration-75 hover:bg-cyan-600">
                   review
                 </button>
+                {isLoading && (
+                  <span className="pl-2 pt-2">
+                    <LoadingSpinner />
+                  </span>
+                )}
               </div>
             </form>
           </Modal>,

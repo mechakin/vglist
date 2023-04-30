@@ -1,8 +1,6 @@
-import { PageLayout } from "./layout";
-
 export default function LoadingSpinner(props: { size?: number }) {
   return (
-    <div role="status" className="py-6">
+    <div role="status">
       <svg
         aria-hidden="true"
         className="animate-spin fill-zinc-300 text-zinc-200 dark:text-zinc-600"
@@ -23,15 +21,5 @@ export default function LoadingSpinner(props: { size?: number }) {
       </svg>
       <span className="sr-only">Loading...</span>
     </div>
-  );
-}
-
-export function LoadingPage() {
-  return (
-    <PageLayout>
-      <div className="flex justify-center pt-6">
-        <LoadingSpinner size={55} />
-      </div>
-    </PageLayout>
   );
 }

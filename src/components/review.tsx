@@ -40,29 +40,31 @@ export default function Review(props: ReviewWithUser) {
 
   const ctx = api.useContext();
 
-  const { mutate: mutateUpdate } = api.review.updateReview.useMutation({
-    onSuccess: () => {
-      setShowUpdateModal(false);
-      void ctx.review.invalidate();
-    },
-    onError: () => {
-      toast.error(
-        "there was an error in trying to update your review, please try again later"
-      );
-    },
-  });
+  const { mutate: mutateUpdate, isLoading: isUpdateLoading } =
+    api.review.updateReview.useMutation({
+      onSuccess: () => {
+        setShowUpdateModal(false);
+        void ctx.review.invalidate();
+      },
+      onError: () => {
+        toast.error(
+          "there was an error in trying to update your review, please try again later"
+        );
+      },
+    });
 
-  const { mutate: mutateDelete } = api.review.deleteReview.useMutation({
-    onSuccess: () => {
-      setShowDeleteModal(false);
-      void ctx.review.invalidate();
-    },
-    onError: () => {
-      toast.error(
-        "there was an error in trying to delete your review, please try again later"
-      );
-    },
-  });
+  const { mutate: mutateDelete, isLoading: isDeleteLoading } =
+    api.review.deleteReview.useMutation({
+      onSuccess: () => {
+        setShowDeleteModal(false);
+        void ctx.review.invalidate();
+      },
+      onError: () => {
+        toast.error(
+          "there was an error in trying to delete your review, please try again later"
+        );
+      },
+    });
 
   function handleUpdateModal() {
     setShowUpdateModal(() => !showUpdateModal);
@@ -152,6 +154,11 @@ export default function Review(props: ReviewWithUser) {
               >
                 delete
               </button>
+              {isDeleteLoading && (
+                <span className="pl-2 pt-2">
+                  <LoadingSpinner />
+                </span>
+              )}
             </div>
           </Modal>,
           document.getElementById("portal") as HTMLDivElement
@@ -275,6 +282,11 @@ export default function Review(props: ReviewWithUser) {
               edit review
             </button>
           )}
+          {isUpdateLoading && (
+            <span className="pl-2 pt-2">
+              <LoadingSpinner />
+            </span>
+          )}
         </div>
       </div>
     </>
@@ -309,7 +321,11 @@ export const ReviewFeed = (props: { authorId?: string }) => {
         {reviews.map((fullReview) => (
           <Review {...fullReview} key={fullReview.review.id} />
         ))}
-        {isFetching && <LoadingSpinner size={55} />}
+        {isFetching && (
+          <div className="pt-4">
+            <LoadingSpinner size={55} />
+          </div>
+        )}
         {reviews.length === 0 && !isFetching && authorData?.username && (
           <div className="py-2 text-lg">{`${authorData?.username} hasn't reviewed a game :(`}</div>
         )}
@@ -322,7 +338,12 @@ export const ReviewFeed = (props: { authorId?: string }) => {
 
   const { data, isLoading } = api.review.getRecentReviews.useQuery();
 
-  if (isLoading) return <LoadingSpinner size={55} />;
+  if (isLoading)
+    return (
+      <div className="py-4">
+        <LoadingSpinner size={55} />
+      </div>
+    );
 
   if (!data || data.reviews.length === 0) return <div />;
 
