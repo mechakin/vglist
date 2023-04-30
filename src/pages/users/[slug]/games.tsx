@@ -58,6 +58,7 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
                 transition={false}
                 emptyColor="#a1a1aa"
                 fillColor="#22d3ee"
+                tooltipArray={[]}
               />
             </div>
           </div>

@@ -8,7 +8,6 @@ import Head from "next/head";
 import { api } from "~/utils/api";
 import { useInView } from "react-intersection-observer";
 import dayjs from "dayjs";
-import { useEffect } from "react";
 import LoadingSpinner from "~/components/loading";
 
 function handleStarValue(value: number) {
@@ -27,11 +26,9 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
 
   const games = data?.pages.flatMap((page) => page.games) ?? [];
 
-  useEffect(() => {
-    if (inView && hasNextPage) {
-      void fetchNextPage();
-    }
-  }, [inView, fetchNextPage, hasNextPage]);
+  if (inView && hasNextPage && !isFetching) {
+    void fetchNextPage();
+  }
 
   return (
     <PageLayout>
@@ -74,7 +71,7 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
                 >
                   {game.name}
                 </Link>{" "}
-                <span className="md:text-base text-sm font-normal text-zinc-400">
+                <span className="text-sm font-normal text-zinc-400 md:text-base">
                   {game?.releaseDate
                     ? `(${dayjs.unix(game.releaseDate).year()})`
                     : ""}
@@ -91,6 +88,7 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
                       emptyColor="#a1a1aa"
                       fillColor="#22d3ee"
                       onClick={handleStarValue}
+                      tooltipArray={[]}
                     />
                   </div>
                 </div>

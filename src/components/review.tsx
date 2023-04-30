@@ -34,6 +34,7 @@ export default function Review() {
             transition={false}
             emptyColor="#a1a1aa"
             fillColor="#22d3ee"
+            tooltipArray={[]}
           />
         </div>
         <p className="text-zinc-300">

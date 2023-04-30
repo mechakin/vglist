@@ -39,56 +39,59 @@ const addUserDataToReviews = async (reviews: Review[]) => {
 };
 
 export const reviewRouter = createTRPCRouter({
-  // make it if no star review, edit it if there is one
-  // create: privateProcedure
-  //   .input(
-  //     z.object({
-  //       description: z.string().min(1).max(15000),
-  //     })
-  //   )
-  //   .mutation(async ({ ctx, input }) => {
-  //     const authorId = ctx.userId;
+  getReviewsByGameId: publicProcedure
+    .input(
+      z.object({
+        gameId: z.number(),
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.string().nullish(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit ?? 12;
+      const { cursor } = input;
+      const reviews = await ctx.prisma.review.findMany({
+        take: limit + 1,
+        where: { gameId: input.gameId },
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: { id: "desc" },
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (reviews.length > limit) {
+        const nextReview = reviews.pop();
+        nextCursor = nextReview?.id;
+      }
+      const hydratedReviews = await addUserDataToReviews(reviews);
+      return {
+        reviews: hydratedReviews,
+        nextCursor,
+      };
+    }),
 
-  //     const { success } = await ratelimit.limit(authorId);
+  createReview: privateProcedure
+    .input(
+      z.object({
+        score: z.number().min(0).max(10).optional(),
+        description: z.string().min(1).max(10000),
+        gameId: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const authorId = ctx.userId;
 
-  //     if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+      const { success } = await ratelimit.limit(authorId);
 
-  //     const review = await ctx.prisma.review.create({
-  //       data: {
-  //         authorId,
-  //         description: input.description,
-  //       },
-  //     });
+      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
-  //     return review;
-  //   }),
+      const review = await ctx.prisma.review.create({
+        data: {
+          authorId,
+          description: input.description,
+          score: input.score,
+          gameId: input.gameId,
+        },
+      });
 
-  getReviewsByUserId: publicProcedure
-    .input(z.object({ userId: z.string() }))
-    .query(({ ctx, input }) =>
-      ctx.prisma.review
-        .findMany({
-          where: {
-            authorId: input.userId,
-          },
-          take: 100,
-          orderBy: [{ createdAt: "desc" }],
-        })
-        .then(addUserDataToReviews)
-    ),
-
-    getReviewsByGameId: publicProcedure
-    .input(z.object({ gameId: z.number() }))
-    .query(({ ctx, input }) =>
-      ctx.prisma.review
-        .findMany({
-          where: {
-            gameId: input.gameId,
-          },
-          take: 100,
-          orderBy: [{ createdAt: "desc" }],
-        })
-        .then(addUserDataToReviews)
-    ),
-  //make a delete reviews
+      return review;
+    }),
 });

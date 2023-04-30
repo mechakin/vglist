@@ -12,31 +12,52 @@ generator client {
 }
 
 model Game {
-  id              Int      @id
-  igdbUpdatedAt   BigInt
-  name            String   @db.VarChar(1000)
-  summary         String?  @db.VarChar(10000)
-  slug            String   @unique @db.VarChar(256)
-  releaseDate     BigInt?
-  igdbRating      Float    @default(0)
-  igdbRatingCount Int      @default(0)
-  rating          Float    @default(0)
-  ratingCount     Int      @default(0)
-  reviews         Review[]
-  cover           String?
+  id                 Int      @id
+  igdbUpdatedAt      BigInt
+  name               String   @db.VarChar(256)
+  summary            String?  @db.VarChar(10000)
+  slug               String   @unique @db.VarChar(256)
+  releaseDate        BigInt?
+  cover              String?
+  igdbRating         Float    @default(0)
+  igdbRatingCount    Int      @default(0)
+  overallRating      Float    @default(0)
+  overallRatingCount Int      @default(0)
+  reviews            Review[]
+  ratings            Rating[]
 
   @@index([slug])
+  @@index([name])
+}
+
+model Rating {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  score         Float?
+  authorId      String
+  isPlaying     Boolean
+  hasPlayed     Boolean?
+  hasBacklogged Boolean?
+  hasDropped    Boolean?
+  game          Game     @relation(fields: [gameId], references: [id])
+  gameId        Int
+
+  @@unique([authorId, gameId])
+  @@index([authorId])
+  // might not need this but keep for now
+  @@index([gameId])
 }
 
 model Review {
   id          String   @id @default(cuid())
   createdAt   DateTime @default(now())
-  score       Decimal?
-  description String?  @db.VarChar(10000)
+  score       Float?
+  description String   @db.VarChar(10000)
   authorId    String
   game        Game     @relation(fields: [gameId], references: [id])
   gameId      Int
 
+  @@unique([authorId, gameId])
   @@index([authorId])
   @@index([gameId])
 }
