@@ -122,7 +122,7 @@ export default function Review(props: ReviewWithUser) {
                   {releaseDate ? `(${releaseDate})` : ""}
                 </span>
               </div>
-              <button onClick={handleUpdateModal} className="text-2xl">
+              <button onClick={handleDeleteModal} className="text-2xl">
                 <ExitButton />
               </button>
             </div>
@@ -237,10 +237,17 @@ export default function Review(props: ReviewWithUser) {
           />
         </Link>
 
-        <div className="flex flex-col md:px-8">
-          <h3 className="max-w-fit text-2xl font-medium transition duration-75 hover:text-zinc-400">
-            <Link href={`/games/${gameData.slug}`}>{gameData.name}</Link>
-          </h3>
+        <div className="flex w-full flex-col md:px-8">
+          <div className="flex w-full justify-between">
+            <h3 className="flex max-w-fit text-2xl font-medium transition duration-75 hover:text-zinc-400">
+              <Link href={`/games/${gameData.slug}`}>{gameData.name}</Link>
+            </h3>
+            {user?.id === author.id && (
+              <button onClick={handleDeleteModal}>
+                <ExitButton />
+              </button>
+            )}
+          </div>
           <div className="flex items-center pb-1">
             <p className="pr-4 pt-1 font-semibold text-zinc-400 transition duration-75 hover:text-zinc-100">
               <Link href={`/users/${author.username}`}>{author.username}</Link>
@@ -269,14 +276,6 @@ export default function Review(props: ReviewWithUser) {
             </button>
           )}
         </div>
-        {user?.id === author.id && (
-          <button
-            className="flex w-full min-w-fit flex-col items-end pt-2"
-            onClick={handleDeleteModal}
-          >
-            <ExitButton />
-          </button>
-        )}
       </div>
     </>
   );
