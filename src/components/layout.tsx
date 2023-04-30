@@ -252,6 +252,7 @@ export function PageLayout(props: { children: React.ReactNode }) {
       <div className="flex justify-center">
         <div className="w-full px-6 lg:max-w-6xl">{props.children}</div>
       </div>
+      <div className="pb-8" />
     </>
   );
 }

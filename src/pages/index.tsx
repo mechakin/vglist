@@ -3,7 +3,7 @@ import { PageLayout } from "~/components/layout";
 import Link from "next/link";
 import Image from "next/image";
 import { ClerkLoaded, useUser } from "@clerk/nextjs";
-import Review from "~/components/review";
+import { ReviewFeed } from "~/components/review";
 
 const Home: NextPage = () => {
   const { isSignedIn } = useUser();
@@ -12,11 +12,7 @@ const Home: NextPage = () => {
     <PageLayout>
       <div className="flex justify-center pt-4">
         <div className="flex flex-col items-center justify-center">
-          {isSignedIn && (
-            <h1 className="py-8 text-4xl">
-              welcome back :{")"}
-            </h1>
-          )}
+          {isSignedIn && <h1 className="py-8 text-4xl">welcome back :{")"}</h1>}
           {!isSignedIn && (
             <ClerkLoaded>
               <h1 className="pb-8 text-6xl font-semibold">vglist</h1>
@@ -162,7 +158,7 @@ const Home: NextPage = () => {
       <div className="md:flex">
         <div className="w-full">
           <h2 className="pt-12 text-xl text-zinc-300">some recent reviews</h2>
-          <Review />
+          <ReviewFeed />
         </div>
       </div>
     </PageLayout>

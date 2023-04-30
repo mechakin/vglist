@@ -5,7 +5,7 @@ import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import Link from "next/link";
 import NotFound from "~/components/404";
 import Profile from "~/components/profile";
-import Review from "~/components/review";
+import { ReviewFeed } from "~/components/review";
 
 const ProfileReviewPage: NextPage<{ username: string }> = ({ username }) => {
   const { data } = api.profile.getUserByUsername.useQuery({
@@ -34,7 +34,7 @@ const ProfileReviewPage: NextPage<{ username: string }> = ({ username }) => {
         <div className="w-full md:px-4">
           <h2 className="text-3xl font-medium ">all reviews</h2>
           <h3 className="pt-1 text-lg text-zinc-400">34 games</h3>
-          <Review />
+          <ReviewFeed authorId={data.id}/>
         </div>
       </div>
     </PageLayout>
@@ -44,12 +44,16 @@ const ProfileReviewPage: NextPage<{ username: string }> = ({ username }) => {
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = generateSSGHelper();
 
-  const slug = context.params?.slug;
+  const username = context.params?.slug;
 
-  // make it so you return to a different page instead
-  if (typeof slug !== "string") throw new Error("No slug.");
-
-  const username = slug.replace("@", "");
+  if (typeof username !== "string") {
+    return {
+      redirect: {
+        permanent: true,
+        destination: "/",
+      },
+    };
+  }
 
   await ssg.profile.getUserByUsername.prefetch({ username });
 

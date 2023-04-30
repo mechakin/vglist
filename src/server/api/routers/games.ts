@@ -5,7 +5,7 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 export const gameRouter = createTRPCRouter({
   getTopGames: publicProcedure.query(async ({ ctx }) => {
     const games = await ctx.prisma.game.findMany({
-      take: 96,
+      take: 100,
       orderBy: { igdbRatingCount: "desc" },
     });
 
@@ -16,6 +16,16 @@ export const gameRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const game = await ctx.prisma.game.findUnique({
         where: { slug: input.slug },
+      });
+      if (!game)
+        throw new TRPCError({ code: "NOT_FOUND", message: "Game not found." });
+      return game;
+    }),
+  getGameById: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const game = await ctx.prisma.game.findUnique({
+        where: { id: input.id },
       });
       if (!game)
         throw new TRPCError({ code: "NOT_FOUND", message: "Game not found." });

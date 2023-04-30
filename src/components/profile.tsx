@@ -26,13 +26,13 @@ export default function Profile(props: { username: string }) {
             className="h-24 w-24 rounded-md"
             width={56}
             height={56}
+            priority
           />
         )}
         {user?.username === props.username && (
           <UserButton
             appearance={{
               elements: {
-                // see if you can change on hover classes
                 userButtonAvatarBox: {
                   width: 98,
                   height: 98,

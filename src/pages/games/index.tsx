@@ -8,18 +8,18 @@ import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import Head from "next/head";
 
 const GamesPage: NextPage = () => {
-  const { data } = api.game.getTopGames.useQuery();
+  const { data: gameData } = api.game.getTopGames.useQuery();
 
-  if (!data) return <NotFound />;
+  if (!gameData) return <NotFound />;
 
   return (
     <PageLayout>
       <Head>
         <title>games</title>
       </Head>
-      <h2 className="pb-4 text-3xl text-zinc-300">popular games</h2>
+      <h2 className="pb-4 text-3xl font-semibold">top 100 games</h2>
       <div className="grid grid-cols-3 place-items-center gap-4 pb-4 xxs:grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
-        {data.map((game) => (
+        {gameData.map((game) => (
           <Link href={`/games/${game.slug}`} key={game.id}>
             <Image
               src={game.cover ? game.cover : "/game.png"}
@@ -32,6 +32,7 @@ const GamesPage: NextPage = () => {
           </Link>
         ))}
       </div>
+      <div className="-mb-8"/>
     </PageLayout>
   );
 };

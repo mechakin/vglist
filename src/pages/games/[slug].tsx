@@ -321,29 +321,25 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                         {review.author.username}
                       </Link>
                     </p>
-                    <Rating
-                      SVGclassName="inline -mx-0.5"
-                      allowFraction
-                      readonly
-                      size={22}
-                      transition={false}
-                      emptyColor="#a1a1aa"
-                      fillColor="#22d3ee"
-                      initialValue={
-                        review.review.score ? review.review.score / 2 : 0
-                      }
-                      tooltipArray={[]}
-                    />
+                    {review.review.score && (
+                      <Rating
+                        SVGclassName="inline -mx-0.5"
+                        allowFraction
+                        readonly
+                        size={22}
+                        transition={false}
+                        emptyColor="#a1a1aa"
+                        fillColor="#22d3ee"
+                        initialValue={review.review.score / 2}
+                        tooltipArray={[]}
+                      />
+                    )}
                   </div>
                   <p className="text-zinc-300">{review.review.description}</p>
                 </div>
               </div>
             ))}
-            {isFetching && (
-              <div className="py-6">
-                <LoadingSpinner size={55} />
-              </div>
-            )}
+            {isFetching && <LoadingSpinner size={55} />}
           </div>
         </div>
         <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>

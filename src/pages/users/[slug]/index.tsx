@@ -7,12 +7,15 @@ import Link from "next/link";
 import { Rating } from "react-simple-star-rating";
 import NotFound from "~/components/404";
 import Profile from "~/components/profile";
-import Review from "~/components/review";
+import { ReviewFeed } from "~/components/review";
+import LoadingSpinner from "~/components/loading";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
-  const { data } = api.profile.getUserByUsername.useQuery({
+  const { data, isLoading } = api.profile.getUserByUsername.useQuery({
     username,
   });
+
+  if (isLoading) return <LoadingSpinner size={55}/>;
 
   if (!data) return <NotFound />;
 
@@ -83,9 +86,9 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
               </div>
             </div>
           </div>
-
-          <h2 className="text-3xl font-medium">recently reviewed</h2>
-          <Review />
+          <h2 className="text-3xl font-medium">recently reviewed</h2> 
+          {/* add a user has not reviewed state */}
+          <ReviewFeed authorId={data.id} />
         </div>
       </div>
     </PageLayout>

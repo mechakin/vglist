@@ -67,7 +67,44 @@ export const reviewRouter = createTRPCRouter({
         nextCursor,
       };
     }),
-
+  getReviewsByAuthorId: publicProcedure
+    .input(
+      z.object({
+        authorId: z.string(),
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.string().nullish(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit ?? 12;
+      const { cursor } = input;
+      const reviews = await ctx.prisma.review.findMany({
+        take: limit + 1,
+        where: { authorId: input.authorId },
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: { id: "desc" },
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (reviews.length > limit) {
+        const nextReview = reviews.pop();
+        nextCursor = nextReview?.id;
+      }
+      const hydratedReviews = await addUserDataToReviews(reviews);
+      return {
+        reviews: hydratedReviews,
+        nextCursor,
+      };
+    }),
+  getRecentReviews: publicProcedure.query(async ({ ctx }) => {
+    const reviews = await ctx.prisma.review.findMany({
+      take: 8,
+      orderBy: { createdAt: "desc" },
+    });
+    const hydratedReviews = await addUserDataToReviews(reviews);
+    return {
+      reviews: hydratedReviews,
+    };
+  }),
   createReview: privateProcedure
     .input(
       z.object({

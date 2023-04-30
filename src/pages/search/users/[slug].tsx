@@ -6,7 +6,7 @@ import Head from "next/head";
 import { api } from "~/utils/api";
 
 const UsersSearchPage: NextPage<{ name: string }> = ({ name }) => {
-  const { data } = api.profile.getUsersByUsername.useQuery({ username: name });
+  const { data: userData } = api.profile.getUsersByUsername.useQuery({ username: name });
 
   return (
     <PageLayout>
@@ -27,8 +27,8 @@ const UsersSearchPage: NextPage<{ name: string }> = ({ name }) => {
             </li>
           </ul>
         </nav>
-        {data &&
-          data.map((user) => (
+        {userData &&
+          userData.map((user) => (
             <div className="flex border-b border-b-zinc-600 py-4" key={user.id}>
               <Link href={user.username ? `/users/${user.username}` : `/`}>
                 <Image
