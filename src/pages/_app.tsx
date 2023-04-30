@@ -25,7 +25,7 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Toaster
-        position="bottom-right"
+        position="bottom-center"
         toastOptions={{
           style: {
             borderRadius: "10px",

@@ -60,6 +60,10 @@ export const ReviewFeed = (props: { authorId?: string }) => {
   const { ref, inView } = useInView();
 
   if (props.authorId) {
+    const { data: authorData } = api.profile.getUserById.useQuery({
+      authorId: props.authorId,
+    });
+
     const { data, hasNextPage, fetchNextPage, isFetching } =
       api.review.getReviewsByAuthorId.useInfiniteQuery(
         {
@@ -81,6 +85,9 @@ export const ReviewFeed = (props: { authorId?: string }) => {
           <Review {...fullReview} key={fullReview.review.id} />
         ))}
         {isFetching && <LoadingSpinner size={55} />}
+        {reviews.length === 0 && !isFetching && authorData?.username && (
+          <div className="py-2 text-lg">{`${authorData.username} hasn't reviewed a game :(`}</div>
+        )}
         <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
           intersection observer marker
         </span>

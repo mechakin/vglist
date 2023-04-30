@@ -87,7 +87,6 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             </div>
           </div>
           <h2 className="text-3xl font-medium">recently reviewed</h2> 
-          {/* add a user has not reviewed state */}
           <ReviewFeed authorId={data.id} />
         </div>
       </div>
