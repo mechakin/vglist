@@ -253,7 +253,7 @@ export default function Review(props: ReviewWithUser) {
         </div>
 
         <div className="-mt-1 flex w-full flex-col md:px-8">
-          <div className="flex w-full justify-between pb-2">
+          <div className="flex w-full justify-between pb-1">
             <h3 className="flex max-w-fit text-2xl font-medium transition duration-75 hover:text-zinc-400">
               <Link href={`/games/${gameData.slug}`}>{gameData.name}</Link>
             </h3>
