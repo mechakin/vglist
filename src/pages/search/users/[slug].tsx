@@ -6,7 +6,7 @@ import Head from "next/head";
 import { api } from "~/utils/api";
 
 const UsersSearchPage: NextPage<{ name: string }> = ({ name }) => {
-  const { data } = api.profile.getUsersByUsername.useQuery({ username: name });
+  const { data, isFetching } = api.profile.getUsersByUsername.useQuery({ username: name });
 
   const userCount = data?.filter(() => {
     return true;
@@ -31,9 +31,11 @@ const UsersSearchPage: NextPage<{ name: string }> = ({ name }) => {
             </li>
           </ul>
         </nav>
-        <p className="pt-1 text-lg text-zinc-400">
-          {userCount} {userCount === 1 ? "user" : "users"}
-        </p>
+        {!isFetching && (
+          <p className="pt-1 text-lg text-zinc-400">
+            {userCount} {userCount === 1 ? "user" : "users"}
+          </p>
+        )}
         {data &&
           data.map((user) => (
             <div className="flex border-b border-b-zinc-600 py-4" key={user.id}>

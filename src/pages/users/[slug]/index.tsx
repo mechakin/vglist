@@ -7,14 +7,11 @@ import Link from "next/link";
 import NotFound from "~/components/404";
 import Profile from "~/components/profile";
 import { ReviewFeed } from "~/components/review";
-import LoadingSpinner from "~/components/loading";
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
-  const { data, isLoading } = api.profile.getUserByUsername.useQuery({
+  const { data } = api.profile.getUserByUsername.useQuery({
     username,
   });
-
-  if (isLoading) return <LoadingSpinner size={55} />;
 
   if (!data) return <NotFound />;
 

@@ -342,7 +342,7 @@ export const ReviewFeed = (props: { authorId?: string }) => {
           </div>
         )}
         {reviews.length === 0 && !isFetching && authorData?.username && (
-          <div className="py-2 text-lg">{`${authorData?.username} hasn't reviewed a game :(`}</div>
+          <div className="py-2 text-lg text-zinc-300">{`${authorData?.username} hasn't reviewed a game :(`}</div>
         )}
         <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
           intersection observer marker

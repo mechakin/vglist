@@ -1,18 +1,19 @@
-import { type NextPage } from "next";
+import { type GetStaticProps, type NextPage } from "next";
 import { PageLayout } from "~/components/layout";
 import Link from "next/link";
 import Image from "next/image";
 import { ClerkLoaded, useUser } from "@clerk/nextjs";
 import { ReviewFeed } from "~/components/review";
+import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
 const Home: NextPage = () => {
-  const { isSignedIn } = useUser();
+  const { user, isSignedIn } = useUser();
 
   return (
     <PageLayout>
       <div className="flex justify-center pt-4">
         <div className="flex flex-col items-center justify-center">
-          {isSignedIn && <h1 className="py-8 text-4xl">welcome back :{")"}</h1>}
+          {isSignedIn && <h1 className="py-8 text-4xl">welcome back {user.username} :{")"}</h1>}
           {!isSignedIn && (
             <ClerkLoaded>
               <h1 className="pb-8 text-6xl font-semibold">vglist</h1>
@@ -167,4 +168,14 @@ const Home: NextPage = () => {
 
 export default Home;
 
-//
+export const getStaticProps: GetStaticProps = async () => {
+  const ssg = generateSSGHelper();
+
+  await ssg.review.getRecentReviews.prefetch();
+
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+  };
+};
