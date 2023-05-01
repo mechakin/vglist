@@ -50,18 +50,23 @@ export const reviewRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const limit = input.limit ?? 12;
       const { cursor } = input;
+
       const reviews = await ctx.prisma.review.findMany({
         take: limit + 1,
         where: { gameId: input.gameId },
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: { id: "desc" },
       });
+
       let nextCursor: typeof cursor | undefined = undefined;
+
       if (reviews.length > limit) {
         const nextReview = reviews.pop();
         nextCursor = nextReview?.id;
       }
+
       const hydratedReviews = await addUserDataToReviews(reviews);
+
       return {
         reviews: hydratedReviews,
         nextCursor,
@@ -78,29 +83,45 @@ export const reviewRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const limit = input.limit ?? 12;
       const { cursor } = input;
+
       const reviews = await ctx.prisma.review.findMany({
         take: limit + 1,
         where: { authorId: input.authorId },
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: { id: "desc" },
       });
+
       let nextCursor: typeof cursor | undefined = undefined;
+
       if (reviews.length > limit) {
         const nextReview = reviews.pop();
         nextCursor = nextReview?.id;
       }
+
       const hydratedReviews = await addUserDataToReviews(reviews);
+
       return {
         reviews: hydratedReviews,
         nextCursor,
       };
+    }),
+  getReviewCountByAuthorId: publicProcedure
+    .input(z.object({ authorId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const reviewCount = await ctx.prisma.review.count({
+        where: { authorId: { equals: input.authorId } },
+      });
+
+      return reviewCount;
     }),
   getRecentReviews: publicProcedure.query(async ({ ctx }) => {
     const reviews = await ctx.prisma.review.findMany({
       take: 8,
       orderBy: { createdAt: "desc" },
     });
+
     const hydratedReviews = await addUserDataToReviews(reviews);
+
     return {
       reviews: hydratedReviews,
     };

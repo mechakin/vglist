@@ -4,7 +4,6 @@ import { api } from "~/utils/api";
 import { PageLayout } from "~/components/layout";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import Link from "next/link";
-import { Rating } from "react-simple-star-rating";
 import NotFound from "~/components/404";
 import Profile from "~/components/profile";
 import { ReviewFeed } from "~/components/review";
@@ -57,12 +56,10 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           <div className="flex flex-col">
             <h2 className="pb-4 text-3xl font-medium">recently played</h2>
             <div className="grid max-w-fit grid-cols-2 gap-4 pb-4 sm:grid-cols-3 lg:grid-cols-4">
-              <div className="">
+              <div>
                 <Link href={"/games/link-to-game"}>
                   <Image
-                    src={
-                      "https://images.igdb.com/igdb/image/upload/t_cover_big/co67qb.jpg"
-                    }
+                    src={"/game.png"}
                     alt="game"
                     width={120}
                     height={0}
@@ -70,18 +67,8 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
                     priority
                   />
                 </Link>
-                <div className="flex items-center justify-between">
-                  <span className="pt-2 text-zinc-300">Nov 23 </span>
-                  <Rating
-                    SVGclassName="inline -mx-0.5"
-                    allowFraction
-                    readonly
-                    size={19}
-                    transition={false}
-                    emptyColor="#a1a1aa"
-                    fillColor="#22d3ee"
-                    tooltipArray={[]}
-                  />
+                <div className="flex items-center justify-center">
+                  <span className="pt-1 text-zinc-300">Nov 23 </span>
                 </div>
               </div>
             </div>

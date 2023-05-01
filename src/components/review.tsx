@@ -137,8 +137,8 @@ export default function Review(props: ReviewWithUser) {
                 className="mt-4 hidden h-fit w-fit rounded-md border border-zinc-600 border-b-transparent sm:block"
               />
 
-              <div className="flex flex-col pt-4 text-2xl font-semibold sm:pl-4">
-                are you sure that you want to delete your review?
+              <div className="flex flex-col pt-4 text-2xl sm:pl-4">
+                are you sure you want to delete your review?
               </div>
             </div>
             <div className="flex justify-end pt-4">
@@ -149,7 +149,7 @@ export default function Review(props: ReviewWithUser) {
                 cancel
               </button>
               <button
-                className="rounded-md bg-red-700 px-2 text-xl transition duration-75 hover:bg-cyan-600"
+                className="rounded-md bg-red-700 px-2 text-xl transition duration-75 hover:bg-red-600"
                 onClick={() => mutateDelete({ id: review.id })}
               >
                 delete
@@ -233,29 +233,44 @@ export default function Review(props: ReviewWithUser) {
           </Modal>,
           document.getElementById("portal") as HTMLDivElement
         )}
+
       <div className="border-b border-b-zinc-600 py-4 md:flex">
-        <Link href={`/games/${gameData.slug}`}>
-          <Image
-            src={gameData.cover ? gameData.cover : "/game.png"}
-            alt={gameData.name}
-            width={120}
-            height={0}
-            className="mb-2 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-50 "
-          />
-        </Link>
+        <div className="flex items-start justify-between">
+          <Link href={`/games/${gameData.slug}`}>
+            <Image
+              src={gameData.cover ? gameData.cover : "/game.png"}
+              alt={gameData.name}
+              width={120}
+              height={0}
+              className="mb-2 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-50 "
+            />
+          </Link>
+          {user?.id === author.id && (
+            <button onClick={handleDeleteModal} className="md:hidden">
+              <ExitButton />
+            </button>
+          )}
+        </div>
 
         <div className="flex w-full flex-col md:px-8">
-          <div className="flex w-full justify-between">
+          <div className="flex w-full justify-between pb-2">
             <h3 className="flex max-w-fit text-2xl font-medium transition duration-75 hover:text-zinc-400">
               <Link href={`/games/${gameData.slug}`}>{gameData.name}</Link>
             </h3>
             {user?.id === author.id && (
-              <button onClick={handleDeleteModal}>
+              <button onClick={handleDeleteModal} className="hidden md:block">
                 <ExitButton />
               </button>
             )}
           </div>
-          <div className="flex items-center pb-1">
+          <div className="flex items-center pb-3">
+            <Image
+              src={author.profileImageUrl}
+              alt={author.username}
+              width={35}
+              height={0}
+              className="mr-4 mt-2 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-50"
+            />
             <p className="pr-4 pt-1 font-semibold text-zinc-400 transition duration-75 hover:text-zinc-100">
               <Link href={`/users/${author.username}`}>{author.username}</Link>
             </p>
@@ -273,7 +288,7 @@ export default function Review(props: ReviewWithUser) {
               />
             )}
           </div>
-          <p className="">{review.description}</p>
+          <p>{review.description}</p>
           {user?.id === author.id && (
             <button
               className="mt-4 flex max-w-fit text-zinc-400 hover:text-zinc-100"

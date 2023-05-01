@@ -39,9 +39,7 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
           <div className="max-w-fit">
             <Link href={"/link-to-game"}>
               <Image
-                src={
-                  "https://images.igdb.com/igdb/image/upload/t_cover_big/co67qb.jpg"
-                }
+                src={"/game.png"}
                 alt="game"
                 width={120}
                 height={0}

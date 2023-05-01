@@ -10,10 +10,6 @@ import { useInView } from "react-intersection-observer";
 import dayjs from "dayjs";
 import LoadingSpinner from "~/components/loading";
 
-function handleStarValue(value: number) {
-  console.log(value);
-}
-
 const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
   const { ref, inView } = useInView();
   const { data, hasNextPage, fetchNextPage, isFetching } =
@@ -87,7 +83,6 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
                       transition={false}
                       emptyColor="#a1a1aa"
                       fillColor="#22d3ee"
-                      onClick={handleStarValue}
                       tooltipArray={[]}
                     />
                   </div>

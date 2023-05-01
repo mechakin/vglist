@@ -8,11 +8,14 @@ import Profile from "~/components/profile";
 import { ReviewFeed } from "~/components/review";
 
 const ProfileReviewPage: NextPage<{ username: string }> = ({ username }) => {
-  const { data } = api.profile.getUserByUsername.useQuery({
+  const { data: userData } = api.profile.getUserByUsername.useQuery({
     username,
   });
 
-  if (!data) return <NotFound />;
+  if (!userData) return <NotFound />;
+
+  const { data: reviewCountData } =
+    api.review.getReviewCountByAuthorId.useQuery({ authorId: userData.id });
 
   return (
     <PageLayout>
@@ -33,8 +36,10 @@ const ProfileReviewPage: NextPage<{ username: string }> = ({ username }) => {
       <div className="md:flex">
         <div className="w-full md:px-4">
           <h2 className="text-3xl font-medium ">all reviews</h2>
-          <h3 className="pt-1 text-lg text-zinc-400">34 games</h3>
-          <ReviewFeed authorId={data.id}/>
+          <h3 className="pt-1 text-lg text-zinc-400">
+            {reviewCountData} {reviewCountData === 1 ? "game" : "games"}
+          </h3>
+          <ReviewFeed authorId={userData.id} />
         </div>
       </div>
     </PageLayout>
