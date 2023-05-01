@@ -36,7 +36,7 @@ const UsersSearchPage: NextPage<{ name: string }> = ({ name }) => {
                   alt={user.username ? user.username : "profile"}
                   width={48}
                   height={48}
-                  className="h-fit w-fit rounded-md border border-zinc-600 thover:brightness-50"
+                  className="h-fit w-fit rounded-md border border-zinc-600 hover:brightness-50"
                   priority
                 />
               </Link>
