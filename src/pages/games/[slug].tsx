@@ -300,7 +300,11 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                 </div>
               </div>
             ))}
-            {isFetching && <LoadingSpinner size={55} />}
+            {isFetching && (
+              <div className="pt-4">
+                <LoadingSpinner size={55} />
+              </div>
+            )}
           </div>
         </div>
         <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>

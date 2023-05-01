@@ -67,6 +67,11 @@ export const gameRouter = createTRPCRouter({
         where: { name: { contains: input.name } },
         cursor: cursor ? { id: cursor } : undefined,
       });
+
+      const gameCount = await ctx.prisma.game.count({
+        where: { name: { contains: input.name } },
+      });
+
       let nextCursor: typeof cursor | undefined = undefined;
       if (games.length > limit) {
         const nextGame = games.pop();
@@ -74,6 +79,7 @@ export const gameRouter = createTRPCRouter({
       }
       return {
         games,
+        gameCount,
         nextCursor,
       };
     }),

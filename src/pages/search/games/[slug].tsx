@@ -21,6 +21,7 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
     );
 
   const games = data?.pages.flatMap((page) => page.games) ?? [];
+  const gameCount = data?.pages.flatMap((page) => page.gameCount)[0] ?? '';
 
   if (inView && hasNextPage && !isFetching) {
     void fetchNextPage();
@@ -32,9 +33,7 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
         <title>{name}</title>
       </Head>
       <div className="py-4">
-        <h1 className="text-center text-4xl">
-          {} results for {`${name}`}
-        </h1>
+        <h1 className="text-center text-4xl">results for {`${name}`}</h1>
         <nav className="text-2xl">
           <ul className="flex justify-center gap-3 py-2 text-cyan-400">
             <li className="text-zinc-100">search for</li>
@@ -47,6 +46,9 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
             </li>
           </ul>
         </nav>
+        <p className="pt-1 text-lg text-zinc-400">
+          {gameCount} {gameCount === 1 ? "game" : "games"}
+        </p>
         {games.map((game) => (
           <div className="flex border-b border-b-zinc-600 py-4" key={game.id}>
             <Link href={`/games/${game.slug}`}>
