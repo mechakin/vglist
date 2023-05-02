@@ -248,7 +248,9 @@ export default function Review(props: ReviewWithUser) {
         <div className="-mt-1 flex w-full flex-col md:px-8">
           <div className="flex w-full justify-between pb-1">
             <h3 className="flex max-w-fit text-2xl font-medium transition duration-75 hover:text-zinc-400">
-              <Link href={`/games/${review.game.slug}`}>{review.game.name}</Link>
+              <Link href={`/games/${review.game.slug}`}>
+                {review.game.name}
+              </Link>
             </h3>
             {user?.id === author.id && (
               <button onClick={handleDeleteModal} className="hidden md:block">
@@ -301,10 +303,25 @@ export default function Review(props: ReviewWithUser) {
   );
 }
 
-export const ReviewFeed = (props: { username?: string }) => {
+export const ReviewFeed = (props: { username?: string; cap?: boolean }) => {
   const { ref, inView } = useInView();
 
-  if (props.username) {
+  if (props.username && props.cap) {
+    const { data } = api.review.getLatestReviewsByUsername.useQuery({
+      username: props.username,
+    });
+
+    if (data)
+      return (
+        <>
+          {data.reviews.map((review) => (
+            <Review key={review.review.id} {...review} />
+          ))}
+        </>
+      );
+  }
+
+  if (props.username && !props.cap) {
     const { data, hasNextPage, fetchNextPage, isFetching } =
       api.review.getReviewsByUsername.useInfiniteQuery(
         {

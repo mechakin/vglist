@@ -10,9 +10,7 @@ import {
 import type { Game, Review } from "@prisma/client";
 import { ratelimit } from "~/server/helpers/rateLimiter";
 
-const addUserDataToReviews = async (
-  reviews: (Review & { game: Game })[]
-) => {
+const addUserDataToReviews = async (reviews: (Review & { game: Game })[]) => {
   const users = (
     await clerkClient.users.getUserList({
       userId: reviews.map((review) => review.authorId),
@@ -73,6 +71,28 @@ export const reviewRouter = createTRPCRouter({
         reviews: hydratedReviews,
         nextCursor,
       };
+    }),
+  getLatestReviewsByUsername: publicProcedure
+    .input(z.object({ username: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const [user] = await clerkClient.users.getUserList({
+        username: [input.username],
+      });
+
+      const authorId = user?.id;
+
+      const reviews = await ctx.prisma.review.findMany({
+        take: 3,
+        where: { authorId },
+        orderBy: { id: "desc" },
+        include: {
+          game: true,
+        },
+      });
+
+      const hydratedReviews = await addUserDataToReviews(reviews);
+
+      return { reviews: hydratedReviews };
     }),
   getReviewsByUsername: publicProcedure
     .input(

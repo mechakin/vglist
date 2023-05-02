@@ -69,7 +69,6 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
 
-
   const reviews = reviewsData?.pages.flatMap((page) => page.reviews) ?? [];
 
   if (inView && hasNextPage && !isFetching) {
@@ -336,7 +335,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
 
   await ssg.game.getGameBySlug.prefetch({ slug });
-  await ssg.review.getReviewsBySlug.prefetchInfinite({ slug });
+  await ssg.review.getReviewsBySlug.prefetchInfinite({ slug, limit: 12 });
 
   return {
     props: {

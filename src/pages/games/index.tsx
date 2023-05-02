@@ -21,8 +21,8 @@ const GamesPage: NextPage = () => {
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
 
-const games = gameData?.pages.flatMap((page) => page.games) ?? [];
-const count = gameData?.pages.flatMap((page) => page.gamesCount) ?? 0;
+  const games = gameData?.pages.flatMap((page) => page.games) ?? [];
+  const count = gameData?.pages.flatMap((page) => page.gamesCount) ?? 0;
 
   if (!gameData) return <NotFound />;
 

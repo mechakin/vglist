@@ -62,7 +62,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   await ssg.profile.getUserByUsername.prefetch({ username });
   await ssg.review.getReviewCountByUsername.prefetch({ username });
-  await ssg.review.getReviewsByUsername.prefetchInfinite({ username });
+  await ssg.review.getReviewsByUsername.prefetchInfinite(
+    {
+      username,
+      limit: 12,
+    },
+  );
 
   return {
     props: {
