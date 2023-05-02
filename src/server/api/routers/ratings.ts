@@ -7,20 +7,18 @@ import {
   publicProcedure,
   privateProcedure,
 } from "~/server/api/trpc";
-import type { Game, Review } from "@prisma/client";
+import type { Game, Rating } from "@prisma/client";
 import { ratelimit } from "~/server/helpers/rateLimiter";
 
-const addUserDataToReviews = async (
-  reviews: (Review & { game: Game })[]
-) => {
+const addUserDataToRatings = async (ratings: (Rating & { game: Game })[]) => {
   const users = (
     await clerkClient.users.getUserList({
-      userId: reviews.map((review) => review.authorId),
+      userId: ratings.map((rating) => rating.authorId),
     })
   ).map(filterUserForClient);
 
-  return reviews.map((review) => {
-    const author = users.find((user) => user.id === review.authorId);
+  return ratings.map((rating) => {
+    const author = users.find((user) => user.id === rating.authorId);
 
     if (!author || !author.username) {
       throw new TRPCError({
@@ -30,7 +28,7 @@ const addUserDataToReviews = async (
     }
 
     return {
-      review,
+      rating,
       author: {
         ...author,
         username: author.username,
@@ -39,8 +37,8 @@ const addUserDataToReviews = async (
   });
 };
 
-export const reviewRouter = createTRPCRouter({
-  getReviewsBySlug: publicProcedure
+export const ratingRouter = createTRPCRouter({
+  getRatingsBySlug: publicProcedure
     .input(
       z.object({
         slug: z.string(),
@@ -52,7 +50,7 @@ export const reviewRouter = createTRPCRouter({
       const limit = input.limit ?? 12;
       const { cursor } = input;
 
-      const reviews = await ctx.prisma.review.findMany({
+      const ratings = await ctx.prisma.rating.findMany({
         take: limit + 1,
         include: { game: true },
         where: { game: { slug: input.slug } },
@@ -62,19 +60,19 @@ export const reviewRouter = createTRPCRouter({
 
       let nextCursor: typeof cursor | undefined = undefined;
 
-      if (reviews.length > limit) {
-        const nextReview = reviews.pop();
-        nextCursor = nextReview?.id;
+      if (ratings.length > limit) {
+        const nextRating = ratings.pop();
+        nextCursor = nextRating?.id;
       }
 
-      const hydratedReviews = await addUserDataToReviews(reviews);
+      const hydratedRatings = await addUserDataToRatings(ratings);
 
       return {
-        reviews: hydratedReviews,
+        ratings: hydratedRatings,
         nextCursor,
       };
     }),
-  getReviewsByUsername: publicProcedure
+  getRatingsByUsername: publicProcedure
     .input(
       z.object({
         username: z.string(),
@@ -92,7 +90,7 @@ export const reviewRouter = createTRPCRouter({
 
       const authorId = user?.id;
 
-      const reviews = await ctx.prisma.review.findMany({
+      const ratings = await ctx.prisma.rating.findMany({
         take: limit + 1,
         where: { authorId },
         cursor: cursor ? { id: cursor } : undefined,
@@ -104,19 +102,19 @@ export const reviewRouter = createTRPCRouter({
 
       let nextCursor: typeof cursor | undefined = undefined;
 
-      if (reviews.length > limit) {
-        const nextReview = reviews.pop();
-        nextCursor = nextReview?.id;
+      if (ratings.length > limit) {
+        const nextRating = ratings.pop();
+        nextCursor = nextRating?.id;
       }
 
-      const hydratedReviews = await addUserDataToReviews(reviews);
+      const hydratedRatings = await addUserDataToRatings(ratings);
 
       return {
-        reviews: hydratedReviews,
+        ratings: hydratedRatings,
         nextCursor,
       };
     }),
-  getReviewCountByUsername: publicProcedure
+  getRatingCountByUsername: publicProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ ctx, input }) => {
       const [user] = await clerkClient.users.getUserList({
@@ -125,35 +123,14 @@ export const reviewRouter = createTRPCRouter({
 
       const authorId = user?.id;
 
-      const reviewCount = await ctx.prisma.review.count({
+      const ratingCount = await ctx.prisma.rating.count({
         where: { authorId: { equals: authorId } },
       });
 
-      return reviewCount;
+      return ratingCount;
     }),
-  getRecentReviews: publicProcedure.query(async ({ ctx }) => {
-    const reviews = await ctx.prisma.review.findMany({
-      take: 8,
-      include: {
-        game: true,
-      },
-      orderBy: { createdAt: "desc" },
-    });
-
-    const hydratedReviews = await addUserDataToReviews(reviews);
-
-    return {
-      reviews: hydratedReviews,
-    };
-  }),
-  createReview: privateProcedure
-    .input(
-      z.object({
-        score: z.number().min(0).max(10).optional(),
-        description: z.string().min(1).max(10000),
-        gameId: z.number(),
-      })
-    )
+  createRating: privateProcedure
+    .input(z.object({ score: z.number().min(0).max(10), gameId: z.number() }))
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
 
@@ -161,22 +138,21 @@ export const reviewRouter = createTRPCRouter({
 
       if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
-      const review = await ctx.prisma.review.create({
+      const rating = await ctx.prisma.rating.create({
         data: {
           authorId,
-          description: input.description,
-          score: input.score,
           gameId: input.gameId,
+          isPlaying: true,
         },
       });
 
-      return review;
+      return rating;
     }),
-  updateReview: privateProcedure
+  updateRating: privateProcedure
     .input(
       z.object({
-        score: z.number().min(0).max(10).optional(),
-        description: z.string().min(1).max(10000),
+        score: z.number().min(0).max(10),
+        gameId: z.number(),
         id: z.string(),
       })
     )
@@ -187,19 +163,19 @@ export const reviewRouter = createTRPCRouter({
 
       if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
-      const review = await ctx.prisma.review.update({
-        where: {
-          id: input.id,
-        },
+      const rating = await ctx.prisma.rating.update({
+        where: { id: input.id },
+
         data: {
-          score: input.score,
-          description: input.description,
+          authorId,
+          gameId: input.gameId,
+          isPlaying: true,
         },
       });
 
-      return review;
+      return rating;
     }),
-  deleteReview: privateProcedure
+  deleteRating: privateProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
@@ -208,7 +184,7 @@ export const reviewRouter = createTRPCRouter({
 
       if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
-      await ctx.prisma.review.delete({
+      await ctx.prisma.rating.delete({
         where: {
           id: input.id,
         },

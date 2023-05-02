@@ -71,7 +71,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             </div>
           </div>
           <h2 className="text-3xl font-medium">recently reviewed</h2>
-          <ReviewFeed authorId={data.id} />
+          <ReviewFeed username={username} />
         </div>
       </div>
     </PageLayout>
@@ -93,6 +93,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
 
   await ssg.profile.getUserByUsername.prefetch({ username });
+  await ssg.review.getReviewsByUsername.prefetchInfinite({ username });
 
   return {
     props: {

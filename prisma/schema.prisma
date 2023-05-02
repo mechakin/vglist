@@ -44,7 +44,6 @@ model Rating {
 
   @@unique([authorId, gameId])
   @@index([authorId])
-  // might not need this but keep for now
   @@index([gameId])
 }
 

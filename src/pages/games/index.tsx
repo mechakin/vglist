@@ -21,8 +21,8 @@ const GamesPage: NextPage = () => {
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
 
-  const games = gameData?.pages.flatMap((page) => page.games) ?? [];
- const count = gameData?.pages.flatMap((page) => page.gamesCount) ?? 0;
+const games = gameData?.pages.flatMap((page) => page.games) ?? [];
+const count = gameData?.pages.flatMap((page) => page.gamesCount) ?? 0;
 
   if (!gameData) return <NotFound />;
 
@@ -42,7 +42,7 @@ const GamesPage: NextPage = () => {
           <Link href={`/games/${game.slug}`} key={game.id}>
             <Image
               src={game.cover ? game.cover : "/game.png"}
-              alt={game.name}
+              alt={game.name ? game.name : "game"}
               width={120}
               height={0}
               className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"

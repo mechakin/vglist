@@ -43,7 +43,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
   const { mutate, isLoading } = api.review.createReview.useMutation({
     onSuccess: () => {
       setShowModal(false);
-      void ctx.review.getReviewsByGameId.invalidate();
+      void ctx.review.getReviewsBySlug.invalidate();
     },
     onError: () => {
       toast.error(
@@ -61,13 +61,14 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
     hasNextPage,
     fetchNextPage,
     isFetching,
-  } = api.review.getReviewsByGameId.useInfiniteQuery(
+  } = api.review.getReviewsBySlug.useInfiniteQuery(
     {
-      gameId: gameData.id,
+      slug,
       limit: 12,
     },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
+
 
   const reviews = reviewsData?.pages.flatMap((page) => page.reviews) ?? [];
 
@@ -102,21 +103,26 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
     setShowModal(() => !showModal);
   }
 
-  let weightedScore = (gameData.igdbRating / 10).toFixed(1);
+  let weightedScore = "n/a";
 
-  if (gameData.igdbRatingCount && gameData.igdbRating) {
-    const totalReviews = gameData.igdbRatingCount + gameData.overallRatingCount;
+  if (gameData.igdbRating !== 0)
+    weightedScore = (gameData.igdbRating / 10).toFixed(1);
 
-    if (gameData.overallRatingCount > 0) {
-      const igdbRatingsRatio = gameData.igdbRatingCount / totalReviews;
-      const vglistRatingsRatio = gameData.overallRatingCount / totalReviews;
+  // to get the weighted rating
 
-      weightedScore = (
-        gameData.overallRating * vglistRatingsRatio +
-        gameData.igdbRating * igdbRatingsRatio
-      ).toFixed(1);
-    }
-  }
+  // if (gameData.igdbRatingCount && gameData.igdbRating) {
+  //   const totalReviews = gameData.igdbRatingCount + gameData.overallRatingCount;
+
+  //   if (gameData.overallRatingCount > 0) {
+  //     const igdbRatingsRatio = gameData.igdbRatingCount / totalReviews;
+  //     const vglistRatingsRatio = gameData.overallRatingCount / totalReviews;
+
+  //     weightedScore = (
+  //       gameData.overallRating * vglistRatingsRatio +
+  //       gameData.igdbRating * igdbRatingsRatio
+  //     ).toFixed(1);
+  //   }
+  // }
 
   // 0 is falsy and will not show up if there's no release date
   let releaseDate = 0;
@@ -150,7 +156,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
               <div className="sm:flex">
                 <Image
                   src={gameData.cover ? gameData.cover : "/game.png"}
-                  alt={gameData.name}
+                  alt={gameData.name ? gameData.name : "game"}
                   width={120}
                   height={0}
                   className="mt-4 hidden h-fit w-fit rounded-md border border-zinc-600 border-b-transparent sm:block"
@@ -210,7 +216,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
           <div className="flex min-w-max flex-col pb-4">
             <Image
               src={gameData.cover ? gameData.cover : "/game.png"}
-              alt={gameData.name}
+              alt={gameData.name ? gameData.name : "game"}
               width={140}
               height={0}
               className="h-fit w-56 rounded-md border border-zinc-600 border-b-transparent"
@@ -330,6 +336,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
 
   await ssg.game.getGameBySlug.prefetch({ slug });
+  await ssg.review.getReviewsBySlug.prefetchInfinite({ slug });
 
   return {
     props: {

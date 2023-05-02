@@ -41,16 +41,6 @@ export const gameRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Game not found." });
       return game;
     }),
-  getGameById: publicProcedure
-    .input(z.object({ id: z.number() }))
-    .query(async ({ ctx, input }) => {
-      const game = await ctx.prisma.game.findUnique({
-        where: { id: input.id },
-      });
-      if (!game)
-        throw new TRPCError({ code: "NOT_FOUND", message: "Game not found." });
-      return game;
-    }),
   getGamesByName: publicProcedure
     .input(
       z.object({

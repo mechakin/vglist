@@ -9,6 +9,7 @@ import { api } from "~/utils/api";
 import { useInView } from "react-intersection-observer";
 import dayjs from "dayjs";
 import LoadingSpinner from "~/components/loading";
+import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
 const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
   const { ref, inView } = useInView();
@@ -32,7 +33,7 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
       <Head>
         <title>{name}</title>
       </Head>
-      <div className="py-4">
+      <div className="pt-4">
         <h1 className="text-center text-4xl">results for {`${name}`}</h1>
         <nav className="text-2xl">
           <ul className="flex justify-center gap-3 py-2 text-cyan-400">
@@ -56,7 +57,7 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
             <Link href={`/games/${game.slug}`}>
               <Image
                 src={game.cover ? game.cover : "/game.png"}
-                alt={game.name}
+                alt={game.name ? game.name : "game"}
                 width={120}
                 height={0}
                 className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
@@ -124,8 +125,9 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
 
 export default GamesSearchPage;
 
-export const getStaticProps: GetStaticProps = (context) => {
+export const getStaticProps: GetStaticProps = async (context) => {
   const name = context.params?.slug;
+  const ssg = generateSSGHelper();
 
   if (typeof name !== "string") {
     return {
@@ -135,6 +137,8 @@ export const getStaticProps: GetStaticProps = (context) => {
       },
     };
   }
+
+  await ssg.game.getGamesByName.prefetchInfinite({ name });
 
   return {
     props: {

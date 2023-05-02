@@ -16,7 +16,7 @@ import dayjs from "dayjs";
 import { ExitButton } from "./exit-button";
 
 type ReviewWithUser =
-  RouterOutputs["review"]["getReviewsByGameId"]["reviews"][number];
+  RouterOutputs["review"]["getReviewsByUsername"]["reviews"][number];
 
 const schema = z.object({
   score: z.number().min(0).max(5).optional(),
@@ -37,7 +37,6 @@ export default function Review(props: ReviewWithUser) {
   const { register, handleSubmit, control } = useForm<typeSchema>({
     resolver: zodResolver(schema),
   });
-
   const ctx = api.useContext();
 
   const { mutate: mutateUpdate, isLoading: isUpdateLoading } =
@@ -76,27 +75,21 @@ export default function Review(props: ReviewWithUser) {
 
   const { review, author } = props;
 
-  const { data: gameData } = api.game.getGameById.useQuery({
-    id: review.gameId,
-  });
-
-  if (!gameData) return <div />;
-
   // 0 is falsy and will not show up if there's no release date
   let releaseDate = 0;
 
-  if (gameData.releaseDate) {
-    releaseDate = dayjs.unix(gameData.releaseDate).year();
+  if (props.review.game.releaseDate) {
+    releaseDate = dayjs.unix(props.review.game.releaseDate).year();
   }
 
   function onSubmit(reviewData: typeSchema) {
-    if (gameData && reviewData.score) {
+    if (review.game && reviewData.score) {
       mutateUpdate({
         score: reviewData.score * 2,
         description: reviewData.description,
         id: review.id,
       });
-    } else if (gameData) {
+    } else if (review.game) {
       mutateUpdate({
         description: reviewData.description,
         id: review.id,
@@ -119,7 +112,7 @@ export default function Review(props: ReviewWithUser) {
           <Modal isOpen={showDeleteModal} handleClose={handleDeleteModal}>
             <div className="flex justify-between">
               <div className="flex items-end">
-                <h2 className="text-2xl font-medium">{gameData.name}</h2>
+                <h2 className="text-2xl font-medium">{review.game.name}</h2>
                 <span className="pl-2 text-base text-zinc-400">
                   {releaseDate ? `(${releaseDate})` : ""}
                 </span>
@@ -130,8 +123,8 @@ export default function Review(props: ReviewWithUser) {
             </div>
             <div className="sm:flex">
               <Image
-                src={gameData.cover ? gameData.cover : "/game.png"}
-                alt={gameData.name}
+                src={review.game.cover ? review.game.cover : "/game.png"}
+                alt={review.game.name ? review.game.name : "game"}
                 width={120}
                 height={0}
                 className="mt-4 hidden h-fit w-fit rounded-md border border-zinc-600 border-b-transparent sm:block"
@@ -171,7 +164,7 @@ export default function Review(props: ReviewWithUser) {
             >
               <div className="flex justify-between">
                 <div className="flex items-end">
-                  <h2 className="text-2xl font-medium">{gameData.name}</h2>
+                  <h2 className="text-2xl font-medium">{review.game.name}</h2>
                   <span className="pl-2 text-base text-zinc-400">
                     {releaseDate ? `(${releaseDate})` : ""}
                   </span>
@@ -182,8 +175,8 @@ export default function Review(props: ReviewWithUser) {
               </div>
               <div className="sm:flex">
                 <Image
-                  src={gameData.cover ? gameData.cover : "/game.png"}
-                  alt={gameData.name}
+                  src={review.game.cover ? review.game.cover : "/game.png"}
+                  alt={review.game.name ? review.game.name : "game"}
                   width={120}
                   height={0}
                   className="mt-4 hidden h-fit w-fit rounded-md border border-zinc-600 border-b-transparent sm:block"
@@ -236,10 +229,10 @@ export default function Review(props: ReviewWithUser) {
 
       <div className="border-b border-b-zinc-600 py-4 md:flex">
         <div className="flex items-start justify-between">
-          <Link href={`/games/${gameData.slug}`}>
+          <Link href={`/games/${review.game.slug}`}>
             <Image
-              src={gameData.cover ? gameData.cover : "/game.png"}
-              alt={gameData.name}
+              src={review.game.cover ? review.game.cover : "/game.png"}
+              alt={review.game.name ? review.game.name : "game"}
               width={120}
               height={0}
               className="mb-2 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-50 "
@@ -255,7 +248,7 @@ export default function Review(props: ReviewWithUser) {
         <div className="-mt-1 flex w-full flex-col md:px-8">
           <div className="flex w-full justify-between pb-1">
             <h3 className="flex max-w-fit text-2xl font-medium transition duration-75 hover:text-zinc-400">
-              <Link href={`/games/${gameData.slug}`}>{gameData.name}</Link>
+              <Link href={`/games/${review.game.slug}`}>{review.game.name}</Link>
             </h3>
             {user?.id === author.id && (
               <button onClick={handleDeleteModal} className="hidden md:block">
@@ -308,18 +301,14 @@ export default function Review(props: ReviewWithUser) {
   );
 }
 
-export const ReviewFeed = (props: { authorId?: string }) => {
+export const ReviewFeed = (props: { username?: string }) => {
   const { ref, inView } = useInView();
 
-  if (props.authorId) {
-    const { data: authorData } = api.profile.getUserById.useQuery({
-      authorId: props.authorId,
-    });
-
+  if (props.username) {
     const { data, hasNextPage, fetchNextPage, isFetching } =
-      api.review.getReviewsByAuthorId.useInfiniteQuery(
+      api.review.getReviewsByUsername.useInfiniteQuery(
         {
-          authorId: props.authorId,
+          username: props.username,
           limit: 12,
         },
         { getNextPageParam: (lastPage) => lastPage.nextCursor }
@@ -333,16 +322,16 @@ export const ReviewFeed = (props: { authorId?: string }) => {
 
     return (
       <>
-        {reviews.map((fullReview) => (
-          <Review {...fullReview} key={fullReview.review.id} />
-        ))}
+        {reviews.map((review) => {
+          return <Review key={review.review.id} {...review} />;
+        })}
         {isFetching && (
           <div className="pt-4">
             <LoadingSpinner size={55} />
           </div>
         )}
-        {reviews.length === 0 && !isFetching && authorData?.username && (
-          <div className="py-2 text-lg text-zinc-300">{`${authorData?.username} hasn't reviewed a game :(`}</div>
+        {reviews.length === 0 && !isFetching && reviews[0]?.author.username && (
+          <div className="py-2 text-lg text-zinc-300">{`${reviews[0]?.author.username} hasn't reviewed a game :(`}</div>
         )}
         <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
           intersection observer marker
@@ -351,14 +340,7 @@ export const ReviewFeed = (props: { authorId?: string }) => {
     );
   }
 
-  const { data, isLoading } = api.review.getRecentReviews.useQuery();
-
-  if (isLoading)
-    return (
-      <div className="py-4">
-        <LoadingSpinner size={55} />
-      </div>
-    );
+  const { data } = api.review.getRecentReviews.useQuery();
 
   if (!data || data.reviews.length === 0) return <div />;
 

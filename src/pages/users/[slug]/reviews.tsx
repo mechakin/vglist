@@ -15,7 +15,7 @@ const ProfileReviewPage: NextPage<{ username: string }> = ({ username }) => {
   if (!userData) return <NotFound />;
 
   const { data: reviewCountData } =
-    api.review.getReviewCountByAuthorId.useQuery({ authorId: userData.id });
+    api.review.getReviewCountByUsername.useQuery({ username });
 
   return (
     <PageLayout>
@@ -39,7 +39,7 @@ const ProfileReviewPage: NextPage<{ username: string }> = ({ username }) => {
           <h3 className="pt-1 text-lg text-zinc-400">
             {reviewCountData} {reviewCountData === 1 ? "game" : "games"}
           </h3>
-          <ReviewFeed authorId={userData.id} />
+          <ReviewFeed username={username} />
         </div>
       </div>
     </PageLayout>
@@ -61,6 +61,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
 
   await ssg.profile.getUserByUsername.prefetch({ username });
+  await ssg.review.getReviewCountByUsername.prefetch({ username });
+  await ssg.review.getReviewsByUsername.prefetchInfinite({ username });
 
   return {
     props: {

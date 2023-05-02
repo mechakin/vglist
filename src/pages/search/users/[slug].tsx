@@ -4,38 +4,37 @@ import Link from "next/link";
 import Image from "next/image";
 import Head from "next/head";
 import { api } from "~/utils/api";
+import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
-const UsersSearchPage: NextPage<{ name: string }> = ({ name }) => {
-  const { data, isFetching } = api.profile.getUsersByUsername.useQuery({ username: name });
+const UsersSearchPage: NextPage<{ username: string }> = ({ username }) => {
+  const { data } = api.profile.getUsersByUsername.useQuery({
+    username: username,
+  });
 
-  const userCount = data?.filter(() => {
-    return true;
-  }).length;
+  const userCount = data?.length;
 
   return (
     <PageLayout>
       <Head>
-        <title>{name}</title>
+        <title>{username}</title>
       </Head>
       <div className="py-4">
-        <h1 className="text-center text-4xl">results for {`${name}`}</h1>
+        <h1 className="text-center text-4xl">results for {`${username}`}</h1>
         <nav className="text-2xl">
           <ul className="flex justify-center gap-3 py-2">
             <li className="text-zinc-100">search for</li>
             <li className="flex items-center text-zinc-400 transition duration-75 hover:text-cyan-400">
-              <Link href={`/search/games/${name}`}>games</Link>
+              <Link href={`/search/games/${username}`}>games</Link>
             </li>
             <li>or</li>
             <li className="flex items-center text-cyan-400">
-              <Link href={`/search/users/${name}`}>users</Link>
+              <Link href={`/search/users/${username}`}>users</Link>
             </li>
           </ul>
         </nav>
-        {!isFetching && (
-          <p className="pt-1 text-lg text-zinc-400">
-            {userCount} {userCount === 1 ? "user" : "users"}
-          </p>
-        )}
+        <p className="pt-1 text-lg text-zinc-400">
+          {userCount} {userCount === 1 ? "user" : "users"}
+        </p>
         {data &&
           data.map((user) => (
             <div className="flex border-b border-b-zinc-600 py-4" key={user.id}>
@@ -66,10 +65,12 @@ const UsersSearchPage: NextPage<{ name: string }> = ({ name }) => {
 
 export default UsersSearchPage;
 
-export const getStaticProps: GetStaticProps = (context) => {
-  const name = context.params?.slug;
+export const getStaticProps: GetStaticProps = async (context) => {
+  const ssg = generateSSGHelper();
 
-  if (typeof name !== "string") {
+  const username = context.params?.slug;
+
+  if (typeof username !== "string") {
     return {
       redirect: {
         permanent: true,
@@ -78,9 +79,12 @@ export const getStaticProps: GetStaticProps = (context) => {
     };
   }
 
+  await ssg.profile.getUsersByUsername.prefetch({ username });
+
   return {
     props: {
-      name,
+      trpcState: ssg.dehydrate(),
+      username,
     },
   };
 };
