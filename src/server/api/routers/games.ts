@@ -22,12 +22,13 @@ export const gameRouter = createTRPCRouter({
         const nextGame = games.pop();
         nextCursor = nextGame?.id;
       }
-      const gamesCount = await ctx.prisma.game.count({
-        where: { id: { gt: 0 } },
-      });
+      // slows down page time by 1-2 on average, not sure if there's a faster way to do this
+      // const gamesCount = await ctx.prisma.game.count({
+      //   where: { id: { gt: 0 } },
+      // });
       return {
         games,
-        gamesCount,
+        gamesCount: 230515,
         nextCursor,
       };
     }),

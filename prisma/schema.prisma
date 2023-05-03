@@ -25,6 +25,7 @@ model Game {
   overallRatingCount Int      @default(0)
   reviews            Review[]
   ratings            Rating[]
+  // status             Status[]
 
   @@index([slug])
   @@index([name])
@@ -33,12 +34,8 @@ model Game {
 model Rating {
   id            String   @id @default(cuid())
   createdAt     DateTime @default(now())
-  score         Float?
+  score         Float
   authorId      String
-  isPlaying     Boolean
-  hasPlayed     Boolean?
-  hasBacklogged Boolean?
-  hasDropped    Boolean?
   game          Game     @relation(fields: [gameId], references: [id])
   gameId        Int
 
@@ -46,6 +43,22 @@ model Rating {
   @@index([authorId])
   @@index([gameId])
 }
+
+// model Status {
+//   id            String   @id @default(cuid())
+//   createdAt     DateTime @default(now())
+//   authorId      String
+//   isPlaying     Boolean?
+//   hasPlayed     Boolean?
+//   hasBacklogged Boolean?
+//   hasDropped    Boolean?
+//   game          Game     @relation(fields: [gameId], references: [id])
+//   gameId        Int
+
+//   @@unique([authorId, gameId])
+//   @@index([gameId])
+//   @@index([authorId])
+// }
 
 model Review {
   id          String   @id @default(cuid())

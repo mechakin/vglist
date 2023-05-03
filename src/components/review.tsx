@@ -18,6 +18,8 @@ import { ExitButton } from "./exit-button";
 type ReviewWithUser =
   RouterOutputs["review"]["getReviewsByUsername"]["reviews"][number];
 
+type Game = RouterOutputs["game"]["getGameBySlug"];
+
 const schema = z.object({
   score: z.number().min(0).max(5).optional(),
   description: z
@@ -28,76 +30,55 @@ const schema = z.object({
 
 type typeSchema = z.infer<typeof schema>;
 
-export default function Review(props: ReviewWithUser) {
-  const { user } = useUser();
-
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-  const { register, handleSubmit, control } = useForm<typeSchema>({
+export function CreateReviewModal(props: {
+  game: Game;
+  isOpen: boolean;
+  handleClose: () => void;
+}) {
+  const {
+    register: registerCreate,
+    handleSubmit: handleCreateSubmit,
+    control: createControl,
+  } = useForm<typeSchema>({
     resolver: zodResolver(schema),
   });
+
   const ctx = api.useContext();
 
-  const { mutate: mutateUpdate, isLoading: isUpdateLoading } =
-    api.review.updateReview.useMutation({
+  const { mutate: mutateCreate, isLoading: isCreateLoading } =
+    api.review.createReview.useMutation({
       onSuccess: () => {
-        setShowUpdateModal(false);
+        props.handleClose();
         void ctx.review.invalidate();
       },
       onError: () => {
-        toast.error(
-          "there was an error in trying to update your review, please try again later"
-        );
+        toast.error("a review for this game already exists");
       },
     });
-
-  const { mutate: mutateDelete, isLoading: isDeleteLoading } =
-    api.review.deleteReview.useMutation({
-      onSuccess: () => {
-        setShowDeleteModal(false);
-        void ctx.review.invalidate();
-      },
-      onError: () => {
-        toast.error(
-          "there was an error in trying to delete your review, please try again later"
-        );
-      },
-    });
-
-  function handleUpdateModal() {
-    setShowUpdateModal(() => !showUpdateModal);
-  }
-
-  function handleDeleteModal() {
-    setShowDeleteModal(() => !showDeleteModal);
-  }
-
-  const { review, author } = props;
 
   // 0 is falsy and will not show up if there's no release date
   let releaseDate = 0;
 
-  if (props.review.game.releaseDate) {
-    releaseDate = dayjs.unix(props.review.game.releaseDate).year();
+  if (props.game.releaseDate) {
+    releaseDate = dayjs.unix(props.game.releaseDate).year();
   }
 
-  function onSubmit(reviewData: typeSchema) {
-    if (review.game && reviewData.score) {
-      mutateUpdate({
+  function onCreateSubmit(reviewData: typeSchema) {
+    if (props.game.id && reviewData.score) {
+      mutateCreate({
         score: reviewData.score * 2,
         description: reviewData.description,
-        id: review.id,
+        gameId: props.game.id,
       });
-    } else if (review.game) {
-      mutateUpdate({
+    } else if (props.game.id) {
+      mutateCreate({
         description: reviewData.description,
-        id: review.id,
+        gameId: props.game.id,
       });
     }
   }
 
-  function onError(error: FieldErrors<typeSchema>) {
+  function onCreateError(error: FieldErrors<typeSchema>) {
     const descriptionErrorMessage = error.description?.message;
     const scoreErrorMessage = error.score?.message;
 
@@ -107,76 +88,29 @@ export default function Review(props: ReviewWithUser) {
 
   return (
     <>
-      {showDeleteModal &&
+      {props.isOpen &&
         createPortal(
-          <Modal isOpen={showDeleteModal} handleClose={handleDeleteModal}>
-            <div className="flex justify-between">
-              <div className="flex items-end">
-                <h2 className="text-2xl font-medium">{review.game.name}</h2>
-                <span className="pl-2 text-base text-zinc-400">
-                  {releaseDate ? `(${releaseDate})` : ""}
-                </span>
-              </div>
-              <button onClick={handleDeleteModal} className="text-2xl">
-                <ExitButton />
-              </button>
-            </div>
-            <div className="sm:flex">
-              <Image
-                src={review.game.cover ? review.game.cover : "/game.png"}
-                alt={review.game.name ? review.game.name : "game"}
-                width={120}
-                height={0}
-                className="mt-4 hidden h-fit w-fit rounded-md border border-zinc-600 border-b-transparent sm:block"
-              />
-
-              <div className="flex flex-col pt-4 text-2xl sm:pl-4">
-                are you sure you want to delete your review?
-              </div>
-            </div>
-            <div className="flex justify-end pt-4">
-              <button
-                className="mr-2 rounded-md bg-zinc-500 px-2 text-xl transition duration-75 hover:bg-zinc-400"
-                onClick={handleDeleteModal}
-              >
-                cancel
-              </button>
-              <button
-                className="rounded-md bg-red-700 px-2 text-xl transition duration-75 hover:bg-red-600"
-                onClick={() => mutateDelete({ id: review.id })}
-              >
-                delete
-              </button>
-              {isDeleteLoading && (
-                <span className="pl-2 pt-2">
-                  <LoadingSpinner />
-                </span>
-              )}
-            </div>
-          </Modal>,
-          document.getElementById("portal") as HTMLDivElement
-        )}
-      {showUpdateModal &&
-        createPortal(
-          <Modal isOpen={showUpdateModal} handleClose={handleUpdateModal}>
+          <Modal isOpen={props.isOpen} handleClose={props.handleClose}>
             <form
-              onSubmit={(event) => void handleSubmit(onSubmit, onError)(event)}
+              onSubmit={(event) =>
+                void handleCreateSubmit(onCreateSubmit, onCreateError)(event)
+              }
             >
               <div className="flex justify-between">
                 <div className="flex items-end">
-                  <h2 className="text-2xl font-medium">{review.game.name}</h2>
+                  <h2 className="text-2xl font-medium">{props.game.name}</h2>
                   <span className="pl-2 text-base text-zinc-400">
                     {releaseDate ? `(${releaseDate})` : ""}
                   </span>
                 </div>
-                <button onClick={handleUpdateModal} className="text-2xl">
+                <button onClick={props.handleClose} className="text-2xl">
                   <ExitButton />
                 </button>
               </div>
               <div className="sm:flex">
                 <Image
-                  src={review.game.cover ? review.game.cover : "/game.png"}
-                  alt={review.game.name ? review.game.name : "game"}
+                  src={props.game.cover ? props.game.cover : "/game.png"}
+                  alt={props.game.name ? props.game.name : "game"}
                   width={120}
                   height={0}
                   className="mt-4 hidden h-fit w-fit rounded-md border border-zinc-600 border-b-transparent sm:block"
@@ -185,7 +119,7 @@ export default function Review(props: ReviewWithUser) {
                   <p>rating</p>
                   <Controller
                     name="score"
-                    control={control}
+                    control={createControl}
                     render={({ field: { onChange, value } }) => (
                       <Rating
                         SVGclassName="inline -mx-0.5"
@@ -207,26 +141,303 @@ export default function Review(props: ReviewWithUser) {
                     cols={100}
                     rows={5}
                     className="w-full overflow-auto rounded-md bg-zinc-400 p-2 text-zinc-800 outline-none"
-                    {...register("description")}
+                    {...registerCreate("description")}
                   ></textarea>
                 </div>
               </div>
               <div className="flex justify-end pt-4">
                 <button
                   className="mr-2 rounded-md bg-zinc-500 px-2 text-xl transition duration-75 hover:bg-zinc-400"
-                  onClick={handleUpdateModal}
+                  onClick={props.handleClose}
+                >
+                  cancel
+                </button>
+                <button className="rounded-md bg-cyan-700 px-2 text-xl transition duration-75 hover:bg-cyan-600">
+                  create
+                </button>
+                {isCreateLoading && (
+                  <span className="pl-2 pt-2">
+                    <LoadingSpinner />
+                  </span>
+                )}
+              </div>
+            </form>
+          </Modal>,
+          document.getElementById("portal") as HTMLDivElement
+        )}
+    </>
+  );
+}
+
+export function UpdateReviewModal(props: {
+  review: ReviewWithUser;
+  isOpen: boolean;
+  handleClose: () => void;
+}) {
+  const ctx = api.useContext();
+
+  const {
+    register: registerUpdate,
+    handleSubmit: handleUpdateSubmit,
+    control: updateControl,
+  } = useForm<typeSchema>({
+    resolver: zodResolver(schema),
+  });
+
+  const { mutate: mutateUpdate, isLoading: isUpdateLoading } =
+    api.review.updateReview.useMutation({
+      onSuccess: () => {
+        props.handleClose();
+        void ctx.review.invalidate();
+      },
+      onError: () => {
+        toast.error(
+          "there was an error in trying to update your review, please try again later"
+        );
+      },
+    });
+
+  const { review } = props;
+
+  function onUpdateSubmit(reviewData: typeSchema) {
+    if (review.review.game.id && reviewData.score) {
+      mutateUpdate({
+        score: reviewData.score * 2,
+        description: reviewData.description,
+        id: review.review.id,
+      });
+    } else if (review.review.game.id) {
+      mutateUpdate({
+        description: reviewData.description,
+        id: review.review.id,
+      });
+    }
+  }
+
+  function onUpdateError(error: FieldErrors<typeSchema>) {
+    const descriptionErrorMessage = error.description?.message;
+    const scoreErrorMessage = error.score?.message;
+
+    if (descriptionErrorMessage) toast.error(descriptionErrorMessage);
+    if (scoreErrorMessage) toast.error(scoreErrorMessage);
+  }
+
+  // 0 is falsy and will not show up if there's no release date
+  let releaseDate = 0;
+
+  if (review.review.game.releaseDate) {
+    releaseDate = dayjs.unix(review.review.game.releaseDate).year();
+  }
+
+  return (
+    <>
+      {props.isOpen &&
+        createPortal(
+          <Modal isOpen={props.isOpen} handleClose={props.handleClose}>
+            <form
+              onSubmit={(event) =>
+                void handleUpdateSubmit(onUpdateSubmit, onUpdateError)(event)
+              }
+            >
+              <div className="flex justify-between">
+                <div className="flex items-end">
+                  <h2 className="text-2xl font-medium">
+                    {review.review.game.name}
+                  </h2>
+                  <span className="pl-2 text-base text-zinc-400">
+                    {releaseDate ? `(${releaseDate})` : ""}
+                  </span>
+                </div>
+                <button onClick={props.handleClose} className="text-2xl">
+                  <ExitButton />
+                </button>
+              </div>
+              <div className="sm:flex">
+                <Image
+                  src={
+                    review.review.game.cover
+                      ? review.review.game.cover
+                      : "/game.png"
+                  }
+                  alt={
+                    review.review.game.name ? review.review.game.name : "game"
+                  }
+                  width={120}
+                  height={0}
+                  className="mt-4 hidden h-fit w-fit rounded-md border border-zinc-600 border-b-transparent sm:block"
+                />
+                <div className="flex flex-col pt-4 text-xl sm:pl-4">
+                  <p>rating</p>
+                  <Controller
+                    name="score"
+                    control={updateControl}
+                    render={({ field: { onChange, value } }) => (
+                      <Rating
+                        SVGclassName="inline -mx-0.5"
+                        allowFraction
+                        size={30}
+                        transition={false}
+                        emptyColor="#a1a1aa"
+                        fillColor="#22d3ee"
+                        initialValue={value}
+                        onClick={onChange}
+                        tooltipArray={[]}
+                      />
+                    )}
+                  />
+                </div>
+                <div className="flex flex-col pt-4 sm:pl-4">
+                  <p className="pb-2 text-xl">review</p>
+                  <textarea
+                    cols={100}
+                    rows={5}
+                    className="w-full overflow-auto rounded-md bg-zinc-400 p-2 text-zinc-800 outline-none"
+                    {...registerUpdate("description")}
+                  ></textarea>
+                </div>
+              </div>
+              <div className="flex justify-end pt-4">
+                <button
+                  className="mr-2 rounded-md bg-zinc-500 px-2 text-xl transition duration-75 hover:bg-zinc-400"
+                  onClick={props.handleClose}
                 >
                   cancel
                 </button>
                 <button className="rounded-md bg-cyan-700 px-2 text-xl transition duration-75 hover:bg-cyan-600">
                   update
                 </button>
+                {isUpdateLoading && (
+                  <span className="pl-2 pt-2">
+                    <LoadingSpinner />
+                  </span>
+                )}
               </div>
             </form>
           </Modal>,
           document.getElementById("portal") as HTMLDivElement
         )}
+    </>
+  );
+}
 
+export const DeleteReviewModal = (props: {
+  review: ReviewWithUser;
+  isOpen: boolean;
+  handleClose: () => void;
+}) => {
+  const ctx = api.useContext();
+
+  const { mutate: mutateDelete, isLoading: isDeleteLoading } =
+    api.review.deleteReview.useMutation({
+      onSuccess: () => {
+        props.handleClose();
+        void ctx.review.invalidate();
+      },
+      onError: () => {
+        toast.error(
+          "there was an error in trying to delete your review, please try again later"
+        );
+      },
+    });
+
+  const { review } = props;
+
+  // 0 is falsy and will not show up if there's no release date
+  let releaseDate = 0;
+
+  if (review.review.game.releaseDate) {
+    releaseDate = dayjs.unix(review.review.game.releaseDate).year();
+  }
+
+  return (
+    <>
+      {props.isOpen &&
+        createPortal(
+          <Modal isOpen={props.isOpen} handleClose={props.handleClose}>
+            <div className="flex justify-between">
+              <div className="flex items-end">
+                <h2 className="text-2xl font-medium">
+                  {review.review.game.name}
+                </h2>
+                <span className="pl-2 text-base text-zinc-400">
+                  {releaseDate ? `(${releaseDate})` : ""}
+                </span>
+              </div>
+              <button onClick={props.handleClose} className="text-2xl">
+                <ExitButton />
+              </button>
+            </div>
+            <div className="sm:flex">
+              <Image
+                src={
+                  review.review.game.cover
+                    ? review.review.game.cover
+                    : "/game.png"
+                }
+                alt={review.review.game.name ? review.review.game.name : "game"}
+                width={120}
+                height={0}
+                className="mt-4 hidden h-fit w-fit rounded-md border border-zinc-600 border-b-transparent sm:block"
+              />
+
+              <div className="flex flex-col pt-4 text-2xl sm:pl-4">
+                are you sure you want to delete your review?
+              </div>
+            </div>
+            <div className="flex justify-end pt-4">
+              <button
+                className="mr-2 rounded-md bg-zinc-500 px-2 text-xl transition duration-75 hover:bg-zinc-400"
+                onClick={() => console.log(props.review.author.username)}
+              >
+                cancel
+              </button>
+              <button
+                className="rounded-md bg-red-700 px-2 text-xl transition duration-75 hover:bg-red-600"
+                onClick={() => mutateDelete({ id: review.review.id })}
+              >
+                delete
+              </button>
+              {isDeleteLoading && (
+                <span className="pl-2 pt-2">
+                  <LoadingSpinner />
+                </span>
+              )}
+            </div>
+          </Modal>,
+          document.getElementById("portal") as HTMLDivElement
+        )}
+    </>
+  );
+};
+
+export default function Review(props: ReviewWithUser) {
+  const { user } = useUser();
+
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  function handleUpdateModal() {
+    setShowUpdateModal(() => !showUpdateModal);
+  }
+
+  function handleDeleteModal() {
+    setShowDeleteModal(() => !showDeleteModal);
+  }
+
+  const { review, author } = props;
+
+  return (
+    <>
+      <DeleteReviewModal
+        review={props}
+        isOpen={showDeleteModal}
+        handleClose={handleDeleteModal}
+      />
+      <UpdateReviewModal
+        review={props}
+        isOpen={showUpdateModal}
+        handleClose={handleUpdateModal}
+      />
       <div className="border-b border-b-zinc-600 py-4 md:flex">
         <div className="flex items-start justify-between">
           <Link href={`/games/${review.game.slug}`}>
@@ -235,7 +446,7 @@ export default function Review(props: ReviewWithUser) {
               alt={review.game.name ? review.game.name : "game"}
               width={120}
               height={0}
-              className="mb-2 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-50 "
+              className="mb-4 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-50 md:mb-2 "
             />
           </Link>
           {user?.id === author.id && (
@@ -291,11 +502,6 @@ export default function Review(props: ReviewWithUser) {
             >
               edit review
             </button>
-          )}
-          {isUpdateLoading && (
-            <span className="pl-2 pt-2">
-              <LoadingSpinner />
-            </span>
           )}
         </div>
       </div>

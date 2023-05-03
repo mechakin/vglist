@@ -129,29 +129,45 @@ export const ratingRouter = createTRPCRouter({
 
       return ratingCount;
     }),
-  createRating: privateProcedure
-    .input(z.object({ score: z.number().min(0).max(10), gameId: z.number() }))
-    .mutation(async ({ ctx, input }) => {
-      const authorId = ctx.userId;
+  // createRating: privateProcedure
+  //   .input(
+  //     z.object({
+  //       score: z.number().min(0).max(10).optional(),
+  //       isPlaying: z.boolean().optional(),
+  //       hasPlayed: z.boolean().optional(),
+  //       hasBacklogged: z.boolean().optional(),
+  //       hasDropped: z.boolean().optional(),
+  //       gameId: z.number(),
+  //     })
+  //   )
+  //   .mutation(async ({ ctx, input }) => {
+  //     const authorId = ctx.userId;
 
-      const { success } = await ratelimit.limit(authorId);
+  //     const { success } = await ratelimit.limit(authorId);
 
-      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+  //     if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
-      const rating = await ctx.prisma.rating.create({
-        data: {
-          authorId,
-          gameId: input.gameId,
-          isPlaying: true,
-        },
-      });
+  //     const rating = await ctx.prisma.rating.create({
+  //       data: {
+  //         authorId,
+  //         gameId: input.gameId,
 
-      return rating;
-    }),
+  //         hasPlayed: input.hasPlayed,
+  //         hasBacklogged: input.hasBacklogged,
+  //         hasDropped: input.hasDropped,
+  //       },
+  //     });
+
+  //     return rating;
+  //   }),
   updateRating: privateProcedure
     .input(
       z.object({
-        score: z.number().min(0).max(10),
+        score: z.number().min(0).max(10).optional(),
+        isPlaying: z.boolean().optional(),
+        hasPlayed: z.boolean().optional(),
+        hasBacklogged: z.boolean().optional(),
+        hasDropped: z.boolean().optional(),
         gameId: z.number(),
         id: z.string(),
       })
@@ -169,7 +185,6 @@ export const ratingRouter = createTRPCRouter({
         data: {
           authorId,
           gameId: input.gameId,
-          isPlaying: true,
         },
       });
 
