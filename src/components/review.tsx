@@ -125,7 +125,6 @@ export function CreateReviewModal(props: {
                         SVGclassName="inline -mx-0.5"
                         allowFraction
                         size={30}
-                        transition={false}
                         emptyColor="#a1a1aa"
                         fillColor="#22d3ee"
                         initialValue={value}
@@ -268,7 +267,6 @@ export function UpdateReviewModal(props: {
                         SVGclassName="inline -mx-0.5"
                         allowFraction
                         size={30}
-                        transition={false}
                         emptyColor="#a1a1aa"
                         fillColor="#22d3ee"
                         initialValue={value}
@@ -465,13 +463,16 @@ export default function Review(props: ReviewWithUser) {
             )}
           </div>
           <div className="flex items-center pb-3">
-            <Image
-              src={author.profileImageUrl}
-              alt={author.username}
-              width={35}
-              height={0}
-              className="mr-4 mt-2 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-50"
-            />
+            <Link href={`/users/${author.username}`}>
+              <Image
+                src={author.profileImageUrl}
+                alt={author.username}
+                width={35}
+                height={0}
+                className="mr-4 mt-2 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-50"
+              />
+            </Link>
+
             <p className="pr-4 pt-1 font-semibold text-zinc-400 transition duration-75 hover:text-zinc-100">
               <Link href={`/users/${author.username}`}>{author.username}</Link>
             </p>
@@ -481,7 +482,6 @@ export default function Review(props: ReviewWithUser) {
                 allowFraction
                 readonly
                 size={22}
-                transition={false}
                 emptyColor="#a1a1aa"
                 fillColor="#22d3ee"
                 tooltipArray={[]}

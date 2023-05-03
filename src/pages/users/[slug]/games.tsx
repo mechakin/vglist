@@ -53,7 +53,6 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
                 allowFraction
                 readonly
                 size={19}
-                transition={false}
                 emptyColor="#a1a1aa"
                 fillColor="#22d3ee"
                 tooltipArray={[]}

@@ -85,7 +85,6 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
                       SVGclassName="inline -mx-0.5"
                       allowFraction
                       size={30}
-                      transition={false}
                       emptyColor="#a1a1aa"
                       fillColor="#22d3ee"
                       tooltipArray={[]}

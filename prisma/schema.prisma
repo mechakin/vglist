@@ -32,12 +32,12 @@ model Game {
 }
 
 model Rating {
-  id            String   @id @default(cuid())
-  createdAt     DateTime @default(now())
-  score         Float
-  authorId      String
-  game          Game     @relation(fields: [gameId], references: [id])
-  gameId        Int
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  score     Float
+  authorId  String
+  game      Game     @relation(fields: [gameId], references: [id])
+  gameId    Int
 
   @@unique([authorId, gameId])
   @@index([authorId])

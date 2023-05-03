@@ -170,7 +170,6 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                     SVGclassName="inline -mx-0.5"
                     allowFraction
                     size={30}
-                    transition={false}
                     emptyColor="#a1a1aa"
                     fillColor="#22d3ee"
                     tooltipArray={[]}
@@ -207,7 +206,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
               >
                 <div className="min-w-full border-b border-b-zinc-600 py-4 md:flex">
                   <div className="flex items-start justify-between">
-                    <Link href={`users/${review.author.username}`}>
+                    <Link href={`/users/${review.author.username}`}>
                       <Image
                         src={review.author.profileImageUrl}
                         alt={review.author.username}
@@ -241,7 +240,6 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                             allowFraction
                             readonly
                             size={22}
-                            transition={false}
                             emptyColor="#a1a1aa"
                             fillColor="#22d3ee"
                             initialValue={review.review.score / 2}
