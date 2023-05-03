@@ -206,16 +206,27 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                 onClick={() => handleReviewClick(review)}
               >
                 <div className="min-w-full border-b border-b-zinc-600 py-4 md:flex">
-                  <Link href={`users/${review.author.username}`}>
-                    <Image
-                      src={review.author.profileImageUrl}
-                      alt={review.author.username}
-                      width={56}
-                      height={56}
-                      className="mt-2 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-75"
-                      priority
-                    />
-                  </Link>
+                  <div className="flex items-start justify-between">
+                    <Link href={`users/${review.author.username}`}>
+                      <Image
+                        src={review.author.profileImageUrl}
+                        alt={review.author.username}
+                        width={56}
+                        height={56}
+                        className="mt-2 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-75"
+                        priority
+                      />
+                    </Link>
+                    {user?.id === review.author.id && (
+                      <button
+                        onClick={handleDeleteModal}
+                        className="md:hidden"
+                      >
+                        <ExitButton size={16} />
+                      </button>
+                    )}
+                  </div>
+
                   <div className="flex w-full flex-col gap-1 md:pl-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
@@ -240,7 +251,10 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                       </div>
 
                       {user?.id === review.author.id && (
-                        <button onClick={handleDeleteModal}>
+                        <button
+                          onClick={handleDeleteModal}
+                          className="hidden md:block"
+                        >
                           <ExitButton size={16} />
                         </button>
                       )}

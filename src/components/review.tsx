@@ -443,21 +443,24 @@ export default function Review(props: ReviewWithUser) {
           </Link>
           {user?.id === author.id && (
             <button onClick={handleDeleteModal} className="md:hidden">
-              <ExitButton size={16}/>
+              <ExitButton size={16} />
             </button>
           )}
         </div>
 
         <div className="-mt-1 flex w-full flex-col md:px-8">
-          <div className="flex w-full pb-1 justify-between">
+          <div className="flex w-full justify-between pb-1">
             <h3 className="flex max-w-fit text-2xl font-medium transition duration-75 hover:text-zinc-400">
               <Link href={`/games/${review.game.slug}`}>
                 {review.game.name}
               </Link>
             </h3>
             {user?.id === author.id && (
-              <button onClick={handleDeleteModal} className="hidden md:block pt-1">
-                <ExitButton size={16}/>
+              <button
+                onClick={handleDeleteModal}
+                className="mt-1 hidden md:block"
+              >
+                <ExitButton size={16} />
               </button>
             )}
           </div>
