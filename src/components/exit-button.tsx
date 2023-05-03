@@ -1,8 +1,8 @@
-export function ExitButton() {
+export function ExitButton(props: { size?: number }) {
   return (
     <svg
-      height="20px"
-      width="20px"
+      height={props.size ? props.size : 20}
+      width={props.size ? props.size : 20}
       version="1.1"
       id="Capa_1"
       xmlns="http://www.w3.org/2000/svg"

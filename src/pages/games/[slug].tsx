@@ -17,6 +17,7 @@ import {
   DeleteReviewModal,
   UpdateReviewModal,
 } from "~/components/review";
+import { ExitButton } from "~/components/exit-button";
 
 type ReviewWithUser =
   RouterOutputs["review"]["getReviewsByUsername"]["reviews"][number];
@@ -204,7 +205,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                 key={review.review.id}
                 onClick={() => handleReviewClick(review)}
               >
-                <div className="border-b border-b-zinc-600 py-4 md:flex">
+                <div className="min-w-full border-b border-b-zinc-600 py-4 md:flex">
                   <Link href={`users/${review.author.username}`}>
                     <Image
                       src={review.author.profileImageUrl}
@@ -215,33 +216,43 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                       priority
                     />
                   </Link>
-                  <div className="flex flex-col gap-1 md:pl-4">
-                    <div className="flex items-center">
-                      <p className="pr-4 pt-1 text-lg font-semibold text-zinc-400 transition duration-75 hover:text-zinc-100">
-                        <Link href={`/users/${review.author.username}`}>
-                          {review.author.username}
-                        </Link>
-                      </p>
-                      {review.review.score && (
-                        <Rating
-                          SVGclassName="inline -mx-0.5"
-                          allowFraction
-                          readonly
-                          size={22}
-                          transition={false}
-                          emptyColor="#a1a1aa"
-                          fillColor="#22d3ee"
-                          initialValue={review.review.score / 2}
-                          tooltipArray={[]}
-                        />
+                  <div className="flex w-full flex-col gap-1 md:pl-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <p className="pr-4 pt-1 text-lg font-semibold text-zinc-400 transition duration-75 hover:text-zinc-100">
+                          <Link href={`/users/${review.author.username}`}>
+                            {review.author.username}
+                          </Link>
+                        </p>
+                        {review.review.score && (
+                          <Rating
+                            SVGclassName="inline -mx-0.5"
+                            allowFraction
+                            readonly
+                            size={22}
+                            transition={false}
+                            emptyColor="#a1a1aa"
+                            fillColor="#22d3ee"
+                            initialValue={review.review.score / 2}
+                            tooltipArray={[]}
+                          />
+                        )}
+                      </div>
+
+                      {user?.id === review.author.id && (
+                        <button onClick={handleDeleteModal}>
+                          <ExitButton size={16} />
+                        </button>
                       )}
                     </div>
                     <p className="text-zinc-300">{review.review.description}</p>
-
-                    <p onClick={handleUpdateModal}>edit</p>
-
                     {user?.id === review.author.id && (
-                      <p onClick={handleDeleteModal}>delete</p>
+                      <p
+                        className="max-w-fit text-zinc-400 hover:text-zinc-100"
+                        onClick={handleUpdateModal}
+                      >
+                        edit review
+                      </p>
                     )}
                   </div>
                 </div>

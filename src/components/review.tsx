@@ -30,6 +30,14 @@ const schema = z.object({
 
 type typeSchema = z.infer<typeof schema>;
 
+function onError(error: FieldErrors<typeSchema>) {
+  const descriptionErrorMessage = error.description?.message;
+  const scoreErrorMessage = error.score?.message;
+
+  if (descriptionErrorMessage) toast.error(descriptionErrorMessage);
+  if (scoreErrorMessage) toast.error(scoreErrorMessage);
+}
+
 export function CreateReviewModal(props: {
   game: Game;
   isOpen: boolean;
@@ -78,14 +86,6 @@ export function CreateReviewModal(props: {
     }
   }
 
-  function onCreateError(error: FieldErrors<typeSchema>) {
-    const descriptionErrorMessage = error.description?.message;
-    const scoreErrorMessage = error.score?.message;
-
-    if (descriptionErrorMessage) toast.error(descriptionErrorMessage);
-    if (scoreErrorMessage) toast.error(scoreErrorMessage);
-  }
-
   return (
     <>
       {props.isOpen &&
@@ -93,7 +93,7 @@ export function CreateReviewModal(props: {
           <Modal isOpen={props.isOpen} handleClose={props.handleClose}>
             <form
               onSubmit={(event) =>
-                void handleCreateSubmit(onCreateSubmit, onCreateError)(event)
+                void handleCreateSubmit(onCreateSubmit, onError)(event)
               }
             >
               <div className="flex justify-between">
@@ -214,14 +214,6 @@ export function UpdateReviewModal(props: {
     }
   }
 
-  function onUpdateError(error: FieldErrors<typeSchema>) {
-    const descriptionErrorMessage = error.description?.message;
-    const scoreErrorMessage = error.score?.message;
-
-    if (descriptionErrorMessage) toast.error(descriptionErrorMessage);
-    if (scoreErrorMessage) toast.error(scoreErrorMessage);
-  }
-
   // 0 is falsy and will not show up if there's no release date
   let releaseDate = 0;
 
@@ -236,7 +228,7 @@ export function UpdateReviewModal(props: {
           <Modal isOpen={props.isOpen} handleClose={props.handleClose}>
             <form
               onSubmit={(event) =>
-                void handleUpdateSubmit(onUpdateSubmit, onUpdateError)(event)
+                void handleUpdateSubmit(onUpdateSubmit, onError)(event)
               }
             >
               <div className="flex justify-between">
@@ -387,7 +379,7 @@ export const DeleteReviewModal = (props: {
             <div className="flex justify-end pt-4">
               <button
                 className="mr-2 rounded-md bg-zinc-500 px-2 text-xl transition duration-75 hover:bg-zinc-400"
-                onClick={() => console.log(props.review.author.username)}
+                onClick={props.handleClose}
               >
                 cancel
               </button>
@@ -451,21 +443,21 @@ export default function Review(props: ReviewWithUser) {
           </Link>
           {user?.id === author.id && (
             <button onClick={handleDeleteModal} className="md:hidden">
-              <ExitButton />
+              <ExitButton size={16}/>
             </button>
           )}
         </div>
 
         <div className="-mt-1 flex w-full flex-col md:px-8">
-          <div className="flex w-full justify-between pb-1">
+          <div className="flex w-full pb-1 justify-between">
             <h3 className="flex max-w-fit text-2xl font-medium transition duration-75 hover:text-zinc-400">
               <Link href={`/games/${review.game.slug}`}>
                 {review.game.name}
               </Link>
             </h3>
             {user?.id === author.id && (
-              <button onClick={handleDeleteModal} className="hidden md:block">
-                <ExitButton />
+              <button onClick={handleDeleteModal} className="hidden md:block pt-1">
+                <ExitButton size={16}/>
               </button>
             )}
           </div>
