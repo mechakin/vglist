@@ -18,6 +18,7 @@ import {
   UpdateReviewModal,
 } from "~/components/review";
 import { ExitButton } from "~/components/exit-button";
+import { FormRating } from "~/components/form-rating";
 
 type ReviewWithUser =
   RouterOutputs["review"]["getReviewsByUsername"]["reviews"][number];
@@ -59,6 +60,14 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
   const { ref, inView } = useInView();
 
   const { data: gameData } = api.game.getGameBySlug.useQuery({ slug });
+
+  const { data: reviewData, isFetching: isReviewFetching } =
+    api.review.getReviewByAuthorAndGameId.useQuery({
+      authorId: user?.id,
+      gameId: gameData?.id,
+    });
+
+  const realReviewData = reviewData?.review;
 
   const {
     data: reviewsData,
@@ -165,22 +174,29 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                 </Link>
               </SignedOut>
               <SignedIn>
-                <div className="mt-2 h-fit rounded-md bg-zinc-600 p-1 px-12">
-                  <Rating
-                    SVGclassName="inline -mx-0.5"
-                    allowFraction
-                    size={30}
-                    emptyColor="#a1a1aa"
-                    fillColor="#22d3ee"
-                    tooltipArray={[]}
-                  />
-                </div>
-                <button
-                  className="mt-2 w-full rounded-md bg-zinc-600 p-1 text-center text-xl transition duration-75 hover:bg-zinc-500"
-                  onClick={() => setShowCreateModal(true)}
-                >
-                  write a review
-                </button>
+                {!isReviewFetching && (
+                  <div className="mt-2 h-fit rounded-md bg-zinc-600 p-1 px-12">
+                    <FormRating game={gameData} />
+                  </div>
+                )}
+                {!realReviewData && !isReviewFetching && (
+                  <button
+                    className="mt-2 w-full rounded-md bg-zinc-600 p-1 text-center text-xl transition duration-75 hover:bg-zinc-500"
+                    onClick={() => setShowCreateModal(true)}
+                  >
+                    write a review
+                  </button>
+                )}
+                {realReviewData && (
+                  <div onClick={() => handleReviewClick(realReviewData)}>
+                    <button
+                      className="mt-2 w-full rounded-md bg-zinc-600 p-1 text-center text-xl transition duration-75 hover:bg-zinc-500"
+                      onClick={() => setShowUpdateModal(true)}
+                    >
+                      edit a review
+                    </button>
+                  </div>
+                )}
               </SignedIn>
               <div className="mt-2 h-fit rounded-md bg-zinc-600 p-1 text-center">
                 <h3 className="text-xl">average rating</h3>
@@ -217,10 +233,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                       />
                     </Link>
                     {user?.id === review.author.id && (
-                      <button
-                        onClick={handleDeleteModal}
-                        className="md:hidden"
-                      >
+                      <button onClick={handleDeleteModal} className="md:hidden">
                         <ExitButton size={16} />
                       </button>
                     )}
@@ -260,7 +273,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                     <p className="text-zinc-300">{review.review.description}</p>
                     {user?.id === review.author.id && (
                       <p
-                        className="max-w-fit text-zinc-400 hover:text-zinc-100"
+                        className="max-w-fit text-zinc-400 pt-1 hover:text-zinc-100"
                         onClick={handleUpdateModal}
                       >
                         edit review

@@ -22,7 +22,7 @@ export const gameRouter = createTRPCRouter({
         const nextGame = games.pop();
         nextCursor = nextGame?.id;
       }
-      // slows down page time by 1-2 on average, not sure if there's a faster way to do this
+      // slows down page time by 1-2s on average, not sure if there's a faster way to do this
       // const gamesCount = await ctx.prisma.game.count({
       //   where: { id: { gt: 0 } },
       // });

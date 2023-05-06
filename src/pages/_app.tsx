@@ -15,7 +15,10 @@ dayjs.extend(bigIntSupport);
 
 const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
   return (
-    <ClerkProvider appearance={{ baseTheme: dark }} {...pageProps}>
+    <ClerkProvider
+      appearance={{ baseTheme: dark, variables: { colorPrimary: "#0891b2" } }}
+      {...pageProps}
+    >
       <Head>
         <title>vglist</title>
         <meta

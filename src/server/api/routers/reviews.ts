@@ -37,6 +37,30 @@ const addUserDataToReviews = async (reviews: (Review & { game: Game })[]) => {
   });
 };
 
+const addUserDataToReview = async (
+  review: (Review & { game: Game }) | null
+) => {
+  if (!review) return;
+
+  const user = await clerkClient.users.getUser(review.authorId);
+  const author = filterUserForClient(user);
+
+  if (!author || !author.username) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Author for post not found",
+    });
+  }
+
+  return {
+    review,
+    author: {
+      ...author,
+      username: author.username,
+    },
+  };
+};
+
 export const reviewRouter = createTRPCRouter({
   getReviewsBySlug: publicProcedure
     .input(
@@ -135,6 +159,30 @@ export const reviewRouter = createTRPCRouter({
         reviews: hydratedReviews,
         nextCursor,
       };
+    }),
+  getReviewByAuthorAndGameId: publicProcedure
+    .input(
+      z.object({ authorId: z.string().nullish(), gameId: z.number().nullish() })
+    )
+    .query(async ({ ctx, input }) => {
+      if (input.authorId && input.gameId) {
+        const review = await ctx.prisma.review.findUnique({
+          where: {
+            authorId_gameId: {
+              authorId: input.authorId,
+              gameId: input.gameId,
+            },
+          },
+          include: { game: true },
+        });
+
+        const hydratedReview = await addUserDataToReview(review);
+
+        return {
+          review: hydratedReview,
+        };
+      }
+      return null;
     }),
   getReviewCountByUsername: publicProcedure
     .input(z.object({ username: z.string() }))
