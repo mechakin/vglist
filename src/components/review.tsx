@@ -44,25 +44,24 @@ export function CreateReviewModal(props: {
   handleClose: () => void;
 }) {
   const {
-    register: registerCreate,
-    handleSubmit: handleCreateSubmit,
-    control: createControl,
+    register: registerCreateReview,
+    handleSubmit: handleCreateReviewSubmit,
+    control: createReviewControl,
   } = useForm<typeSchema>({
     resolver: zodResolver(schema),
   });
 
   const ctx = api.useContext();
 
-  const { mutate: mutateCreate, isLoading: isCreateLoading } =
-    api.review.createReview.useMutation({
-      onSuccess: () => {
-        props.handleClose();
-        void ctx.review.invalidate();
-      },
-      onError: () => {
-        toast.error("a review for this game already exists");
-      },
-    });
+  const { mutate, isLoading } = api.review.createReview.useMutation({
+    onSuccess: () => {
+      props.handleClose();
+      void ctx.review.invalidate();
+    },
+    onError: () => {
+      toast.error("a review for this game already exists");
+    },
+  });
 
   // 0 is falsy and will not show up if there's no release date
   let releaseDate = 0;
@@ -71,15 +70,15 @@ export function CreateReviewModal(props: {
     releaseDate = dayjs.unix(props.game.releaseDate).year();
   }
 
-  function onCreateSubmit(reviewData: typeSchema) {
+  function onSubmit(reviewData: typeSchema) {
     if (props.game.id && reviewData.score) {
-      mutateCreate({
+      mutate({
         score: reviewData.score * 2,
         description: reviewData.description,
         gameId: props.game.id,
       });
     } else if (props.game.id) {
-      mutateCreate({
+      mutate({
         description: reviewData.description,
         gameId: props.game.id,
       });
@@ -93,7 +92,7 @@ export function CreateReviewModal(props: {
           <Modal isOpen={props.isOpen} handleClose={props.handleClose}>
             <form
               onSubmit={(event) =>
-                void handleCreateSubmit(onCreateSubmit, onError)(event)
+                void handleCreateReviewSubmit(onSubmit, onError)(event)
               }
             >
               <div className="flex justify-between">
@@ -119,7 +118,7 @@ export function CreateReviewModal(props: {
                   <p>rating</p>
                   <Controller
                     name="score"
-                    control={createControl}
+                    control={createReviewControl}
                     render={({ field: { onChange, value } }) => (
                       <Rating
                         SVGclassName="inline -mx-0.5"
@@ -139,8 +138,8 @@ export function CreateReviewModal(props: {
                   <textarea
                     cols={100}
                     rows={5}
-                    className="w-full overflow-auto rounded-md bg-zinc-400 p-2 text-zinc-800 outline-none"
-                    {...registerCreate("description")}
+                    className="w-full overflow-auto rounded-md bg-zinc-300 p-2 text-zinc-900 outline-none"
+                    {...registerCreateReview("description")}
                   ></textarea>
                 </div>
               </div>
@@ -154,7 +153,7 @@ export function CreateReviewModal(props: {
                 <button className="rounded-md bg-cyan-700 px-2 text-xl transition duration-75 hover:bg-cyan-600">
                   create
                 </button>
-                {isCreateLoading && (
+                {isLoading && (
                   <span className="pl-2 pt-2">
                     <LoadingSpinner />
                   </span>
@@ -183,30 +182,29 @@ export function UpdateReviewModal(props: {
     resolver: zodResolver(schema),
   });
 
-  const { mutate: mutateUpdate, isLoading: isUpdateLoading } =
-    api.review.updateReview.useMutation({
-      onSuccess: () => {
-        props.handleClose();
-        void ctx.review.invalidate();
-      },
-      onError: () => {
-        toast.error(
-          "there was an error in trying to update your review, please try again later"
-        );
-      },
-    });
+  const { mutate, isLoading } = api.review.updateReview.useMutation({
+    onSuccess: () => {
+      props.handleClose();
+      void ctx.review.invalidate();
+    },
+    onError: () => {
+      toast.error(
+        "there was an error in trying to update your review, please try again later"
+      );
+    },
+  });
 
   const { review } = props;
 
-  function onUpdateSubmit(reviewData: typeSchema) {
+  function onSubmit(reviewData: typeSchema) {
     if (review.review.game.id && reviewData.score) {
-      mutateUpdate({
+      mutate({
         score: reviewData.score * 2,
         description: reviewData.description,
         id: review.review.id,
       });
     } else if (review.review.game.id) {
-      mutateUpdate({
+      mutate({
         description: reviewData.description,
         id: review.review.id,
       });
@@ -227,7 +225,7 @@ export function UpdateReviewModal(props: {
           <Modal isOpen={props.isOpen} handleClose={props.handleClose}>
             <form
               onSubmit={(event) =>
-                void handleUpdateSubmit(onUpdateSubmit, onError)(event)
+                void handleUpdateSubmit(onSubmit, onError)(event)
               }
             >
               <div className="flex justify-between">
@@ -269,7 +267,9 @@ export function UpdateReviewModal(props: {
                         size={30}
                         emptyColor="#a1a1aa"
                         fillColor="#22d3ee"
-                        initialValue={value}
+                        initialValue={
+                          review.review.score ? review.review.score / 2 : value
+                        }
                         onClick={onChange}
                         tooltipArray={[]}
                       />
@@ -281,8 +281,9 @@ export function UpdateReviewModal(props: {
                   <textarea
                     cols={100}
                     rows={5}
-                    className="w-full overflow-auto rounded-md bg-zinc-400 p-2 text-zinc-800 outline-none"
+                    className="w-full overflow-auto rounded-md bg-zinc-300 p-2 text-zinc-900 placeholder-zinc-500 outline-none"
                     {...registerUpdate("description")}
+                    placeholder={review.review.description}
                   ></textarea>
                 </div>
               </div>
@@ -296,7 +297,7 @@ export function UpdateReviewModal(props: {
                 <button className="rounded-md bg-cyan-700 px-2 text-xl transition duration-75 hover:bg-cyan-600">
                   update
                 </button>
-                {isUpdateLoading && (
+                {isLoading && (
                   <span className="pl-2 pt-2">
                     <LoadingSpinner />
                   </span>
