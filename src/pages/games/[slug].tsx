@@ -17,8 +17,8 @@ import {
   DeleteReviewModal,
   UpdateReviewModal,
 } from "~/components/review";
-import { ExitButton } from "~/components/exit-button";
-import { FormRating } from "~/components/form-rating";
+import { ExitButton } from "~/components/exitButton";
+import { FormRating } from "~/components/formRating";
 
 type ReviewWithUser =
   RouterOutputs["review"]["getReviewsByUsername"]["reviews"][number];
@@ -67,7 +67,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
       gameId: gameData?.id,
     });
 
-  const realReviewData = reviewData?.review;
+  const userReviewData = reviewData?.review;
 
   const {
     data: reviewsData,
@@ -83,6 +83,14 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
   );
 
   const reviews = reviewsData?.pages.flatMap((page) => page.reviews) ?? [];
+  const reviewCount =
+    reviewsData?.pages.flatMap((page) => page.reviewCount)[0] ?? "";
+
+  const { data: userRatingData, isFetching: isRatingFetching } =
+    api.rating.getRatingByAuthorAndGameId.useQuery({
+      authorId: user?.id,
+      gameId: gameData?.id,
+    });
 
   if (inView && hasNextPage && !isFetching) {
     void fetchNextPage();
@@ -156,7 +164,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
       />
       <PageLayout>
         <div className="py-4 md:flex">
-          <div className="flex min-w-max flex-col pb-4">
+          <div className="flex min-w-fit flex-col pb-4">
             <Image
               src={gameData.cover ? gameData.cover : "/game.png"}
               alt={gameData.name ? gameData.name : "game"}
@@ -165,7 +173,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
               className="h-fit w-56 rounded-md border border-zinc-600 border-b-transparent"
               priority
             />
-            <div className="w-56 md:w-auto">
+            <div className="w-56">
               <SignedOut>
                 <Link href={"/login"}>
                   <button className="mt-2 w-full rounded-md bg-zinc-600 p-1 text-center text-xl transition duration-75 hover:bg-zinc-500">
@@ -174,12 +182,17 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                 </Link>
               </SignedOut>
               <SignedIn>
-                {!isReviewFetching && (
-                  <div className="mt-2 h-fit rounded-md bg-zinc-600 p-1 px-12">
+                {!userRatingData && !isRatingFetching && (
+                  <div className="relative mt-2 flex h-fit justify-center rounded-md bg-zinc-600 p-1">
                     <FormRating game={gameData} />
                   </div>
                 )}
-                {!realReviewData && !isReviewFetching && (
+                {userRatingData && (
+                  <div className="relative mt-2 flex h-fit justify-center rounded-md bg-zinc-600 p-1">
+                    <FormRating game={gameData} rating={userRatingData} />
+                  </div>
+                )}
+                {!userReviewData && !isReviewFetching && (
                   <button
                     className="mt-2 w-full rounded-md bg-zinc-600 p-1 text-center text-xl transition duration-75 hover:bg-zinc-500"
                     onClick={() => setShowCreateModal(true)}
@@ -187,8 +200,8 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                     write a review
                   </button>
                 )}
-                {realReviewData && (
-                  <div onClick={() => handleReviewClick(realReviewData)}>
+                {userReviewData && (
+                  <div onClick={() => handleReviewClick(userReviewData)}>
                     <button
                       className="mt-2 w-full rounded-md bg-zinc-600 p-1 text-center text-xl transition duration-75 hover:bg-zinc-500"
                       onClick={() => setShowUpdateModal(true)}
@@ -215,12 +228,15 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
             </h1>
             <p className="py-4 text-lg text-zinc-300">{gameData.summary}</p>
             <h2 className="text-3xl font-medium">Reviews</h2>
+            <p className="pt-2 text-zinc-400">
+              {reviewCount} {reviewCount === 1 ? "review" : "reviews"}
+            </p>
             {reviews.map((review) => (
               <div
                 key={review.review.id}
                 onClick={() => handleReviewClick(review)}
               >
-                <div className="min-w-full border-b border-b-zinc-600 py-4 md:flex">
+                <div className="min-w-full border-b border-b-zinc-600 pb-4 pt-2 md:flex">
                   <div className="flex items-start justify-between">
                     <Link href={`/users/${review.author.username}`}>
                       <Image
@@ -273,7 +289,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                     <p className="text-zinc-300">{review.review.description}</p>
                     {user?.id === review.author.id && (
                       <p
-                        className="max-w-fit text-zinc-400 pt-1 hover:text-zinc-100"
+                        className="max-w-fit pt-1 text-zinc-400 hover:text-zinc-100"
                         onClick={handleUpdateModal}
                       >
                         edit review

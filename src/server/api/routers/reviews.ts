@@ -10,6 +10,30 @@ import {
 import type { Game, Review } from "@prisma/client";
 import { ratelimit } from "~/server/helpers/rateLimiter";
 
+const addUserDataToReview = async (
+  review: (Review & { game: Game }) | null
+) => {
+  if (!review) return;
+
+  const user = await clerkClient.users.getUser(review.authorId);
+  const author = filterUserForClient(user);
+
+  if (!author || !author.username) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Author for post not found",
+    });
+  }
+
+  return {
+    review,
+    author: {
+      ...author,
+      username: author.username,
+    },
+  };
+};
+
 const addUserDataToReviews = async (reviews: (Review & { game: Game })[]) => {
   const users = (
     await clerkClient.users.getUserList({
@@ -37,30 +61,6 @@ const addUserDataToReviews = async (reviews: (Review & { game: Game })[]) => {
   });
 };
 
-const addUserDataToReview = async (
-  review: (Review & { game: Game }) | null
-) => {
-  if (!review) return;
-
-  const user = await clerkClient.users.getUser(review.authorId);
-  const author = filterUserForClient(user);
-
-  if (!author || !author.username) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Author for post not found",
-    });
-  }
-
-  return {
-    review,
-    author: {
-      ...author,
-      username: author.username,
-    },
-  };
-};
-
 export const reviewRouter = createTRPCRouter({
   getReviewsBySlug: publicProcedure
     .input(
@@ -82,6 +82,10 @@ export const reviewRouter = createTRPCRouter({
         orderBy: { id: "desc" },
       });
 
+      const reviewCount = await ctx.prisma.review.count({
+        where: { game: { slug: input.slug } },
+      });
+
       let nextCursor: typeof cursor | undefined = undefined;
 
       if (reviews.length > limit) {
@@ -93,6 +97,7 @@ export const reviewRouter = createTRPCRouter({
 
       return {
         reviews: hydratedReviews,
+        reviewCount,
         nextCursor,
       };
     }),

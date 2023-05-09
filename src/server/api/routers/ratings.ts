@@ -10,7 +10,31 @@ import {
 import type { Game, Rating } from "@prisma/client";
 import { ratelimit } from "~/server/helpers/rateLimiter";
 
-const addUserDataToRatings = async (ratings: (Rating & { game: Game })[]) => {
+const addUserDataToRating = async (
+  rating: (Rating & { game: Game }) | null
+) => {
+  if (!rating) return;
+
+  const user = await clerkClient.users.getUser(rating.authorId);
+  const author = filterUserForClient(user);
+
+  if (!author || !author.username) {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Author for post not found",
+    });
+  }
+
+  return {
+    rating,
+    author: {
+      ...author,
+      username: author.username,
+    },
+  };
+};
+
+const addUserDataToRatings = async (ratings: Rating[]) => {
   const users = (
     await clerkClient.users.getUserList({
       userId: ratings.map((rating) => rating.authorId),
@@ -38,39 +62,30 @@ const addUserDataToRatings = async (ratings: (Rating & { game: Game })[]) => {
 };
 
 export const ratingRouter = createTRPCRouter({
-  getRatingsBySlug: publicProcedure
+  // getRatingByGame
+  getRatingByAuthorAndGameId: publicProcedure
     .input(
-      z.object({
-        slug: z.string(),
-        limit: z.number().min(1).max(100).nullish(),
-        cursor: z.string().nullish(),
-      })
+      z.object({ authorId: z.string().nullish(), gameId: z.number().nullish() })
     )
     .query(async ({ ctx, input }) => {
-      const limit = input.limit ?? 12;
-      const { cursor } = input;
+      if (input.authorId && input.gameId) {
+        const rating = await ctx.prisma.rating.findUnique({
+          where: {
+            authorId_gameId: {
+              authorId: input.authorId,
+              gameId: input.gameId,
+            },
+          },
+          include: { game: true },
+        });
 
-      const ratings = await ctx.prisma.rating.findMany({
-        take: limit + 1,
-        include: { game: true },
-        where: { game: { slug: input.slug } },
-        cursor: cursor ? { id: cursor } : undefined,
-        orderBy: { id: "desc" },
-      });
+        const hydratedRating = await addUserDataToRating(rating);
 
-      let nextCursor: typeof cursor | undefined = undefined;
-
-      if (ratings.length > limit) {
-        const nextRating = ratings.pop();
-        nextCursor = nextRating?.id;
+        return {
+          rating: hydratedRating,
+        };
       }
-
-      const hydratedRatings = await addUserDataToRatings(ratings);
-
-      return {
-        ratings: hydratedRatings,
-        nextCursor,
-      };
+      return null;
     }),
   getRatingsByUsername: publicProcedure
     .input(
@@ -95,9 +110,10 @@ export const ratingRouter = createTRPCRouter({
         where: { authorId },
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: { id: "desc" },
-        include: {
-          game: true,
-        },
+      });
+
+      const ratingCount = await ctx.prisma.rating.count({
+        where: { authorId: { equals: authorId } },
       });
 
       let nextCursor: typeof cursor | undefined = undefined;
@@ -111,23 +127,9 @@ export const ratingRouter = createTRPCRouter({
 
       return {
         ratings: hydratedRatings,
+        ratingCount,
         nextCursor,
       };
-    }),
-  getRatingCountByUsername: publicProcedure
-    .input(z.object({ username: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const [user] = await clerkClient.users.getUserList({
-        username: [input.username],
-      });
-
-      const authorId = user?.id;
-
-      const ratingCount = await ctx.prisma.rating.count({
-        where: { authorId: { equals: authorId } },
-      });
-
-      return ratingCount;
     }),
   createRating: privateProcedure
     .input(

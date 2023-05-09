@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 import { createPortal } from "react-dom";
 import { Modal } from "./modal";
 import dayjs from "dayjs";
-import { ExitButton } from "./exit-button";
+import { ExitButton } from "./exitButton";
 
 type ReviewWithUser =
   RouterOutputs["review"]["getReviewsByUsername"]["reviews"][number];
@@ -53,12 +53,13 @@ export function CreateReviewModal(props: {
 
   const ctx = api.useContext();
 
-  const { mutate, isLoading } = api.review.createReview.useMutation({
+  const { mutate, isLoading, error } = api.review.createReview.useMutation({
     onSuccess: () => {
       props.handleClose();
       void ctx.review.invalidate();
     },
     onError: () => {
+      const message = error?.message;
       toast.error("a review for this game already exists");
     },
   });
@@ -447,7 +448,7 @@ export default function Review(props: ReviewWithUser) {
           )}
         </div>
 
-        <div className="-mt-1 flex w-full flex-col md:px-8">
+        <div className="-mt-1 flex w-full flex-col md:pl-8">
           <div className="flex w-full justify-between pb-1">
             <h3 className="flex max-w-fit text-2xl font-medium transition duration-75 hover:text-zinc-400">
               <Link href={`/games/${review.game.slug}`}>
@@ -457,7 +458,7 @@ export default function Review(props: ReviewWithUser) {
             {user?.id === author.id && (
               <button
                 onClick={handleDeleteModal}
-                className="mt-1 hidden md:block"
+                className="ml-4 hidden md:block"
               >
                 <ExitButton size={16} />
               </button>
