@@ -9,6 +9,7 @@ import type { AppProps } from "next/app";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import bigIntSupport from "dayjs/plugin/bigIntSupport";
+import NextNProgress from "nextjs-progressbar";
 
 dayjs.extend(relativeTime);
 dayjs.extend(bigIntSupport);
@@ -37,6 +38,7 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
           },
         }}
       />
+      <NextNProgress color="#a1a1aa" />
       <Component {...pageProps} />
     </ClerkProvider>
   );

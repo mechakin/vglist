@@ -299,7 +299,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
               </div>
             ))}
             {isFetching && (
-              <div className="pt-4">
+              <div className="flex justify-center pt-4">
                 <LoadingSpinner size={40} />
               </div>
             )}

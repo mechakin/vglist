@@ -45,11 +45,9 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
             </li>
           </ul>
         </nav>
-        {!isFetching && (
-          <p className="pt-1 text-lg text-zinc-400">
-            {gameCount} {gameCount === 1 ? "game" : "games"}
-          </p>
-        )}
+        <p className="pt-1 text-lg text-zinc-400">
+          {gameCount} {gameCount === 1 ? "game" : "games"}
+        </p>
         {games.map((game) => (
           <div className="flex border-b border-b-zinc-600 py-4" key={game.id}>
             <Link href={`/games/${game.slug}`}>
@@ -80,14 +78,14 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
           </div>
         ))}
       </div>
-      {isFetching && (
-        <div className="flex justify-center pt-4">
-          <LoadingSpinner size={40} />
-        </div>
-      )}
       <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
         intersection observer marker
       </span>
+      {isFetching && (
+        <div className="flex justify-center">
+          <LoadingSpinner size={40} />
+        </div>
+      )}
     </PageLayout>
   );
 };
@@ -111,6 +109,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   return {
     props: {
+      trpcState: ssg.dehydrate(),
       name,
     },
   };

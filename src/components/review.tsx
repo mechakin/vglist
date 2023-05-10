@@ -544,14 +544,14 @@ export const ReviewFeed = (props: { username?: string; cap?: boolean }) => {
         {reviews.length === 0 && props.username && (
           <div className="py-2 text-lg text-zinc-300">{`${props.username} hasn't reviewed a game :(`}</div>
         )}
-        {isFetching && (
-          <div className="pt-4">
-            <LoadingSpinner size={40} />
-          </div>
-        )}
         <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
           intersection observer marker
         </span>
+        {isFetching && (
+          <div className="pt-4 flex justify-center">
+            <LoadingSpinner size={40} />
+          </div>
+        )}
       </>
     );
   }

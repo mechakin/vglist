@@ -51,14 +51,14 @@ const GamesPage: NextPage = () => {
           </Link>
         ))}
       </div>
-      {isFetching && (
-        <div className="flex justify-center pt-8">
-          <LoadingSpinner size={40} />
-        </div>
-      )}
       <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
         intersection observer marker
       </span>
+      {isFetching && (
+        <div className="flex justify-center">
+          <LoadingSpinner size={40} />
+        </div>
+      )}
     </PageLayout>
   );
 };
