@@ -1,5 +1,10 @@
 import Link from "next/link";
-import { SignedIn, SignedOut, useUser } from "@clerk/nextjs";
+import {
+  SignedIn,
+  SignedOut,
+  useClerk,
+  useUser,
+} from "@clerk/nextjs";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -70,6 +75,7 @@ type typeSchema = z.infer<typeof schema>;
 
 const Navbar = () => {
   const { user } = useUser();
+  const { signOut } = useClerk();
   const [open, setOpen] = useState(false);
   const { register, handleSubmit } = useForm<typeSchema>();
   const { register: registerMobile, handleSubmit: handleMobileSubmit } =
@@ -126,12 +132,32 @@ const Navbar = () => {
               </Link>
             </SignedOut>
             <SignedIn>
-              <Link
-                href={userUrl}
-                className="px-3 text-2xl transition duration-75 hover:text-zinc-400"
-              >
-                {user?.username}
-              </Link>
+              <div className="group relative inline-block text-xl z-10">
+                <Link
+                  href={userUrl}
+                  className="rounded-t-md p-3 text-2xl transition duration-75 hover:!bg-zinc-500 group-hover:bg-zinc-600"
+                >
+                  {user?.username}
+                </Link>
+                <Link
+                  href={userUrl}
+                  className="absolute my-3 hidden min-w-full p-3 transition duration-75 hover:!bg-zinc-500 group-hover:block group-hover:bg-zinc-600"
+                >
+                  profile
+                </Link>
+                <Link
+                  href={"/settings"}
+                  className="absolute my-16 hidden min-w-full p-3 transition duration-75 hover:!bg-zinc-500 group-hover:block group-hover:bg-zinc-600"
+                >
+                  settings
+                </Link>
+                <button
+                  onClick={() => void signOut()}
+                  className="absolute my-[7.25rem] hidden min-w-full rounded-b-md p-3 text-left transition duration-75 hover:!bg-zinc-500 group-hover:block group-hover:bg-zinc-600"
+                >
+                  log out
+                </button>
+              </div>
               <Link
                 href={"/games"}
                 className="px-3 text-2xl transition duration-75 hover:text-zinc-400"
