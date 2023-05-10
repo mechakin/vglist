@@ -17,12 +17,12 @@ const GamesPage: NextPage = () => {
     fetchNextPage,
     isFetching,
   } = api.game.getAllGames.useInfiniteQuery(
-    { limit: 64 },
+    {},
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
 
   const games = gameData?.pages.flatMap((page) => page.games) ?? [];
-  const count = gameData?.pages.flatMap((page) => page.gamesCount) ?? 0;
+  const count = gameData?.pages.flatMap((page) => page.gamesCount)[0] ?? 0;
 
   if (!gameData) return <NotFound />;
 
@@ -51,14 +51,14 @@ const GamesPage: NextPage = () => {
           </Link>
         ))}
       </div>
+      {isFetching && (
+        <div className="flex justify-center pt-8">
+          <LoadingSpinner size={40} />
+        </div>
+      )}
       <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
         intersection observer marker
       </span>
-      {isFetching && (
-        <div className="flex justify-center">
-          <LoadingSpinner size={55} />
-        </div>
-      )}
     </PageLayout>
   );
 };
@@ -68,7 +68,7 @@ export default GamesPage;
 export const getStaticProps: GetStaticProps = async () => {
   const ssg = generateSSGHelper();
 
-  await ssg.game.getAllGames.prefetchInfinite({ limit: 64 });
+  await ssg.game.getAllGames.prefetchInfinite({});
 
   return {
     props: {

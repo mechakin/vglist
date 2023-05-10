@@ -53,13 +53,12 @@ export function CreateReviewModal(props: {
 
   const ctx = api.useContext();
 
-  const { mutate, isLoading, error } = api.review.createReview.useMutation({
+  const { mutate, isLoading } = api.review.createReview.useMutation({
     onSuccess: () => {
       props.handleClose();
       void ctx.review.invalidate();
     },
     onError: () => {
-      const message = error?.message;
       toast.error("a review for this game already exists");
     },
   });
@@ -129,7 +128,6 @@ export function CreateReviewModal(props: {
                         fillColor="#22d3ee"
                         initialValue={value}
                         onClick={onChange}
-                        tooltipArray={[]}
                       />
                     )}
                   />
@@ -272,7 +270,6 @@ export function UpdateReviewModal(props: {
                           review.review.score ? review.review.score / 2 : value
                         }
                         onClick={onChange}
-                        tooltipArray={[]}
                       />
                     )}
                   />
@@ -486,7 +483,6 @@ export default function Review(props: ReviewWithUser) {
                 size={22}
                 emptyColor="#a1a1aa"
                 fillColor="#22d3ee"
-                tooltipArray={[]}
                 initialValue={review.score / 2}
               />
             )}
@@ -520,6 +516,9 @@ export const ReviewFeed = (props: { username?: string; cap?: boolean }) => {
           {data.reviews.map((review) => (
             <Review key={review.review.id} {...review} />
           ))}
+          {data.reviews.length === 0 && props.username && (
+            <div className="py-2 text-lg text-zinc-300">{`${props.username} hasn't reviewed a game :(`}</div>
+          )}
         </>
       );
   }
@@ -527,10 +526,7 @@ export const ReviewFeed = (props: { username?: string; cap?: boolean }) => {
   if (props.username && !props.cap) {
     const { data, hasNextPage, fetchNextPage, isFetching } =
       api.review.getReviewsByUsername.useInfiniteQuery(
-        {
-          username: props.username,
-          limit: 12,
-        },
+        { username: props.username },
         { getNextPageParam: (lastPage) => lastPage.nextCursor }
       );
 
@@ -542,16 +538,16 @@ export const ReviewFeed = (props: { username?: string; cap?: boolean }) => {
 
     return (
       <>
-        {reviews.map((review) => {
-          return <Review key={review.review.id} {...review} />;
-        })}
+        {reviews.map((review) => (
+          <Review key={review.review.id} {...review} />
+        ))}
+        {reviews.length === 0 && props.username && (
+          <div className="py-2 text-lg text-zinc-300">{`${props.username} hasn't reviewed a game :(`}</div>
+        )}
         {isFetching && (
           <div className="pt-4">
-            <LoadingSpinner size={55} />
+            <LoadingSpinner size={40} />
           </div>
-        )}
-        {reviews.length === 0 && !isFetching && reviews[0]?.author.username && (
-          <div className="py-2 text-lg text-zinc-300">{`${reviews[0]?.author.username} hasn't reviewed a game :(`}</div>
         )}
         <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
           intersection observer marker

@@ -22,17 +22,16 @@ export function FormRating(props: { game: Game; rating?: RatingWithUser }) {
     }
   }, [userRating]);
 
-  const { mutate: mutateCreate, error: errorCreate } = api.rating.createRating.useMutation({
+  const { mutate: mutateCreate } = api.rating.createRating.useMutation({
     onSuccess: () => {
       void ctx.rating.invalidate();
     },
     onError: () => {
-      if (errorCreate?.message)
-        toast.error(errorCreate.message);
+      toast.error("can't review this game, please try again");
     },
   });
 
-  const { mutate: mutateUpdate, error: errorUpdate } = api.rating.updateRating.useMutation({
+  const { mutate: mutateUpdate } = api.rating.updateRating.useMutation({
     onSuccess: () => {
       void ctx.rating.invalidate();
     },
@@ -86,7 +85,6 @@ export function FormRating(props: { game: Game; rating?: RatingWithUser }) {
         size={30}
         emptyColor="#a1a1aa"
         fillColor="#22d3ee"
-        tooltipArray={[]}
         onClick={handleRating}
         initialValue={ratingScore}
       />

@@ -272,7 +272,6 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                             emptyColor="#a1a1aa"
                             fillColor="#22d3ee"
                             initialValue={review.review.score / 2}
-                            tooltipArray={[]}
                           />
                         )}
                       </div>
@@ -301,7 +300,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
             ))}
             {isFetching && (
               <div className="pt-4">
-                <LoadingSpinner size={55} />
+                <LoadingSpinner size={40} />
               </div>
             )}
           </div>

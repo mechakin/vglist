@@ -34,7 +34,7 @@ const addUserDataToRating = async (
   };
 };
 
-const addUserDataToRatings = async (ratings: Rating[]) => {
+const addUserDataToRatings = async (ratings: (Rating & { game: Game })[]) => {
   const users = (
     await clerkClient.users.getUserList({
       userId: ratings.map((rating) => rating.authorId),
@@ -62,7 +62,6 @@ const addUserDataToRatings = async (ratings: Rating[]) => {
 };
 
 export const ratingRouter = createTRPCRouter({
-  // getRatingByGame
   getRatingByAuthorAndGameId: publicProcedure
     .input(
       z.object({ authorId: z.string().nullish(), gameId: z.number().nullish() })
@@ -96,7 +95,7 @@ export const ratingRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const limit = input.limit ?? 12;
+      const limit = input.limit ?? 40;
       const { cursor } = input;
 
       const [user] = await clerkClient.users.getUserList({
@@ -110,6 +109,7 @@ export const ratingRouter = createTRPCRouter({
         where: { authorId },
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: { id: "desc" },
+        include: { game: true },
       });
 
       const ratingCount = await ctx.prisma.rating.count({

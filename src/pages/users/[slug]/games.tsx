@@ -7,13 +7,35 @@ import Link from "next/link";
 import { Rating } from "react-simple-star-rating";
 import NotFound from "~/components/404";
 import Profile from "~/components/profile";
+import { useInView } from "react-intersection-observer";
+import LoadingSpinner from "~/components/loading";
 
 const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
+  const { ref, inView } = useInView();
+
   const { data } = api.profile.getUserByUsername.useQuery({
     username,
   });
 
+  const {
+    data: ratingData,
+    isFetching,
+    hasNextPage,
+    fetchNextPage,
+  } = api.rating.getRatingsByUsername.useInfiniteQuery(
+    { username },
+    { getNextPageParam: (lastPage) => lastPage.nextCursor }
+  );
+
+  const ratings = ratingData?.pages.flatMap((page) => page.ratings) ?? [];
+  const ratingCount =
+    ratingData?.pages.flatMap((page) => page.ratingCount)[0] ?? "";
+
   if (!data) return <NotFound />;
+
+  if (inView && hasNextPage && !isFetching) {
+    void fetchNextPage();
+  }
 
   return (
     <PageLayout>
@@ -34,33 +56,51 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
 
       <div className="flex flex-col md:px-4">
         <h2 className="pb-4 text-3xl font-medium">games played</h2>
-        <h3 className="-mt-3 pb-4 text-lg text-zinc-400">34 games</h3>
+        <h3 className="-mt-3 pb-4 text-lg text-zinc-400">
+          {ratingCount} {ratingCount === 1 ? "game" : "games"}
+        </h3>
         <div className="grid grid-cols-3 place-items-center gap-4 xxs:grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
-          <div className="max-w-fit">
-            <Link href={"/link-to-game"}>
-              <Image
-                src={"/game.png"}
-                alt="game"
-                width={120}
-                height={0}
-                className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-                priority
-              />
-            </Link>
-            <div className="flex items-center justify-center">
-              <Rating
-                SVGclassName="inline -mx-0.5"
-                allowFraction
-                readonly
-                size={19}
-                emptyColor="#a1a1aa"
-                fillColor="#22d3ee"
-                tooltipArray={[]}
-              />
+          {ratings.map((rating) => (
+            <div className="max-w-fit" key={rating.rating.id}>
+              <Link href={`/games/${rating.rating.game.slug}`}>
+                <Image
+                  src={
+                    rating.rating.game.cover
+                      ? rating.rating.game.cover
+                      : "/game.png"
+                  }
+                  alt={
+                    rating.rating.game.name ? rating.rating.game.name : "game"
+                  }
+                  width={120}
+                  height={0}
+                  className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
+                  priority
+                />
+              </Link>
+              <div className="flex items-center justify-center">
+                <Rating
+                  SVGclassName="inline -mx-0.5"
+                  allowFraction
+                  readonly
+                  size={19}
+                  emptyColor="#a1a1aa"
+                  fillColor="#22d3ee"
+                  initialValue={rating.rating.score / 2}
+                />
+              </div>
             </div>
-          </div>
+          ))}
         </div>
       </div>
+      <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
+        intersection observer marker
+      </span>
+      {isFetching && (
+        <div className="flex justify-center pt-4">
+          <LoadingSpinner size={40} />
+        </div>
+      )}
     </PageLayout>
   );
 };
@@ -80,6 +120,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
 
   await ssg.profile.getUserByUsername.prefetch({ username });
+  await ssg.rating.getRatingsByUsername.prefetchInfinite({
+    username,
+  });
 
   return {
     props: {

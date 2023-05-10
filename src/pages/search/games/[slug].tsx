@@ -2,8 +2,6 @@ import { type GetStaticProps, type NextPage } from "next";
 import { PageLayout } from "~/components/layout";
 import Link from "next/link";
 import Image from "next/image";
-import { Rating } from "react-simple-star-rating";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 import Head from "next/head";
 import { api } from "~/utils/api";
 import { useInView } from "react-intersection-observer";
@@ -15,7 +13,7 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
   const { ref, inView } = useInView();
   const { data, hasNextPage, fetchNextPage, isFetching } =
     api.game.getGamesByName.useInfiniteQuery(
-      { name, limit: 16 },
+      { name },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
       }
@@ -78,41 +76,13 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
                     : ""}
                 </span>
               </p>
-              <SignedIn>
-                <div className="md:py-6">
-                  <div className="flex justify-start md:justify-end">
-                    <Rating
-                      SVGclassName="inline -mx-0.5"
-                      allowFraction
-                      size={30}
-                      emptyColor="#a1a1aa"
-                      fillColor="#22d3ee"
-                      tooltipArray={[]}
-                    />
-                  </div>
-                </div>
-              </SignedIn>
-              <SignedOut>
-                <div>
-                  <div className="md:py-6">
-                    <div className="flex justify-start md:justify-end">
-                      <Link
-                        href={"/login"}
-                        className="rounded-md bg-zinc-600 p-1 text-xl"
-                      >
-                        log in to review
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </SignedOut>
             </div>
           </div>
         ))}
       </div>
       {isFetching && (
-        <div className="flex justify-center pt-8">
-          <LoadingSpinner size={55} />
+        <div className="flex justify-center pt-4">
+          <LoadingSpinner size={40} />
         </div>
       )}
       <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
