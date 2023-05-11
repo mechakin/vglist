@@ -1,6 +1,7 @@
 import { ImageResponse } from "@vercel/og";
 import Image from "next/image";
 import { type NextRequest } from "next/server";
+import { CrossIcon } from "~/components/exitButton";
 import { Logo } from "~/components/logo";
 
 export const config = {
@@ -21,28 +22,26 @@ export default function handler(request: NextRequest) {
     (
       <div
         style={{
-          display: "flex",
-          fontSize: 60,
-          color: "black",
-          background: "#f6f6f6",
-          width: "100%",
           height: "100%",
-          paddingTop: 50,
+          width: "100%",
+          display: "flex",
           flexDirection: "row",
-          justifyContent: "center",
           alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#27272a",
         }}
       >
         <Image
-          width="256"
-          height="256"
+          width="200"
+          height="200"
           src={username}
-          alt='profile'
+          alt="profile"
           style={{
-            borderRadius: 128,
+            borderRadius: 6,
           }}
         />
-        <Logo />
+        <CrossIcon />
+        <Logo size={200} />
       </div>
     ),
     {
