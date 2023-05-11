@@ -1,12 +1,13 @@
 import { ImageResponse } from "@vercel/og";
-import { NextRequest } from "next/server";
+import Image from "next/image";
+import { type NextRequest } from "next/server";
 import { Logo } from "~/components/logo";
 
 export const config = {
   runtime: "edge",
 };
 
-export default async function handler(request: NextRequest) {
+export default function handler(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const username = searchParams.get("username");
   if (!username) {
@@ -32,10 +33,11 @@ export default async function handler(request: NextRequest) {
           alignItems: "center",
         }}
       >
-        <img
+        <Image
           width="256"
           height="256"
           src={username}
+          alt='profile'
           style={{
             borderRadius: 128,
           }}
