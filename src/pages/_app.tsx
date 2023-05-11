@@ -23,11 +23,11 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
       <Head>
         <title>vglist</title>
         <meta name="og:site_name" content="vglist" />
-        {/* <meta property="og:image" content="https://www.vglist.org/logo.webp" />
+        <meta property="og:image" content="https://www.vglist.org/logo.webp" />
         <meta
           property="twitter:image"
           content="https://www.vglist.org/logo.webp"
-        /> */}
+        />
         <meta property="twitter:card" content="summary_large_image" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
