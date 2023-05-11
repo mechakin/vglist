@@ -67,7 +67,7 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
                   src={
                     rating.rating.game.cover
                       ? rating.rating.game.cover
-                      : "/game.png"
+                      : "/game.webp"
                   }
                   alt={
                     rating.rating.game.name ? rating.rating.game.name : "game"

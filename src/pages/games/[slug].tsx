@@ -166,7 +166,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
         <div className="py-4 md:flex">
           <div className="flex min-w-fit flex-col pb-4">
             <Image
-              src={gameData.cover ? gameData.cover : "/game.png"}
+              src={gameData.cover ? gameData.cover : "/game.webp"}
               alt={gameData.name ? gameData.name : "game"}
               width={140}
               height={0}

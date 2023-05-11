@@ -108,7 +108,7 @@ export function CreateReviewModal(props: {
               </div>
               <div className="sm:flex">
                 <Image
-                  src={props.game.cover ? props.game.cover : "/game.png"}
+                  src={props.game.cover ? props.game.cover : "/game.webp"}
                   alt={props.game.name ? props.game.name : "game"}
                   width={120}
                   height={0}
@@ -245,7 +245,7 @@ export function UpdateReviewModal(props: {
                   src={
                     review.review.game.cover
                       ? review.review.game.cover
-                      : "/game.png"
+                      : "/game.webp"
                   }
                   alt={
                     review.review.game.name ? review.review.game.name : "game"
@@ -361,7 +361,7 @@ export const DeleteReviewModal = (props: {
                 src={
                   review.review.game.cover
                     ? review.review.game.cover
-                    : "/game.png"
+                    : "/game.webp"
                 }
                 alt={review.review.game.name ? review.review.game.name : "game"}
                 width={120}
@@ -431,7 +431,7 @@ export default function Review(props: ReviewWithUser) {
         <div className="flex items-start justify-between">
           <Link href={`/games/${review.game.slug}`}>
             <Image
-              src={review.game.cover ? review.game.cover : "/game.png"}
+              src={review.game.cover ? review.game.cover : "/game.webp"}
               alt={review.game.name ? review.game.name : "game"}
               width={120}
               height={0}

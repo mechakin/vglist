@@ -26,6 +26,10 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
           name="description"
           content="Welcome to vglist, the best place to track and share your video game collection! Discover the most popular games out right now, or jump right back into the classics. Sign up now!"
         />
+        <meta property="og:description" content="Link preview description" />
+        <meta property="og:url" content="https://vglist.org"></meta>
+        <meta property="og:title" content="Link preview title"></meta>
+        <meta property="og:image" content="/logo.webp"></meta>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Toaster

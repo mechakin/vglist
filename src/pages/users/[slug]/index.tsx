@@ -56,7 +56,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
               <div>
                 <Link href={"/games/link-to-game"}>
                   <Image
-                    src={"/game.png"}
+                    src={"/game.webp"}
                     alt="game"
                     width={120}
                     height={0}

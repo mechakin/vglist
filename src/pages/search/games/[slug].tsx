@@ -52,7 +52,7 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
           <div className="flex border-b border-b-zinc-600 py-4" key={game.id}>
             <Link href={`/games/${game.slug}`}>
               <Image
-                src={game.cover ? game.cover : "/game.png"}
+                src={game.cover ? game.cover : "/game.webp"}
                 alt={game.name ? game.name : "game"}
                 width={120}
                 height={0}
