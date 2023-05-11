@@ -33,7 +33,7 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
         <meta name="og:site_name" content="vglist"></meta>
         <meta property="og:url" content="https://vglist.org"></meta>
         <meta property="og:title" content="vglist - discover, collect, and share your favorite games"></meta>
-        <meta property="og:image" content="https://www.vglist.org/logo.webp" className="w-full" ></meta>
+        <meta property="og:image" content="https://www.vglist.org/logo.webp" ></meta>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Toaster
