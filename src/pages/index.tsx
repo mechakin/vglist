@@ -5,11 +5,35 @@ import Image from "next/image";
 import { useUser } from "@clerk/nextjs";
 import { ReviewFeed } from "~/components/review";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
+import Head from "next/head";
 
 const Home: NextPage = () => {
   const { isSignedIn } = useUser();
   return (
     <PageLayout>
+      <Head>
+        <meta
+          name="description"
+          content="Welcome to vglist, the best place to track and share your video game collection! Discover the most popular games out right now, or jump right back into the classics. Sign up now!"
+        />
+        <meta
+          property="og:description"
+          content="Welcome to vglist, the best place to track and share your video game collection! Discover the most popular games out right now, or jump right back into the classics. Sign up now!"
+        />
+        <meta
+          property="twitter:description"
+          content="Welcome to vglist, the best place to track and share your video game collection! Discover the most popular games out right now, or jump right back into the classics. Sign up now!"
+        />
+        <meta property="og:url" content="https://vglist.org" />
+        <meta
+          property="og:title"
+          content="vglist - discover, collect, and share your favorite games"
+        />
+        <meta
+          property="twitter:title"
+          content="vglist - discover, collect, and share your favorite games"
+        />
+      </Head>
       <div className="flex justify-center pt-4">
         <div className="flex flex-col items-center justify-center">
           <h1 className="pb-8 text-6xl font-semibold">vglist</h1>
