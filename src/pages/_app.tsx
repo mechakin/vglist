@@ -30,10 +30,26 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
           property="og:description"
           content="Welcome to vglist, the best place to track and share your video game collection! Discover the most popular games out right now, or jump right back into the classics. Sign up now!"
         />
-        <meta name="og:site_name" content="vglist"></meta>
-        <meta property="og:url" content="https://vglist.org"></meta>
-        <meta property="og:title" content="vglist - discover, collect, and share your favorite games"></meta>
-        <meta property="og:image" content="https://www.vglist.org/logo.webp" ></meta>
+        <meta name="og:site_name" content="vglist" />
+        <meta property="og:url" content="https://vglist.org" />
+        <meta
+          property="og:title"
+          content="vglist - discover, collect, and share your favorite games"
+        />
+        <meta property="og:image" content="https://www.vglist.org/logo.webp" />
+        <meta
+          property="twitter:image"
+          content="https://www.vglist.org/logo.webp"
+        />
+        <meta
+          property="twitter:title"
+          content="vglist - discover, collect, and share your favorite games"
+        />
+        <meta
+          property="twitter:description"
+          content="Welcome to vglist, the best place to track and share your video game collection! Discover the most popular games out right now, or jump right back into the classics. Sign up now!"
+        />
+        <meta property="twitter:card" content="summary_large_image" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Toaster
