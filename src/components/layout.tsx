@@ -229,21 +229,21 @@ const Navbar = () => {
         <SignedOut>
           <Link
             href="/login"
-            className="block w-full px-6 py-2 text-2xl transition duration-75 hover:bg-zinc-500"
+            className="block w-full px-6 py-4 text-2xl transition duration-75 hover:bg-zinc-500"
             onClick={handleMenu}
           >
             login
           </Link>
           <Link
             href="/register"
-            className="block w-full px-6 py-2 text-2xl transition duration-75 hover:bg-zinc-500"
+            className="block w-full px-6 py-4 text-2xl transition duration-75 hover:bg-zinc-500"
             onClick={handleMenu}
           >
             register
           </Link>
           <Link
             href={"/games"}
-            className="block w-full px-6 py-2 text-2xl transition duration-75 hover:bg-zinc-500"
+            className="block w-full px-6 py-4 text-2xl transition duration-75 hover:bg-zinc-500"
             onClick={handleMenu}
           >
             games
@@ -253,14 +253,14 @@ const Navbar = () => {
         <SignedIn>
           <Link
             href={userUrl}
-            className="block w-full px-6 py-2 text-2xl transition duration-75 hover:bg-zinc-500"
+            className="block w-full px-6 py-4 text-2xl transition duration-75 hover:bg-zinc-500"
             onClick={handleMenu}
           >
             {user?.username}
           </Link>
           <Link
             href={"/games"}
-            className="block w-full px-6 py-2 text-2xl transition duration-75 hover:bg-zinc-500"
+            className="block w-full px-6 py-4 text-2xl transition duration-75 hover:bg-zinc-500"
             onClick={handleMenu}
           >
             games

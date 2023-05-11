@@ -21,8 +21,6 @@ model Game {
   cover              String?
   igdbRating         Float    @default(0)
   igdbRatingCount    Int      @default(0)
-  overallRating      Float    @default(0)
-  overallRatingCount Int      @default(0)
   reviews            Review[]
   ratings            Rating[]
   // status             Status[]
