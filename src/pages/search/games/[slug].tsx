@@ -43,8 +43,8 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
           content="Search over hundreds of thousands of games on vglist and find the exact game you are looking for. Discover new games you might not have even heard of before!"
         />
         <meta property="og:url" content={`https://vglist.org/search/${name}`} />
-        <meta property="og:title" content="search games" />
-        <meta property="twitter:title" content="search games" />
+        <meta property="og:title" content={`search for ${name}`} />
+        <meta property="twitter:title" content={`search for ${name}`} />
       </Head>
       <div className="pt-4">
         <h1 className="text-center text-4xl">results for {`${name}`}</h1>

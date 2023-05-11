@@ -33,8 +33,8 @@ const UsersSearchPage: NextPage<{ username: string }> = ({ username }) => {
           property="og:url"
           content={`https://vglist.org/search/${username}`}
         />
-        <meta property="og:title" content="search users" />
-        <meta property="twitter:title" content="search users" />
+        <meta property="og:title" content={`search for ${username}`} />
+        <meta property="twitter:title" content={`search for ${username}`} />
       </Head>
       <div className="py-4">
         <h1 className="text-center text-4xl">results for {`${username}`}</h1>
