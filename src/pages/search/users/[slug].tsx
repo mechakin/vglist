@@ -17,6 +17,24 @@ const UsersSearchPage: NextPage<{ username: string }> = ({ username }) => {
     <PageLayout>
       <Head>
         <title>{username}</title>
+        <meta
+          name="description"
+          content="Search for users, new and old, and connect with them on vglist!"
+        />
+        <meta
+          property="og:description"
+          content="Search for users, new and old, and connect with them on vglist!"
+        />
+        <meta
+          property="twitter:description"
+          content="Search for users, new and old, and connect with them on vglist!"
+        />
+        <meta
+          property="og:url"
+          content={`https://vglist.org/search/${username}`}
+        />
+        <meta property="og:title" content="search users" />
+        <meta property="twitter:title" content="search users" />
       </Head>
       <div className="py-4">
         <h1 className="text-center text-4xl">results for {`${username}`}</h1>

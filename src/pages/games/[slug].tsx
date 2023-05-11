@@ -146,6 +146,30 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
     <>
       <Head>
         <title>{gameData.name.toLowerCase()}</title>
+        <meta
+          name="description"
+          content={
+            gameData.summary ? gameData.summary : "This game is pretty cool! :)"
+          }
+        />
+        <meta
+          name="og:description"
+          content={
+            gameData.summary ? gameData.summary : "This game is pretty cool! :)"
+          }
+        />
+        <meta
+          property="twitter:description"
+          content={
+            gameData.summary ? gameData.summary : "This game is pretty cool! :)"
+          }
+        />
+        <meta
+          property="og:url"
+          content={`https://vglist.org/games/${gameData.slug}`}
+        />
+        <meta property="og:title" content={gameData.name} />
+        <meta property="twitter:title" content={gameData.name} />
       </Head>
       <CreateReviewModal
         game={gameData}

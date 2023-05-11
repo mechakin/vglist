@@ -7,7 +7,20 @@ export default function NotFound() {
     <PageLayout>
       <Head>
         <title>404 not found</title>
-        <meta name="description" content="Could not find the requested page :("></meta>
+        <meta
+          name="description"
+          content="Could not find the requested page :("
+        />
+        <meta
+          name="og:description"
+          content="Could not find the requested page :("
+        />
+        <meta
+          property="twitter:description"
+          content="Could not find the requested page :("
+        />
+        <meta property="og:title" content="404 not found" />
+        <meta property="twitter:title" content="404 not found" />
       </Head>
       <div className="flex flex-col items-center justify-center md:py-10">
         <h1 className="py-4 text-5xl">page not found :/</h1>

@@ -14,6 +14,24 @@ export default function Profile(props: { username: string }) {
     <>
       <Head>
         <title>{props.username}</title>
+        <meta
+          name="description"
+          content={`${props.username}'s vglist profile`}
+        />
+        <meta
+          name="og:description"
+          content={`${props.username}'s vglist profile`}
+        />
+        <meta
+          property="twitter:description"
+          content={`${props.username}'s vglist profile`}
+        />
+        <meta property="og:title" content={props.username} />
+        <meta property="twitter:title" content={props.username} />
+        <meta
+          property="og:url"
+          content={`https://vglist.org/users/${props.username}`}
+        />
       </Head>
       <div className="flex items-end pt-4">
         <Image

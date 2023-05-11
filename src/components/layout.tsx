@@ -1,10 +1,5 @@
 import Link from "next/link";
-import {
-  SignedIn,
-  SignedOut,
-  useClerk,
-  useUser,
-} from "@clerk/nextjs";
+import { SignedIn, SignedOut, useClerk, useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -132,28 +127,25 @@ const Navbar = () => {
               </Link>
             </SignedOut>
             <SignedIn>
-              <div className="group relative inline-block text-xl z-10">
-                <Link
-                  href={userUrl}
-                  className="rounded-t-md p-3 text-2xl transition duration-75 hover:!bg-zinc-500 group-hover:bg-zinc-600"
-                >
+              <div className="group relative z-10 inline-block text-xl">
+                <div className="rounded-t-md p-3 text-2xl transition duration-75 group-hover:bg-zinc-600">
                   {user?.username}
-                </Link>
+                </div>
                 <Link
                   href={userUrl}
-                  className="absolute my-3 hidden min-w-full p-3 transition duration-75 hover:!bg-zinc-500 group-hover:block group-hover:bg-zinc-600"
+                  className="absolute hidden min-w-full p-3 transition duration-75 hover:!bg-zinc-500 group-hover:block group-hover:bg-zinc-600"
                 >
                   profile
                 </Link>
                 <Link
                   href={"/settings"}
-                  className="absolute my-16 hidden min-w-full p-3 transition duration-75 hover:!bg-zinc-500 group-hover:block group-hover:bg-zinc-600"
+                  className="absolute my-[3.25rem] hidden min-w-full p-3 transition duration-75 hover:!bg-zinc-500 group-hover:block group-hover:bg-zinc-600"
                 >
                   settings
                 </Link>
                 <button
                   onClick={() => void signOut()}
-                  className="absolute my-[7.25rem] hidden min-w-full rounded-b-md p-3 text-left transition duration-75 hover:!bg-zinc-500 group-hover:block group-hover:bg-zinc-600"
+                  className="absolute my-[6.5rem] hidden min-w-full rounded-b-md p-3 text-left transition duration-75 hover:!bg-zinc-500 group-hover:block group-hover:bg-zinc-600"
                 >
                   log out
                 </button>
