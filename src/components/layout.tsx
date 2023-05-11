@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/router";
 import { Logo } from "./logo";
+import { Dropdown } from "./dropdown";
 
 const SearchIcon = () => {
   return (
@@ -58,6 +59,7 @@ const Navbar = () => {
   const { user } = useUser();
   const { signOut } = useClerk();
   const [open, setOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const { register, handleSubmit } = useForm<typeSchema>();
   const { register: registerMobile, handleSubmit: handleMobileSubmit } =
     useForm<typeSchema>();
@@ -65,6 +67,10 @@ const Navbar = () => {
 
   function handleMenu() {
     setOpen((prevState) => !prevState);
+  }
+
+  function handleProfile() {
+    setProfileOpen((prevState) => !prevState);
   }
 
   function onSubmit(data: typeSchema) {
@@ -113,27 +119,25 @@ const Navbar = () => {
               </Link>
             </SignedOut>
             <SignedIn>
-              <div className="group relative z-10 inline-block text-xl">
-                <div className="rounded-t-md p-3 text-2xl transition duration-75 group-hover:bg-zinc-600">
-                  {user?.username}
-                </div>
+              <div className="group relative z-10 inline-block text-2xl">
+                <div className="p-3 text-2xl">{user?.username}</div>
                 <Link
                   href={userUrl}
-                  className="absolute hidden min-w-full p-3 transition duration-75 hover:!bg-zinc-500 group-hover:block group-hover:bg-zinc-600"
+                  className="absolute hidden w-28 rounded-t-md p-3 transition duration-75 hover:!bg-zinc-500 group-hover:block group-hover:bg-zinc-600"
                 >
                   profile
                 </Link>
                 <Link
                   href={"/settings"}
-                  className="absolute my-[3.25rem] hidden min-w-full p-3 transition duration-75 hover:!bg-zinc-500 group-hover:block group-hover:bg-zinc-600"
+                  className="absolute my-[3.25rem]  hidden w-28  p-3 transition duration-75 hover:!bg-zinc-500 group-hover:block group-hover:bg-zinc-600"
                 >
                   settings
                 </Link>
                 <button
                   onClick={() => void signOut()}
-                  className="absolute my-[6.5rem] hidden min-w-full rounded-b-md p-3 text-left transition duration-75 hover:!bg-zinc-500 group-hover:block group-hover:bg-zinc-600"
+                  className="absolute my-[6.5rem]  hidden w-28 rounded-b-md p-3 text-left transition duration-75 hover:!bg-zinc-500 group-hover:block group-hover:bg-zinc-600"
                 >
-                  log out
+                  logout
                 </button>
               </div>
               <Link
@@ -229,16 +233,46 @@ const Navbar = () => {
         </SignedOut>
 
         <SignedIn>
-          <Link
-            href={userUrl}
-            className="block w-full px-6 py-4 text-2xl transition duration-75 hover:bg-zinc-500"
-            onClick={handleMenu}
+          <button
+            className="flex w-full items-center justify-between"
+            onClick={handleProfile}
           >
-            {user?.username}
-          </Link>
+            <div className="block w-full px-6 py-4 text-left text-2xl">
+              {user?.username}
+            </div>
+            <div className={!profileOpen ? "transition px-4" : "transition rotate-180 px-4"}>
+              <Dropdown />
+            </div>
+          </button>
+          <div className={!profileOpen ? "hidden" : "block"}>
+            <div className="flex">
+              <div className="my-2 ml-6 w-1 bg-zinc-500" />
+              <Link href={userUrl} className="block w-full px-6 py-4 text-2xl">
+                profile
+              </Link>
+            </div>
+            <div className="flex">
+              <div className="my-2 ml-6 w-1 bg-zinc-500" />
+              <Link
+                href={"/settings"}
+                className="block w-full px-6 py-4 text-2xl "
+              >
+                settings
+              </Link>
+            </div>
+            <div className="flex">
+              <div className="my-2 ml-6 w-1 bg-zinc-500" />
+              <button
+                onClick={() => void signOut()}
+                className="block w-full px-6 py-4 text-left text-2xl"
+              >
+                logout
+              </button>
+            </div>
+          </div>
           <Link
             href={"/games"}
-            className="block w-full px-6 py-4 text-2xl transition duration-75 hover:bg-zinc-500"
+            className="block w-full px-6 py-4 text-2xl "
             onClick={handleMenu}
           >
             games
