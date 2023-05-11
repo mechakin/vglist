@@ -31,6 +31,8 @@ export default function handler(request: NextRequest) {
           backgroundColor: "#27272a",
         }}
       >
+        <Logo size={200} />
+        <CrossIcon />
         <Image
           width="200"
           height="200"
@@ -40,8 +42,6 @@ export default function handler(request: NextRequest) {
             borderRadius: 6,
           }}
         />
-        <CrossIcon />
-        <Logo size={200} />
       </div>
     ),
     {
