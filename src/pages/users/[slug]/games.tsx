@@ -92,6 +92,9 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
             </div>
           ))}
         </div>
+        {ratings.length === 0 && (
+          <div className="-mt-2 text-lg text-zinc-300">{`${username} hasn't played a game :(`}</div>
+        )}
       </div>
       <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
         intersection observer marker
