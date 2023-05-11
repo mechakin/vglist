@@ -32,8 +32,8 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
         />
         <meta name="og:site_name" content="vglist"></meta>
         <meta property="og:url" content="https://vglist.org"></meta>
-        <meta property="og:title" content="Link preview title"></meta>
-        <meta property="og:image" content="/logo.webp"></meta>
+        <meta property="og:title" content="vglist - discover, collect, and share your favorite games"></meta>
+        <meta property="og:image" content="/logo.webp" className="w-full" ></meta>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Toaster
