@@ -47,8 +47,8 @@ const GamesPage: NextPage = () => {
           content="Search over our collection of over hundreds of thousands of games on vglist and find the exact game you are looking for. Discover new games you might not have even heard of before!"
         />
         <meta property="og:url" content="https://vglist.org/games" />
-        <meta property="og:title" content="all games" />
-        <meta property="twitter:title" content="all games" />
+        <meta property="og:title" content="games" />
+        <meta property="twitter:title" content="games" />
       </Head>
       <h2 className="pb-4 text-3xl font-semibold">all games</h2>
       <h3 className="-mt-2 pb-4 text-lg text-zinc-400">{count} games</h3>
