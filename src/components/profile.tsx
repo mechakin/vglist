@@ -32,9 +32,10 @@ export default function Profile(props: { username: string }) {
           property="og:url"
           content={`https://vglist.org/users/${props.username}`}
         />
-        <meta property="og:image" content={data.profileImageUrl} />
-        <meta property="og:image:width" content="128" />
-        <meta property="og:image:height" content="128" />
+        <meta
+          property="og:image"
+          content={`https://vglist.org/api/og?username=${data.profileImageUrl}`}
+        />
       </Head>
       <div className="flex items-end pt-4">
         <Image

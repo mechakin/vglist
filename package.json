@@ -25,6 +25,7 @@
     "@trpc/server": "^10.19.1",
     "@upstash/ratelimit": "^0.4.1",
     "@upstash/redis": "^1.20.2",
+    "@vercel/og": "^0.5.4",
     "dayjs": "^1.11.7",
     "igdb-api-node": "^5.0.2",
     "next": "^13.3.0",
