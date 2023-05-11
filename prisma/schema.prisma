@@ -72,7 +72,7 @@ model Review {
   @@index([gameId])
 }
 
-model Profile {
-  authorId String @id @unique
-  bio      String @default("") @db.VarChar(1000)
-}
+// model Profile {
+//   authorId String @id @unique
+//   bio      String @default("") @db.VarChar(1000)
+// }
