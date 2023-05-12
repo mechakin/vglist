@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import { Rating } from "react-simple-star-rating";
 import { type RouterOutputs, api } from "~/utils/api";
-import { ExitButton } from "./exitButton";
+import { ExitButton } from "./icons/exitButton";
 import { useEffect, useState } from "react";
 
 type Game = RouterOutputs["game"]["getGameBySlug"];

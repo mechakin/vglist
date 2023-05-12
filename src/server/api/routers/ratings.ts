@@ -97,6 +97,22 @@ export const ratingRouter = createTRPCRouter({
 
       return ratings;
     }),
+  getAverageScoreByUsername: publicProcedure
+    .input(z.object({ username: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const [user] = await clerkClient.users.getUserList({
+        username: [input.username],
+      });
+
+      const authorId = user?.id;
+
+      const ratings = await ctx.prisma.rating.aggregate({
+        _avg: { score: true },
+        where: { authorId },
+      });
+
+      return ratings;
+    }),
   getRatingsByUsername: publicProcedure
     .input(
       z.object({

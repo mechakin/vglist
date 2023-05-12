@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/router";
-import { Logo } from "./logo";
-import { Dropdown } from "./dropdown";
+import { Logo } from "./icons/logo";
+import { Dropdown } from "./icons/dropdown";
 
 const SearchIcon = () => {
   return (
@@ -240,7 +240,11 @@ const Navbar = () => {
             <div className="block w-full px-6 py-4 text-left text-2xl">
               {user?.username}
             </div>
-            <div className={!profileOpen ? "transition px-4" : "transition rotate-180 px-4"}>
+            <div
+              className={
+                !profileOpen ? "px-4 transition" : "rotate-180 px-4 transition"
+              }
+            >
               <Dropdown />
             </div>
           </button>

@@ -13,6 +13,10 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
     username,
   });
 
+  const { data: scoreData } = api.rating.getAverageScoreByUsername.useQuery({
+    username,
+  });
+
   if (!data) return <NotFound />;
 
   return (
@@ -38,7 +42,9 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
             324
           </section>
           <div className="text-xl  ">average score</div>
-          <section className="text-4xl font-medium text-zinc-300">7.4</section>
+          <section className="text-4xl font-medium text-zinc-300">
+            {scoreData?._avg.score?.toFixed(1)}
+          </section>
           <div className="rounded-md py-4 md:w-64">
             <span className="text-xl  ">bio</span>
             <section className="font-normal text-zinc-300 no-underline">
@@ -94,6 +100,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   await ssg.profile.getUserByUsername.prefetch({ username });
   await ssg.review.getLatestReviewsByUsername.prefetch({ username });
+  await ssg.rating.getAverageScoreByUsername.prefetch({ username });
 
   return {
     props: {

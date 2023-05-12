@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Rating } from "react-simple-star-rating";
 import Link from "next/link";
 import { type RouterOutputs, api } from "~/utils/api";
-import LoadingSpinner from "./loading";
+import LoadingSpinner from "./icons/loading";
 import { useInView } from "react-intersection-observer";
 import { useUser } from "@clerk/nextjs";
 import { useState } from "react";
@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 import { createPortal } from "react-dom";
 import { Modal } from "./modal";
 import dayjs from "dayjs";
-import { ExitButton } from "./exitButton";
+import { ExitButton } from "./icons/exitButton";
 
 type ReviewWithUser =
   RouterOutputs["review"]["getReviewsByUsername"]["reviews"][number];
@@ -436,6 +436,7 @@ export default function Review(props: ReviewWithUser) {
               width={120}
               height={0}
               className="mb-4 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-50 md:mb-2 "
+              priority
             />
           </Link>
           {user?.id === author.id && (
@@ -469,6 +470,7 @@ export default function Review(props: ReviewWithUser) {
                 width={35}
                 height={0}
                 className="mr-4 mt-2 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-50"
+                priority
               />
             </Link>
 
@@ -548,7 +550,7 @@ export const ReviewFeed = (props: { username?: string; cap?: boolean }) => {
           intersection observer marker
         </span>
         {isFetching && (
-          <div className="pt-4 flex justify-center">
+          <div className="flex justify-center pt-4">
             <LoadingSpinner size={40} />
           </div>
         )}

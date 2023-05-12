@@ -8,7 +8,7 @@ import { Rating } from "react-simple-star-rating";
 import NotFound from "~/components/404";
 import Profile from "~/components/profile";
 import { useInView } from "react-intersection-observer";
-import LoadingSpinner from "~/components/loading";
+import LoadingSpinner from "~/components/icons/loading";
 
 const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
   const { ref, inView } = useInView();

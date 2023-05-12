@@ -7,7 +7,7 @@ import NotFound from "~/components/404";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import Head from "next/head";
 import { useInView } from "react-intersection-observer";
-import LoadingSpinner from "~/components/loading";
+import LoadingSpinner from "~/components/icons/loading";
 
 const GamesPage: NextPage = () => {
   const { ref, inView } = useInView();

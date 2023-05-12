@@ -6,7 +6,7 @@ import Head from "next/head";
 import { api } from "~/utils/api";
 import { useInView } from "react-intersection-observer";
 import dayjs from "dayjs";
-import LoadingSpinner from "~/components/loading";
+import LoadingSpinner from "~/components/icons/loading";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
 const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {

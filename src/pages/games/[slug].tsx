@@ -10,14 +10,14 @@ import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import NotFound from "~/components/404";
 import dayjs from "dayjs";
 import Head from "next/head";
-import LoadingSpinner from "~/components/loading";
+import LoadingSpinner from "~/components/icons/loading";
 import { useInView } from "react-intersection-observer";
 import {
   CreateReviewModal,
   DeleteReviewModal,
   UpdateReviewModal,
 } from "~/components/review";
-import { ExitButton } from "~/components/exitButton";
+import { ExitButton } from "~/components/icons/exitButton";
 import { FormRating } from "~/components/formRating";
 
 type ReviewWithUser =
