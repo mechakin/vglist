@@ -92,6 +92,10 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
       gameId: gameData?.id,
     });
 
+  const { data: gameRatingData } = api.rating.getRatingsBySlug.useQuery({
+    slug,
+  });
+
   if (inView && hasNextPage && !isFetching) {
     void fetchNextPage();
   }
@@ -112,28 +116,27 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
     setSelectedReview(review);
   }
 
-  let weightedScore = "n/a";
-
   if (!gameData) return <NotFound />;
-
-  if (gameData.igdbRating !== 0)
-    weightedScore = (gameData.igdbRating / 10).toFixed(1);
 
   // to get the weighted rating
 
-  // if (gameData.igdbRatingCount && gameData.igdbRating) {
-  //   const totalReviews = gameData.igdbRatingCount + gameData.overallRatingCount;
+  let weightedScore = "n/a";
 
-  //   if (gameData.overallRatingCount > 0) {
-  //     const igdbRatingsRatio = gameData.igdbRatingCount / totalReviews;
-  //     const vglistRatingsRatio = gameData.overallRatingCount / totalReviews;
+  if (gameData.igdbRatingCount && gameData.igdbRating) {
+    weightedScore = (gameData.igdbRating / 10).toFixed(1);
 
-  //     weightedScore = (
-  //       gameData.overallRating * vglistRatingsRatio +
-  //       gameData.igdbRating * igdbRatingsRatio
-  //     ).toFixed(1);
-  //   }
-  // }
+    if (gameRatingData?._count.score && gameRatingData?._avg.score) {
+      const totalReviews =
+        gameData.igdbRatingCount + gameRatingData?._count.score;
+      const igdbRatingsRatio = gameData.igdbRatingCount / totalReviews;
+      const vglistRatingsRatio = gameRatingData?._count.score / totalReviews;
+
+      weightedScore = (
+        gameRatingData?._avg.score * vglistRatingsRatio +
+        (gameData.igdbRating * igdbRatingsRatio) / 10
+      ).toFixed(1);
+    }
+  }
 
   // 0 is falsy and will not show up if there's no release date
   let releaseDate = 0;
@@ -353,6 +356,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   await ssg.game.getGameBySlug.prefetch({ slug });
   await ssg.review.getReviewsBySlug.prefetchInfinite({ slug, limit: 12 });
+  await ssg.rating.getRatingsBySlug.prefetch({ slug });
 
   return {
     props: {

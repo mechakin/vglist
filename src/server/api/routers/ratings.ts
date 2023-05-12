@@ -86,6 +86,17 @@ export const ratingRouter = createTRPCRouter({
       }
       return null;
     }),
+  getRatingsBySlug: publicProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const ratings = await ctx.prisma.rating.aggregate({
+        _avg: { score: true },
+        _count: { score: true },
+        where: { game: { slug: input.slug } },
+      });
+
+      return ratings;
+    }),
   getRatingsByUsername: publicProcedure
     .input(
       z.object({
