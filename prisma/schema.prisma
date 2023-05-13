@@ -12,17 +12,17 @@ generator client {
 }
 
 model Game {
-  id                 Int      @id
-  igdbUpdatedAt      BigInt
-  name               String   @db.VarChar(256)
-  summary            String?  @db.VarChar(10000)
-  slug               String   @unique @db.VarChar(256)
-  releaseDate        BigInt?
-  cover              String?
-  igdbRating         Float    @default(0)
-  igdbRatingCount    Int      @default(0)
-  reviews            Review[]
-  ratings            Rating[]
+  id              Int      @id
+  igdbUpdatedAt   BigInt
+  name            String   @db.VarChar(256)
+  summary         String?  @db.VarChar(10000)
+  slug            String   @unique @db.VarChar(256)
+  releaseDate     BigInt?
+  cover           String?
+  igdbRating      Float    @default(0)
+  igdbRatingCount Int      @default(0)
+  reviews         Review[]
+  ratings         Rating[]
   // status             Status[]
 
   @@index([slug])
@@ -72,7 +72,7 @@ model Review {
   @@index([gameId])
 }
 
-// model Profile {
-//   authorId String @id @unique
-//   bio      String @default("") @db.VarChar(1000)
-// }
+model Profile {
+  authorId String @id @unique
+  bio      String @db.VarChar(1000)
+}

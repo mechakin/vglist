@@ -12,15 +12,16 @@ export function FormRating(props: { game: Game; rating?: RatingWithUser }) {
   const ctx = api.useContext();
   const [ratingScore, setRatingScore] = useState(0);
 
-  const userRating = props.rating?.rating?.rating.score;
+  const userRatingScore = props.rating?.rating?.rating.score;
+  const userRatingId = props.rating?.rating?.rating.id;
 
   useEffect(() => {
-    if (userRating) {
-      setRatingScore(userRating / 2);
+    if (userRatingScore) {
+      setRatingScore(userRatingScore / 2);
     } else {
       setRatingScore(0);
     }
-  }, [userRating]);
+  }, [userRatingScore]);
 
   const { mutate: mutateCreate } = api.rating.createRating.useMutation({
     onSuccess: () => {
@@ -52,19 +53,19 @@ export function FormRating(props: { game: Game; rating?: RatingWithUser }) {
   function handleRating(rating: number) {
     if (ratingScore === 0) {
       mutateCreate({ score: rating * 2, gameId: props.game.id });
-    } else if (ratingScore > 0 && props.rating?.rating?.rating.id) {
+    } else if (ratingScore > 0 && userRatingId) {
       mutateUpdate({
         score: rating * 2,
         gameId: props.game.id,
-        id: props.rating.rating.rating.id,
+        id: userRatingId,
       });
     }
     setRatingScore(rating);
   }
 
   function handleUserRating() {
-    if (props.rating?.rating?.rating.id) {
-      mutateDelete({ id: props.rating.rating.rating.id });
+    if (userRatingId) {
+      mutateDelete({ id: userRatingId });
     }
   }
 

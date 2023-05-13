@@ -1,12 +1,166 @@
 import { type GetStaticProps, type NextPage } from "next";
 import Image from "next/image";
-import { api } from "~/utils/api";
+import { type RouterOutputs, api } from "~/utils/api";
 import { PageLayout } from "~/components/layout";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import Link from "next/link";
 import NotFound from "~/components/404";
 import Profile from "~/components/profile";
 import { ReviewFeed } from "~/components/review";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { useUser } from "@clerk/nextjs";
+import { type FieldErrors, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { createPortal } from "react-dom";
+import { Modal } from "~/components/modal";
+import LoadingSpinner from "~/components/icons/loading";
+import { ExitButton } from "~/components/icons/exitButton";
+
+type Bio = RouterOutputs["profile"]["getBioByUsername"];
+
+const schema = z.object({
+  bio: z
+    .string()
+    .min(1, "review must contain at least one character")
+    .max(1000, "review must contain a max of 1000 characters"),
+});
+
+type typeSchema = z.infer<typeof schema>;
+
+function onError(error: FieldErrors<typeSchema>) {
+  const bioErrorMessage = error.bio?.message;
+
+  if (bioErrorMessage) toast.error(bioErrorMessage);
+}
+
+export function BioModal(props: {
+  bio: Bio | null | undefined;
+  isOpen: boolean;
+  handleClose: () => void;
+}) {
+  const { register: registerCreateBio, handleSubmit: handleCreateBioSubmit } =
+    useForm<typeSchema>({
+      resolver: zodResolver(schema),
+    });
+
+  const ctx = api.useContext();
+
+  const { mutate: mutateCreate, isLoading: isCreateLoading } =
+    api.profile.createBio.useMutation({
+      onSuccess: () => {
+        void ctx.profile.getBioByUsername.invalidate();
+        props.handleClose();
+      },
+      onError: () => {
+        toast.error("can't edit this bio, please try again");
+      },
+    });
+
+  const { mutate: mutateUpdate, isLoading: isUpdateLoading } =
+    api.profile.updateBio.useMutation({
+      onSuccess: () => {
+        void ctx.profile.getBioByUsername.invalidate();
+        props.handleClose();
+      },
+      onError: () => {
+        toast.error("can't update this bio, please try again");
+      },
+    });
+
+  function onSubmit(reviewData: typeSchema) {
+    if (props.bio?.bio) {
+      mutateUpdate({
+        bio: reviewData.bio,
+      });
+    } else {
+      mutateCreate({
+        bio: reviewData.bio,
+      });
+    }
+  }
+
+  return (
+    <>
+      {props.isOpen &&
+        createPortal(
+          <Modal isOpen={props.isOpen} handleClose={props.handleClose}>
+            <form
+              onSubmit={(event) =>
+                void handleCreateBioSubmit(onSubmit, onError)(event)
+              }
+            >
+              <div className="flex justify-between">
+                <div className="flex items-end">
+                  <h2 className="text-2xl font-medium">edit bio</h2>
+                </div>
+                <button onClick={props.handleClose} className="text-2xl">
+                  <ExitButton />
+                </button>
+              </div>
+              <div className="sm:flex">
+                <div className="flex flex-col pt-4">
+                  <textarea
+                    cols={150}
+                    rows={5}
+                    className="w-full overflow-auto rounded-md bg-zinc-300 p-2 text-zinc-900 outline-none"
+                    {...registerCreateBio("bio")}
+                  ></textarea>
+                </div>
+              </div>
+              <div className="flex justify-end pt-4">
+                <button
+                  className="mr-2 rounded-md bg-zinc-500 px-2 text-xl transition duration-75 hover:bg-zinc-400"
+                  onClick={props.handleClose}
+                >
+                  cancel
+                </button>
+                <button className="rounded-md bg-cyan-700 px-2 text-xl transition duration-75 hover:bg-cyan-600">
+                  edit
+                </button>
+                {isCreateLoading && isUpdateLoading && (
+                  <span className="pl-2 pt-2">
+                    <LoadingSpinner />
+                  </span>
+                )}
+              </div>
+            </form>
+          </Modal>,
+          document.getElementById("portal") as HTMLDivElement
+        )}
+    </>
+  );
+}
+
+const Bio = (props: { username: string }) => {
+  const { data } = api.profile.getBioByUsername.useQuery({
+    username: props.username,
+  });
+  const { user } = useUser();
+
+  const [openModal, setOpenModal] = useState(false);
+
+  function handleModal() {
+    setOpenModal(() => !openModal);
+  }
+
+  return (
+    <>
+      <section className="font-normal text-zinc-300 no-underline">
+        {data?.bio}
+      </section>
+      {user?.username === props.username && (
+        <>
+          <button className="pt-2 text-zinc-400" onClick={handleModal}>
+            edit bio
+          </button>
+          <BioModal isOpen={openModal} handleClose={handleModal} bio={data} />
+        </>
+      )}
+    </>
+  );
+};
 
 const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { data } = api.profile.getUserByUsername.useQuery({
@@ -41,18 +195,13 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           <section className="pb-4 text-4xl font-medium text-zinc-300">
             324
           </section>
-          <div className="text-xl  ">average score</div>
+          <div className="pb-  text-xl">average score</div>
           <section className="text-4xl font-medium text-zinc-300">
             {scoreData?._avg.score?.toFixed(1)}
           </section>
           <div className="rounded-md py-4 md:w-64">
-            <span className="text-xl  ">bio</span>
-            <section className="font-normal text-zinc-300 no-underline">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum
-              voluptas doloremque beatae aspernatur recusandae. Iste provident
-              quas recusandae consectetur, inventore et veniam saepe, est
-              tenetur voluptatibus expedita, mollitia quam quis.
-            </section>
+            <span className="text-xl">bio</span>
+            <Bio username={username} />
           </div>
         </div>
         <div className="w-full md:px-4">
@@ -101,6 +250,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   await ssg.profile.getUserByUsername.prefetch({ username });
   await ssg.review.getLatestReviewsByUsername.prefetch({ username });
   await ssg.rating.getAverageScoreByUsername.prefetch({ username });
+  await ssg.profile.getBioByUsername.prefetch({ username });
 
   return {
     props: {
