@@ -23,7 +23,7 @@ model Game {
   igdbRatingCount Int      @default(0)
   reviews         Review[]
   ratings         Rating[]
-  // status             Status[]
+  status          Status[]
 
   @@index([slug])
   @@index([name])
@@ -42,21 +42,22 @@ model Rating {
   @@index([gameId])
 }
 
-// model Status {
-//   id            String   @id @default(cuid())
-//   createdAt     DateTime @default(now())
-//   authorId      String
-//   isPlaying     Boolean?
-//   hasPlayed     Boolean?
-//   hasBacklogged Boolean?
-//   hasDropped    Boolean?
-//   game          Game     @relation(fields: [gameId], references: [id])
-//   gameId        Int
+model Status {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  authorId      String
+  isPlaying     Boolean
+  hasPlayed     Boolean
+  hasBacklogged Boolean
+  hasDropped    Boolean
+  game          Game     @relation(fields: [gameId], references: [id])
+  gameId        Int
 
-//   @@unique([authorId, gameId])
-//   @@index([gameId])
-//   @@index([authorId])
-// }
+  @@unique([authorId, gameId])
+  @@unique([isPlaying, hasPlayed, hasBacklogged, hasDropped])
+  @@index([gameId])
+  @@index([authorId])
+}
 
 model Review {
   id          String   @id @default(cuid())

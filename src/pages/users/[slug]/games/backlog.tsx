@@ -56,9 +56,35 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
 
       <div className="flex flex-col md:px-4">
         <h2 className="pb-4 text-3xl font-medium">games played</h2>
-        <h3 className="-mt-3 pb-4 text-lg text-zinc-400">
+        <h3 className="-mt-3  text-lg text-zinc-400">
           {ratingCount} {ratingCount === 1 ? "game" : "games"}
         </h3>
+        <div className="gap-2 pb-4 pt-2 xxs:flex">
+          <Link
+            href={`/users/${username}/games/played`}
+            className="mb-2 mr-2 rounded-md border border-zinc-500 p-1 px-2 text-lg transition duration-75 hover:bg-zinc-500 xxs:mb-0 xxs:mr-0"
+          >
+            played
+          </Link>
+          <Link
+            href={`/users/${username}/games/playing`}
+            className="mr-2 rounded-md border border-zinc-500 p-1 px-2 text-lg transition duration-75 hover:bg-zinc-500 xxs:mr-0"
+          >
+            playing
+          </Link>
+          <Link
+            href={`/users/${username}/games/backlog`}
+            className="mr-2 rounded-md border border-zinc-500 p-1 px-2 text-lg transition duration-75 hover:bg-zinc-500 xxs:mr-0 bg-zinc-500"
+          >
+            backlog
+          </Link>
+          <Link
+            href={`/users/${username}/games/dropped`}
+            className="mr-2 rounded-md border border-zinc-500 p-1 px-2 text-lg transition duration-75 hover:bg-zinc-500 xxs:mr-0"
+          >
+            dropped
+          </Link>
+        </div>
         <div className="grid grid-cols-3 place-items-center gap-4 xxs:grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
           {ratings.map((rating) => (
             <div className="max-w-fit" key={rating.rating.id}>

@@ -21,10 +21,7 @@ import { ExitButton } from "~/components/icons/exitButton";
 type Bio = RouterOutputs["profile"]["getBioByUsername"];
 
 const schema = z.object({
-  bio: z
-    .string()
-    .min(1, "review must contain at least one character")
-    .max(1000, "review must contain a max of 1000 characters"),
+  bio: z.string().max(1000, "review must contain a max of 1000 characters"),
 });
 
 type typeSchema = z.infer<typeof schema>;
@@ -40,10 +37,13 @@ export function BioModal(props: {
   isOpen: boolean;
   handleClose: () => void;
 }) {
-  const { register: registerCreateBio, handleSubmit: handleCreateBioSubmit } =
-    useForm<typeSchema>({
-      resolver: zodResolver(schema),
-    });
+  const {
+    register: registerBio,
+    handleSubmit: handleBioSubmit,
+    watch: watchBio,
+  } = useForm<typeSchema>({
+    resolver: zodResolver(schema),
+  });
 
   const ctx = api.useContext();
 
@@ -70,7 +70,7 @@ export function BioModal(props: {
     });
 
   function onSubmit(reviewData: typeSchema) {
-    if (props.bio?.bio) {
+    if (props.bio) {
       mutateUpdate({
         bio: reviewData.bio,
       });
@@ -88,7 +88,7 @@ export function BioModal(props: {
           <Modal isOpen={props.isOpen} handleClose={props.handleClose}>
             <form
               onSubmit={(event) =>
-                void handleCreateBioSubmit(onSubmit, onError)(event)
+                void handleBioSubmit(onSubmit, onError)(event)
               }
             >
               <div className="flex justify-between">
@@ -103,13 +103,19 @@ export function BioModal(props: {
                 <div className="flex flex-col pt-4">
                   <textarea
                     cols={150}
-                    rows={5}
+                    rows={8}
                     className="w-full overflow-auto rounded-md bg-zinc-300 p-2 text-zinc-900 outline-none"
-                    {...registerCreateBio("bio")}
+                    {...registerBio("bio")}
+                    placeholder={props.bio?.bio}
                   ></textarea>
+                  <p className="flex w-full justify-end pt-1">
+                    {watchBio("bio")
+                      ? `${watchBio("bio").length} / 1000`
+                      : "0 / 1000"}
+                  </p>
                 </div>
               </div>
-              <div className="flex justify-end pt-4">
+              <div className="flex justify-end pt-2">
                 <button
                   className="mr-2 rounded-md bg-zinc-500 px-2 text-xl transition duration-75 hover:bg-zinc-400"
                   onClick={props.handleClose}
@@ -119,7 +125,7 @@ export function BioModal(props: {
                 <button className="rounded-md bg-cyan-700 px-2 text-xl transition duration-75 hover:bg-cyan-600">
                   edit
                 </button>
-                {isCreateLoading && isUpdateLoading && (
+                {(isCreateLoading || isUpdateLoading) && (
                   <span className="pl-2 pt-2">
                     <LoadingSpinner />
                   </span>
@@ -147,12 +153,15 @@ const Bio = (props: { username: string }) => {
 
   return (
     <>
+      {(data?.bio || user?.username === props.username) && (
+        <p className="text-xl">bio</p>
+      )}
       <section className="font-normal text-zinc-300 no-underline">
         {data?.bio}
       </section>
       {user?.username === props.username && (
         <>
-          <button className="pt-2 text-zinc-400" onClick={handleModal}>
+          <button className="pt-1 text-zinc-400" onClick={handleModal}>
             edit bio
           </button>
           <BioModal isOpen={openModal} handleClose={handleModal} bio={data} />
@@ -195,12 +204,13 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
           <section className="pb-4 text-4xl font-medium text-zinc-300">
             324
           </section>
-          <div className="pb-  text-xl">average score</div>
+          <div className="text-xl">average score</div>
           <section className="text-4xl font-medium text-zinc-300">
-            {scoreData?._avg.score?.toFixed(1)}
+            {scoreData?._avg.score?.toFixed(2)
+              ? scoreData?._avg.score?.toFixed(2)
+              : "n/a"}
           </section>
-          <div className="rounded-md py-4 md:w-64">
-            <span className="text-xl">bio</span>
+          <div className="rounded-md py-4 md:min-w-fit">
             <Bio username={username} />
           </div>
         </div>

@@ -19,6 +19,7 @@ import {
 } from "~/components/review";
 import { ExitButton } from "~/components/icons/exitButton";
 import { FormRating } from "~/components/formRating";
+import { Logo } from "~/components/icons/logo";
 
 type ReviewWithUser =
   RouterOutputs["review"]["getReviewsByUsername"]["reviews"][number];
@@ -219,6 +220,28 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                     <FormRating game={gameData} rating={userRatingData} />
                   </div>
                 )}
+                {
+                  <div className="relative mt-2 flex flex-col rounded-md bg-zinc-600 p-1">
+                    <div className="flex h-fit items-center justify-center gap-2">
+                      <div className="text-sm flex flex-col items-center">
+                        <Logo size={35} />
+                        <span>playing</span>
+                      </div>
+                      <div className="text-sm flex flex-col items-center">
+                        <Logo size={35} />
+                        <span>played</span>
+                      </div>
+                      <div className="text-sm flex flex-col items-center">
+                        <Logo size={35} />
+                        <span>backlog</span>
+                      </div>
+                      <div className="text-sm flex flex-col items-center">
+                        <Logo size={35} />
+                        <span>dropped</span>
+                      </div>
+                    </div>
+                  </div>
+                }
                 {!userReviewData && !isReviewFetching && (
                   <button
                     className="mt-2 w-full rounded-md bg-zinc-600 p-1 text-center text-xl transition duration-75 hover:bg-zinc-500"

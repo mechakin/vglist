@@ -47,6 +47,7 @@ export function CreateReviewModal(props: {
     register: registerCreateReview,
     handleSubmit: handleCreateReviewSubmit,
     control: createReviewControl,
+    watch: watchCreate,
   } = useForm<typeSchema>({
     resolver: zodResolver(schema),
   });
@@ -140,6 +141,11 @@ export function CreateReviewModal(props: {
                     className="w-full overflow-auto rounded-md bg-zinc-300 p-2 text-zinc-900 outline-none"
                     {...registerCreateReview("description")}
                   ></textarea>
+                  <p className="flex w-full justify-end pt-1">
+                    {watchCreate("description")
+                      ? `${watchCreate("description").length} / 10000`
+                      : "0/10000"}
+                  </p>
                 </div>
               </div>
               <div className="flex justify-end pt-4">
@@ -177,6 +183,7 @@ export function UpdateReviewModal(props: {
     register: registerUpdate,
     handleSubmit: handleUpdateSubmit,
     control: updateControl,
+    watch: watchUpdate,
   } = useForm<typeSchema>({
     resolver: zodResolver(schema),
   });
@@ -283,9 +290,14 @@ export function UpdateReviewModal(props: {
                     {...registerUpdate("description")}
                     placeholder={review.review.description}
                   ></textarea>
+                  <p className="flex w-full justify-end pt-1">
+                    {watchUpdate("description")
+                      ? `${watchUpdate("description").length} / 10000`
+                      : "0/10000"}
+                  </p>
                 </div>
               </div>
-              <div className="flex justify-end pt-4">
+              <div className="flex justify-end pt-2">
                 <button
                   className="mr-2 rounded-md bg-zinc-500 px-2 text-xl transition duration-75 hover:bg-zinc-400"
                   onClick={props.handleClose}
