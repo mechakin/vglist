@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/router";
 import { Logo } from "./icons/logo";
-import { Dropdown } from "./icons/dropdown";
+import { DropdownIcon } from "./icons/dropdown";
 import { SearchIcon } from "./icons/search";
 import { HamburgerIcon } from "./icons/hamburger";
 
@@ -205,7 +205,7 @@ const Navbar = () => {
                 !profileOpen ? "px-4 transition" : "rotate-180 px-4 transition"
               }
             >
-              <Dropdown />
+              <DropdownIcon />
             </div>
           </button>
           <div className={!profileOpen ? "hidden" : "block"}>

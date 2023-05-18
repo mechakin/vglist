@@ -19,7 +19,10 @@ import {
 } from "~/components/review";
 import { ExitButton } from "~/components/icons/exitButton";
 import { FormRating } from "~/components/formRating";
-import { Logo } from "~/components/icons/logo";
+import { DroppedIcon } from "~/components/icons/dropped";
+import { PlayingIcon } from "~/components/icons/playing";
+import { BacklogIcon } from "~/components/icons/backlog";
+import { PlayedIcon } from "~/components/icons/played";
 
 type ReviewWithUser =
   RouterOutputs["review"]["getReviewsByUsername"]["reviews"][number];
@@ -222,21 +225,21 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                 )}
                 {
                   <div className="relative mt-2 flex flex-col rounded-md bg-zinc-600 p-1">
-                    <div className="flex h-fit items-center justify-center gap-2">
-                      <div className="text-sm flex flex-col items-center">
-                        <Logo size={35} />
+                    <div className="flex h-fit items-center justify-center gap-2 p-1">
+                      <div className="flex flex-col items-center text-xs hover:fill-cyan-200">
+                        <PlayingIcon />
                         <span>playing</span>
                       </div>
-                      <div className="text-sm flex flex-col items-center">
-                        <Logo size={35} />
+                      <div className="flex flex-col items-center text-xs">
+                        <PlayedIcon />
                         <span>played</span>
                       </div>
-                      <div className="text-sm flex flex-col items-center">
-                        <Logo size={35} />
+                      <div className="flex flex-col items-center text-xs">
+                        <BacklogIcon />
                         <span>backlog</span>
                       </div>
-                      <div className="text-sm flex flex-col items-center">
-                        <Logo size={35} />
+                      <div className="flex flex-col items-center text-xs">
+                        <DroppedIcon />
                         <span>dropped</span>
                       </div>
                     </div>

@@ -1,4 +1,4 @@
-export function Dropdown() {
+export function DropdownIcon() {
   return (
     <svg
       width="35px"
