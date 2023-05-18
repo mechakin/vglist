@@ -65,19 +65,16 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
 
   const { data: gameData } = api.game.getGameBySlug.useQuery({ slug });
 
-  const { data: reviewData, isFetching: isReviewFetching } =
-    api.review.getReviewByAuthorAndGameId.useQuery({
-      authorId: user?.id,
-      gameId: gameData?.id,
-    });
-
-  const userReviewData = reviewData?.review;
+  const { data: gameRatingData } = api.rating.getRatingsBySlug.useQuery({
+    slug,
+  });
 
   const {
     data: reviewsData,
     hasNextPage,
     fetchNextPage,
     isFetching,
+    isLoading,
   } = api.review.getReviewsBySlug.useInfiniteQuery(
     {
       slug,
@@ -90,15 +87,19 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
   const reviewCount =
     reviewsData?.pages.flatMap((page) => page.reviewCount)[0] ?? "";
 
-  const { data: userRatingData, isFetching: isRatingFetching } =
-    api.rating.getRatingByAuthorAndGameId.useQuery({
+  const { data: reviewData, isLoading: isReviewLoading } =
+    api.review.getReviewByAuthorAndGameId.useQuery({
       authorId: user?.id,
       gameId: gameData?.id,
     });
 
-  const { data: gameRatingData } = api.rating.getRatingsBySlug.useQuery({
-    slug,
-  });
+  const userReviewData = reviewData?.review;
+
+  const { data: userRatingData, isLoading: isRatingLoading } =
+    api.rating.getRatingByAuthorAndGameId.useQuery({
+      authorId: user?.id,
+      gameId: gameData?.id,
+    });
 
   if (inView && hasNextPage && !isFetching) {
     void fetchNextPage();
@@ -125,6 +126,10 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
   // to get the weighted rating
 
   let weightedScore = "n/a";
+
+  if (gameRatingData?._avg.score) {
+    weightedScore = gameRatingData._avg.score.toFixed(1);
+  }
 
   if (gameData.igdbRatingCount && gameData.igdbRating) {
     weightedScore = (gameData.igdbRating / 10).toFixed(1);
@@ -212,8 +217,18 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                   </button>
                 </Link>
               </SignedOut>
+              {isRatingLoading && (
+                <div className="animate-pulse relative mt-2 flex h-fit justify-center rounded-md bg-zinc-600 p-1">
+                  <div className="invisible"><Rating SVGclassName="inline -mx-0.5" size={30} readonly /></div>
+                </div>
+              )}
+              {isReviewLoading && (
+                <div className="animate-pulse mt-2 w-full rounded-md bg-zinc-600 p-1 text-center text-xl transition duration-75 hover:bg-zinc-500">
+                  <span className="invisible">...</span>
+                </div>
+              )}
               <SignedIn>
-                {!userRatingData && !isRatingFetching && (
+                {!userRatingData && !isRatingLoading && (
                   <div className="relative mt-2 flex h-fit justify-center rounded-md bg-zinc-600 p-1">
                     <FormRating game={gameData} />
                   </div>
@@ -223,29 +238,29 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                     <FormRating game={gameData} rating={userRatingData} />
                   </div>
                 )}
-                {
-                  <div className="relative mt-2 flex flex-col rounded-md bg-zinc-600 p-1">
-                    <div className="flex h-fit items-center justify-center gap-2 p-1">
-                      <div className="flex flex-col items-center text-xs hover:fill-cyan-200">
-                        <PlayingIcon />
+                {/* {
+                  <div className="relative mt-2 flex flex-col rounded-md bg-zinc-600 p-2">
+                    <div className="flex h-fit items-center justify-center gap-2">
+                      <div className="group flex flex-col items-center text-xs">
+                        <PlayingIcon className="fill-zinc-400 group-hover:fill-cyan-400" />
                         <span>playing</span>
                       </div>
-                      <div className="flex flex-col items-center text-xs">
-                        <PlayedIcon />
+                      <div className="group flex flex-col items-center text-xs">
+                        <PlayedIcon className="fill-zinc-400 group-hover:fill-cyan-400" />
                         <span>played</span>
                       </div>
-                      <div className="flex flex-col items-center text-xs">
-                        <BacklogIcon />
+                      <div className="group flex flex-col items-center text-xs">
+                        <BacklogIcon className="fill-zinc-400 group-hover:fill-cyan-400" />
                         <span>backlog</span>
                       </div>
-                      <div className="flex flex-col items-center text-xs">
-                        <DroppedIcon />
+                      <div className="group flex flex-col items-center text-xs">
+                        <DroppedIcon className="fill-zinc-400 group-hover:fill-cyan-400" />
                         <span>dropped</span>
                       </div>
                     </div>
                   </div>
-                }
-                {!userReviewData && !isReviewFetching && (
+                } */}
+                {!userReviewData && !isReviewLoading && (
                   <button
                     className="mt-2 w-full rounded-md bg-zinc-600 p-1 text-center text-xl transition duration-75 hover:bg-zinc-500"
                     onClick={() => setShowCreateModal(true)}
@@ -351,7 +366,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                 </div>
               </div>
             ))}
-            {isFetching && (
+            {isLoading && (
               <div className="flex justify-center pt-4">
                 <LoadingSpinner size={40} />
               </div>

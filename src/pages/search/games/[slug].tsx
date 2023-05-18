@@ -11,7 +11,7 @@ import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
 const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
   const { ref, inView } = useInView();
-  const { data, hasNextPage, fetchNextPage, isFetching } =
+  const { data, hasNextPage, fetchNextPage, isFetching, isFetchingNextPage } =
     api.game.getGamesByName.useInfiniteQuery(
       { name },
       {
@@ -96,8 +96,8 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
       <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
         intersection observer marker
       </span>
-      {isFetching && (
-        <div className="flex justify-center">
+      {isFetchingNextPage && (
+        <div className="flex justify-center py-4">
           <LoadingSpinner size={40} />
         </div>
       )}

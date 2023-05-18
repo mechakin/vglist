@@ -20,6 +20,7 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
   const {
     data: ratingData,
     isFetching,
+    isLoading,
     hasNextPage,
     fetchNextPage,
   } = api.rating.getRatingsByUsername.useInfiniteQuery(
@@ -125,7 +126,7 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
       <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
         intersection observer marker
       </span>
-      {isFetching && (
+      {isLoading && (
         <div className="flex justify-center pt-4">
           <LoadingSpinner size={40} />
         </div>

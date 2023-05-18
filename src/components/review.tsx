@@ -538,7 +538,7 @@ export const ReviewFeed = (props: { username?: string; cap?: boolean }) => {
   }
 
   if (props.username && !props.cap) {
-    const { data, hasNextPage, fetchNextPage, isFetching } =
+    const { data, hasNextPage, fetchNextPage, isFetching, isLoading } =
       api.review.getReviewsByUsername.useInfiniteQuery(
         { username: props.username },
         { getNextPageParam: (lastPage) => lastPage.nextCursor }
@@ -561,7 +561,7 @@ export const ReviewFeed = (props: { username?: string; cap?: boolean }) => {
         <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
           intersection observer marker
         </span>
-        {isFetching && (
+        {isLoading && (
           <div className="flex justify-center pt-4">
             <LoadingSpinner size={40} />
           </div>
