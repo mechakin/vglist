@@ -2,10 +2,6 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import {
-  filterUserForClient,
-  filterUsersForClient,
-} from "~/server/helpers/filterUserForClient";
-import {
   createTRPCRouter,
   privateProcedure,
   publicProcedure,
@@ -13,38 +9,7 @@ import {
 import { ratelimit } from "~/server/helpers/rateLimiter";
 
 export const statusRouter = createTRPCRouter({
-  getUserByUsername: publicProcedure
-    .input(z.object({ username: z.string() }))
-    .query(async ({ input }) => {
-      const [user] = await clerkClient.users.getUserList({
-        username: [input.username],
-      });
-
-      if (!user) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "User not found.",
-        });
-      }
-
-      return filterUserForClient(user);
-    }),
-  getUsersByUsername: publicProcedure
-    .input(z.object({ username: z.string() }))
-    .query(async ({ input }) => {
-      const users = await clerkClient.users.getUserList({
-        query: input.username,
-      });
-
-      if (!users) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Users not found.",
-        });
-      }
-      return filterUsersForClient(users);
-    }),
-  getBioByUsername: publicProcedure
+  getPlayedStatusByUsername: publicProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ ctx, input }) => {
       const [user] = await clerkClient.users.getUserList({
@@ -53,14 +18,67 @@ export const statusRouter = createTRPCRouter({
 
       const authorId = user?.id;
 
-      const bio = await ctx.prisma.profile.findUnique({
-        where: { authorId },
+      const status = await ctx.prisma.status.findMany({
+        where: { authorId, hasPlayed: true },
       });
 
-      return bio;
+      return status;
     }),
-  createBio: privateProcedure
-    .input(z.object({ bio: z.string() }))
+  getPlayingStatusByUsername: publicProcedure
+    .input(z.object({ username: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const [user] = await clerkClient.users.getUserList({
+        username: [input.username],
+      });
+
+      const authorId = user?.id;
+
+      const status = await ctx.prisma.status.findMany({
+        where: { authorId, isPlaying: true },
+      });
+
+      return status;
+    }),
+  getBackloggedStatusByUsername: publicProcedure
+    .input(z.object({ username: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const [user] = await clerkClient.users.getUserList({
+        username: [input.username],
+      });
+
+      const authorId = user?.id;
+
+      const status = await ctx.prisma.status.findMany({
+        where: { authorId, hasBacklogged: true },
+      });
+
+      return status;
+    }),
+  getDroppedStatusByUsername: publicProcedure
+    .input(z.object({ username: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const [user] = await clerkClient.users.getUserList({
+        username: [input.username],
+      });
+
+      const authorId = user?.id;
+
+      const status = await ctx.prisma.status.findMany({
+        where: { authorId, hasDropped: true },
+      });
+
+      return status;
+    }),
+  updateStatus: privateProcedure
+    .input(
+      z.object({
+        hasBacklogged: z.boolean(),
+        hasPlayed: z.boolean(),
+        hasDropped: z.boolean(),
+        isPlaying: z.boolean(),
+        id: z.string(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
 
@@ -68,33 +86,18 @@ export const statusRouter = createTRPCRouter({
 
       if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
-      const bio = await ctx.prisma.profile.create({
-        data: {
-          authorId,
-          bio: input.bio,
-        },
-      });
-
-      return bio;
-    }),
-  updateBio: privateProcedure
-    .input(z.object({ bio: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      const authorId = ctx.userId;
-
-      const { success } = await ratelimit.limit(authorId);
-
-      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-
-      const bio = await ctx.prisma.profile.update({
-        where: { authorId },
+      const status = await ctx.prisma.status.update({
+        where: { id: input.id },
 
         data: {
           authorId,
-          bio: input.bio,
+          hasBacklogged: input.hasBacklogged,
+          hasPlayed: input.hasPlayed,
+          hasDropped: input.hasDropped,
+          isPlaying: input.isPlaying,
         },
       });
 
-      return bio;
+      return status;
     }),
 });

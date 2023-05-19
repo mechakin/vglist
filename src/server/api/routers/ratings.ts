@@ -1,65 +1,12 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { filterUserForClient } from "~/server/helpers/filterUserForClient";
 import {
   createTRPCRouter,
   publicProcedure,
   privateProcedure,
 } from "~/server/api/trpc";
-import type { Game, Rating } from "@prisma/client";
 import { ratelimit } from "~/server/helpers/rateLimiter";
-
-const addUserDataToRating = async (
-  rating: (Rating & { game: Game }) | null
-) => {
-  if (!rating) return;
-
-  const user = await clerkClient.users.getUser(rating.authorId);
-  const author = filterUserForClient(user);
-
-  if (!author || !author.username) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Author for post not found",
-    });
-  }
-
-  return {
-    rating,
-    author: {
-      ...author,
-      username: author.username,
-    },
-  };
-};
-
-const addUserDataToRatings = async (ratings: (Rating & { game: Game })[]) => {
-  const users = (
-    await clerkClient.users.getUserList({
-      userId: ratings.map((rating) => rating.authorId),
-    })
-  ).map(filterUserForClient);
-
-  return ratings.map((rating) => {
-    const author = users.find((user) => user.id === rating.authorId);
-
-    if (!author || !author.username) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Author for post not found",
-      });
-    }
-
-    return {
-      rating,
-      author: {
-        ...author,
-        username: author.username,
-      },
-    };
-  });
-};
 
 export const ratingRouter = createTRPCRouter({
   getRatingByAuthorAndGameId: publicProcedure
@@ -78,10 +25,8 @@ export const ratingRouter = createTRPCRouter({
           include: { game: true },
         });
 
-        const hydratedRating = await addUserDataToRating(rating);
-
         return {
-          rating: hydratedRating,
+          rating,
         };
       }
       return null;
@@ -150,15 +95,13 @@ export const ratingRouter = createTRPCRouter({
         nextCursor = nextRating?.id;
       }
 
-      const hydratedRatings = await addUserDataToRatings(ratings);
-
       return {
-        ratings: hydratedRatings,
+        ratings,
         ratingCount,
         nextCursor,
       };
     }),
-  createRating: privateProcedure
+  createRatingAndStatus: privateProcedure
     .input(
       z.object({
         score: z.number().min(0).max(10),
@@ -179,6 +122,23 @@ export const ratingRouter = createTRPCRouter({
           score: input.score,
         },
       });
+
+      const checkStatus = await ctx.prisma.status.findUnique({
+        where: { authorId_gameId: { authorId, gameId: input.gameId } },
+      });
+
+      if (!checkStatus) {
+        await ctx.prisma.status.create({
+          data: {
+            authorId,
+            isPlaying: true,
+            hasBacklogged: false,
+            hasDropped: false,
+            hasPlayed: false,
+            gameId: input.gameId,
+          },
+        });
+      }
 
       return rating;
     }),

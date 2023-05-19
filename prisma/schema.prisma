@@ -46,10 +46,10 @@ model Status {
   id            String   @id @default(cuid())
   createdAt     DateTime @default(now())
   authorId      String
-  isPlaying     Boolean
-  hasPlayed     Boolean
-  hasBacklogged Boolean
-  hasDropped    Boolean
+  isPlaying     Boolean  @default(false)
+  hasPlayed     Boolean  @default(false)
+  hasBacklogged Boolean  @default(false)
+  hasDropped    Boolean  @default(false)
   game          Game     @relation(fields: [gameId], references: [id])
   gameId        Int
 

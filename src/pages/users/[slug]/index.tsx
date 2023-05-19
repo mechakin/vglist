@@ -156,9 +156,7 @@ const Bio = (props: { username: string }) => {
       {(data?.bio || user?.username === props.username) && (
         <p className="text-xl">bio</p>
       )}
-      <section className="font-normal text-zinc-300 no-underline">
-        {data?.bio}
-      </section>
+      <section className=" text-zinc-300 text-ellipsis overflow-hidden">{data?.bio}</section>
       {user?.username === props.username && (
         <>
           <button className="pt-1 text-zinc-400" onClick={handleModal}>
@@ -188,13 +186,19 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
       <nav className="my-4 flex h-8 w-full rounded-md bg-zinc-500 px-2 align-middle text-zinc-300">
         <ul className="flex py-1 font-medium">
           <li className="px-4 text-zinc-100 underline decoration-2 underline-offset-8">
-            <Link href={`/users/${username}`}>profile</Link>
+            <Link href={`/users/${username}`} className="py-2">
+              profile
+            </Link>
           </li>
           <li className="px-4 decoration-2 underline-offset-8 hover:text-zinc-100 hover:underline">
-            <Link href={`/users/${username}/games`}>games</Link>
+            <Link href={`/users/${username}/games`} className="py-2">
+              games
+            </Link>
           </li>
           <li className="px-4 decoration-2 underline-offset-8 hover:text-zinc-100 hover:underline">
-            <Link href={`/users/${username}/reviews`}>reviews</Link>
+            <Link href={`/users/${username}/reviews`} className="py-2">
+              reviews
+            </Link>
           </li>
         </ul>
       </nav>
@@ -210,7 +214,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
               ? scoreData?._avg.score?.toFixed(2)
               : "n/a"}
           </section>
-          <div className="rounded-md py-4 md:min-w-fit">
+          <div className="py-4">
             <Bio username={username} />
           </div>
         </div>

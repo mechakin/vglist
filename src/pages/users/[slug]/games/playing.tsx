@@ -44,13 +44,19 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
       <nav className="my-4 flex h-8 w-full rounded-md bg-zinc-500 px-2 align-middle text-zinc-300">
         <ul className="flex py-1 font-medium">
           <li className="px-4 decoration-2 underline-offset-8 hover:text-zinc-100 hover:underline">
-            <Link href={`/users/${username}`}>profile</Link>
+            <Link href={`/users/${username}`} className="py-2">
+              profile
+            </Link>
           </li>
           <li className="px-4 text-zinc-100 underline decoration-2 underline-offset-8">
-            <Link href={`/users/${username}/games`}>games</Link>
+            <Link href={`/users/${username}/games`} className="py-2">
+              games
+            </Link>
           </li>
           <li className="px-4 decoration-2 underline-offset-8 hover:text-zinc-100 hover:underline">
-            <Link href={`/users/${username}/reviews`}>reviews</Link>
+            <Link href={`/users/${username}/reviews`} className="py-2">
+              reviews
+            </Link>
           </li>
         </ul>
       </nav>
@@ -69,7 +75,7 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
           </Link>
           <Link
             href={`/users/${username}/games/playing`}
-            className="mr-2 rounded-md border border-zinc-500 p-1 px-2 text-lg transition duration-75 hover:bg-zinc-500 xxs:mr-0 bg-zinc-500"
+            className="mr-2 rounded-md border border-zinc-500 bg-zinc-500 p-1 px-2 text-lg transition duration-75 hover:bg-zinc-500 xxs:mr-0"
           >
             playing
           </Link>
@@ -88,17 +94,11 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
         </div>
         <div className="grid grid-cols-3 place-items-center gap-4 xxs:grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
           {ratings.map((rating) => (
-            <div className="max-w-fit" key={rating.rating.id}>
-              <Link href={`/games/${rating.rating.game.slug}`}>
+            <div className="max-w-fit" key={rating.id}>
+              <Link href={`/games/${rating.game.slug}`}>
                 <Image
-                  src={
-                    rating.rating.game.cover
-                      ? rating.rating.game.cover
-                      : "/game.webp"
-                  }
-                  alt={
-                    rating.rating.game.name ? rating.rating.game.name : "game"
-                  }
+                  src={rating.game.cover ? rating.game.cover : "/game.webp"}
+                  alt={rating.game.name ? rating.game.name : "game"}
                   width={120}
                   height={0}
                   className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
@@ -113,7 +113,7 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
                   size={19}
                   emptyColor="#a1a1aa"
                   fillColor="#22d3ee"
-                  initialValue={rating.rating.score / 2}
+                  initialValue={rating.score / 2}
                 />
               </div>
             </div>
