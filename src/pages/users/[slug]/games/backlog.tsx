@@ -6,9 +6,9 @@ import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import Link from "next/link";
 import { Rating } from "react-simple-star-rating";
 import NotFound from "~/components/404";
-import Profile from "~/components/profile";
 import { useInView } from "react-intersection-observer";
 import LoadingSpinner from "~/components/icons/loading";
+import { GameNav } from "~/components/gameNav";
 
 const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
   const { ref, inView } = useInView();
@@ -40,27 +40,7 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
 
   return (
     <PageLayout>
-      <Profile username={username} />
-      <nav className="my-4 flex h-8 w-full rounded-md bg-zinc-500 px-2 align-middle text-zinc-300">
-        <ul className="flex py-1 font-medium">
-          <li className="px-4 decoration-2 underline-offset-8 hover:text-zinc-100 hover:underline">
-            <Link href={`/users/${username}`} className="py-2">
-              profile
-            </Link>
-          </li>
-          <li className="px-4 text-zinc-100 underline decoration-2 underline-offset-8">
-            <Link href={`/users/${username}/games`} className="py-2">
-              games
-            </Link>
-          </li>
-          <li className="px-4 decoration-2 underline-offset-8 hover:text-zinc-100 hover:underline">
-            <Link href={`/users/${username}/reviews`} className="py-2">
-              reviews
-            </Link>
-          </li>
-        </ul>
-      </nav>
-
+      <GameNav username={username} />
       <div className="flex flex-col md:px-4">
         <h2 className="pb-4 text-3xl font-medium">games played</h2>
         <h3 className="-mt-3  text-lg text-zinc-400">
