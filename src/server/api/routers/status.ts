@@ -185,6 +185,61 @@ export const statusRouter = createTRPCRouter({
 
       return { status, statusCount, nextCursor };
     }),
+  getAllStatusByUsername: publicProcedure
+    .input(
+      z.object({
+        username: z.string(),
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.string().nullish(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit ?? 40;
+      const { cursor } = input;
+
+      const [user] = await clerkClient.users.getUserList({
+        username: [input.username],
+      });
+
+      const authorId = user?.id;
+
+      const status = await ctx.prisma.status.findMany({
+        where: {
+          authorId,
+          OR: [
+            { hasPlayed: true },
+            { hasDropped: true },
+            { isPlaying: true },
+            { hasBacklogged: true },
+          ],
+        },
+        take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: { id: "desc" },
+        include: { game: { include: { ratings: { where: { authorId } } } } },
+      });
+
+      const statusCount = await ctx.prisma.status.count({
+        where: {
+          authorId,
+          OR: [
+            { hasPlayed: true },
+            { hasDropped: true },
+            { isPlaying: true },
+            { hasBacklogged: true },
+          ],
+        },
+      });
+
+      let nextCursor: typeof cursor | undefined = undefined;
+
+      if (status.length > limit) {
+        const nextStatus = status.pop();
+        nextCursor = nextStatus?.id;
+      }
+
+      return { status, statusCount, nextCursor };
+    }),
   getGamesPlayedCountByUsername: publicProcedure
     .input(
       z.object({

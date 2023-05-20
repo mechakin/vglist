@@ -91,15 +91,17 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
                 />
               </Link>
               <div className="flex items-center justify-center">
-                <Rating
-                  SVGclassName="inline -mx-0.5"
-                  allowFraction
-                  readonly
-                  size={19}
-                  emptyColor="#a1a1aa"
-                  fillColor="#22d3ee"
-                  initialValue={scores[index]}
-                />
+                {scores[index] !== undefined && (
+                  <Rating
+                    SVGclassName="inline -mx-0.5"
+                    allowFraction
+                    readonly
+                    size={19}
+                    emptyColor="#a1a1aa"
+                    fillColor="#22d3ee"
+                    initialValue={scores[index]}
+                  />
+                )}
               </div>
             </div>
           ))}
@@ -142,7 +144,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       trpcState: ssg.dehydrate(),
       username,
     },
-    revalidate: 10,
+    revalidate: 1,
   };
 };
 
