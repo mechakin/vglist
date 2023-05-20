@@ -31,9 +31,11 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
   const statuses = statusData?.pages.flatMap((page) => page.status) ?? [];
   const ratingCount =
     statusData?.pages.flatMap((page) => page.statusCount)[0] ?? "";
-    
+
   const ratings = statuses?.flatMap((rating) => rating.game.ratings);
-  const scores = ratings.map((rating) => rating.score ? rating.score / 2 : undefined)
+  const scores = ratings.map((rating) =>
+    rating.score ? rating.score / 2 : undefined
+  );
 
   if (!data) return <NotFound />;
 
@@ -52,16 +54,16 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
         </h3>
         <div className="gap-2 pb-4 pt-2 xxs:flex">
           <Link
-            href={`/users/${username}/games/played`}
-            className="mb-2 mr-2 rounded-md border border-zinc-500 bg-zinc-500 p-1 px-2 text-lg transition duration-75 hover:bg-zinc-500 xxs:mb-0 xxs:mr-0"
-          >
-            played
-          </Link>
-          <Link
             href={`/users/${username}/games/playing`}
             className="mr-2 rounded-md border border-zinc-500 p-1 px-2 text-lg transition duration-75 hover:bg-zinc-500 xxs:mr-0"
           >
             playing
+          </Link>
+          <Link
+            href={`/users/${username}/games/played`}
+            className="mb-2 mr-2 rounded-md border border-zinc-500 bg-zinc-500 p-1 px-2 text-lg transition duration-75 hover:bg-zinc-500 xxs:mb-0 xxs:mr-0"
+          >
+            played
           </Link>
           <Link
             href={`/users/${username}/games/backlog`}

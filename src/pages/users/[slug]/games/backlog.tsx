@@ -53,16 +53,16 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
         </h3>
         <div className="gap-2 pb-4 pt-2 xxs:flex">
           <Link
-            href={`/users/${username}/games/played`}
-            className="mb-2 mr-2 rounded-md border border-zinc-500 p-1 px-2 text-lg transition duration-75 hover:bg-zinc-500 xxs:mb-0 xxs:mr-0"
-          >
-            played
-          </Link>
-          <Link
             href={`/users/${username}/games/playing`}
             className="mr-2 rounded-md border border-zinc-500 p-1 px-2 text-lg transition duration-75 hover:bg-zinc-500 xxs:mr-0"
           >
             playing
+          </Link>
+          <Link
+            href={`/users/${username}/games/played`}
+            className="mb-2 mr-2 rounded-md border border-zinc-500 p-1 px-2 text-lg transition duration-75 hover:bg-zinc-500 xxs:mb-0 xxs:mr-0"
+          >
+            played
           </Link>
           <Link
             href={`/users/${username}/games/backlog`}
