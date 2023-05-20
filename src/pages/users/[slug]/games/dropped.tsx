@@ -117,7 +117,7 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
           ))}
         </div>
         {statuses.length === 0 && (
-          <div className="-mt-2 text-lg text-zinc-300">{`${username} hasn't played a game :(`}</div>
+          <div className="-mt-2 text-lg text-zinc-300">{`${username} hasn't dropped a game.`}</div>
         )}
       </div>
       <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
