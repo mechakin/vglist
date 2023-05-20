@@ -92,6 +92,16 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
                 />
               </Link>
               <div className="flex items-center justify-center">
+                {scores[index] === undefined && (
+                  <Rating
+                    SVGclassName="inline -mx-0.5 invisible"
+                    allowFraction
+                    readonly
+                    size={19}
+                    emptyColor="#a1a1aa"
+                    fillColor="#22d3ee"
+                  />
+                )}
                 {scores[index] !== undefined && (
                   <Rating
                     SVGclassName="inline -mx-0.5"
