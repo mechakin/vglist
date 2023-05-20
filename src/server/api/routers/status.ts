@@ -9,6 +9,26 @@ import {
 import { ratelimit } from "~/server/helpers/rateLimiter";
 
 export const statusRouter = createTRPCRouter({
+  getStatusByAuthorAndGameId: publicProcedure
+    .input(
+      z.object({ authorId: z.string().nullish(), gameId: z.number().nullish() })
+    )
+    .query(async ({ ctx, input }) => {
+      if (input.authorId && input.gameId) {
+        const status = await ctx.prisma.status.findUnique({
+          where: {
+            authorId_gameId: {
+              authorId: input.authorId,
+              gameId: input.gameId,
+            },
+          },
+          include: { game: true },
+        });
+
+        return status;
+      }
+      return null;
+    }),
   getPlayedStatusByUsername: publicProcedure
     .input(
       z.object({
@@ -209,6 +229,36 @@ export const statusRouter = createTRPCRouter({
       });
 
       return statusWithGame;
+    }),
+  createStatus: privateProcedure
+    .input(
+      z.object({
+        hasBacklogged: z.boolean(),
+        hasPlayed: z.boolean(),
+        hasDropped: z.boolean(),
+        isPlaying: z.boolean(),
+        gameId: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const authorId = ctx.userId;
+
+      const { success } = await ratelimit.limit(authorId);
+
+      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+
+      const status = await ctx.prisma.status.create({
+        data: {
+          authorId,
+          gameId: input.gameId,
+          hasBacklogged: input.hasBacklogged,
+          hasPlayed: input.hasPlayed,
+          hasDropped: input.hasDropped,
+          isPlaying: input.isPlaying,
+        },
+      });
+
+      return status;
     }),
   updateStatus: privateProcedure
     .input(

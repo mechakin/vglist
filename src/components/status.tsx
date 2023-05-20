@@ -1,6 +1,5 @@
 import toast from "react-hot-toast";
 import { type RouterOutputs, api } from "~/utils/api";
-import { useEffect, useState } from "react";
 import { PlayingIcon } from "./icons/playing";
 import { PlayedIcon } from "./icons/played";
 import { BacklogIcon } from "./icons/backlog";
@@ -8,87 +7,156 @@ import { DroppedIcon } from "./icons/dropped";
 
 type Game = RouterOutputs["game"]["getGameBySlug"];
 
-type RatingWithUser = RouterOutputs["rating"]["getRatingByAuthorAndGameId"];
+type Status = RouterOutputs["status"]["getStatusByAuthorAndGameId"];
 
-export function Status(props: { game: Game; rating?: RatingWithUser }) {
+export function Status(props: { game: Game; status?: Status }) {
   const ctx = api.useContext();
-  const [ratingScore, setRatingScore] = useState(0);
 
-  const userRatingScore = props.rating?.rating?.score;
-  const userRatingId = props.rating?.rating?.id;
-
-  useEffect(() => {
-    if (userRatingScore) {
-      setRatingScore(userRatingScore / 2);
-    } else {
-      setRatingScore(0);
-    }
-  }, [userRatingScore]);
-
-  const { mutate: mutateCreate } = api.rating.createRatingAndStatus.useMutation({
+  const { mutate: mutateCreate } = api.status.createStatus.useMutation({
     onSuccess: () => {
-      void ctx.rating.invalidate();
+      void ctx.status.invalidate();
     },
     onError: () => {
-      toast.error("can't review this game, please try again");
+      toast.error("can't create this status, please try again");
     },
   });
 
-  const { mutate: mutateUpdate } = api.rating.updateRating.useMutation({
+  const { mutate: mutateUpdate } = api.status.updateStatus.useMutation({
     onSuccess: () => {
-      void ctx.rating.invalidate();
+      void ctx.status.invalidate();
     },
     onError: () => {
-      toast.error("can't update this review, please try again");
+      toast.error("can't update this status, please try again");
     },
   });
 
-  const { mutate: mutateDelete } = api.rating.deleteRating.useMutation({
-    onSuccess: () => {
-      void ctx.rating.invalidate();
-    },
-    onError: () => {
-      toast.error("can't delete this review, please try again");
-    },
-  });
-
-  function handleRating(rating: number) {
-    if (ratingScore === 0) {
-      mutateCreate({ score: rating * 2, gameId: props.game.id });
-    } else if (ratingScore > 0 && userRatingId) {
+  function handlePlaying() {
+    if (props.status) {
       mutateUpdate({
-        score: rating * 2,
+        id: props.status.id,
+        isPlaying: !props.status.isPlaying,
+        hasPlayed: false,
+        hasBacklogged: false,
+        hasDropped: false,
+      });
+    } else {
+      mutateCreate({
         gameId: props.game.id,
-        id: userRatingId,
+        isPlaying: true,
+        hasPlayed: false,
+        hasBacklogged: false,
+        hasDropped: false,
       });
     }
-    setRatingScore(rating);
   }
 
-  function handleUserRating() {
-    if (userRatingId) {
-      mutateDelete({ id: userRatingId });
+  function handlePlayed() {
+    if (props.status) {
+      mutateUpdate({
+        id: props.status.id,
+        isPlaying: false,
+        hasPlayed: !props.status.hasPlayed,
+        hasBacklogged: false,
+        hasDropped: false,
+      });
+    } else {
+      mutateCreate({
+        gameId: props.game.id,
+        isPlaying: false,
+        hasPlayed: true,
+        hasBacklogged: false,
+        hasDropped: false,
+      });
+    }
+  }
+
+  function handleBacklog() {
+    if (props.status) {
+      mutateUpdate({
+        id: props.status.id,
+        isPlaying: false,
+        hasPlayed: false,
+        hasBacklogged: !props.status.hasBacklogged,
+        hasDropped: false,
+      });
+    } else {
+      mutateCreate({
+        gameId: props.game.id,
+        isPlaying: false,
+        hasPlayed: false,
+        hasBacklogged: true,
+        hasDropped: false,
+      });
+    }
+  }
+
+  function handleDropped() {
+    if (props.status) {
+      mutateUpdate({
+        id: props.status.id,
+        isPlaying: false,
+        hasPlayed: false,
+        hasBacklogged: false,
+        hasDropped: !props.status.hasDropped,
+      });
+    } else {
+      mutateCreate({
+        gameId: props.game.id,
+        isPlaying: false,
+        hasPlayed: false,
+        hasBacklogged: false,
+        hasDropped: true,
+      });
     }
   }
 
   return (
     <div className="relative mt-2 flex flex-col rounded-md bg-zinc-600 p-2">
       <div className="flex h-fit items-center justify-center gap-2">
-        <div className="group flex flex-col items-center text-xs">
-          <PlayingIcon className="fill-zinc-400 group-hover:fill-cyan-400" />
-          <span>playing</span>
+        <div
+          className="group flex flex-col items-center text-xs"
+          onClick={handlePlaying}
+        >
+          <PlayingIcon
+            className={
+              props.status?.isPlaying ? "fill-cyan-400" : "fill-zinc-400"
+            }
+          />
+          <span className="group-hover:text-zinc-300">playing</span>
         </div>
-        <div className="group flex flex-col items-center text-xs">
-          <PlayedIcon className="fill-zinc-400 group-hover:fill-cyan-400" />
-          <span>played</span>
+        <div
+          className="group flex flex-col items-center text-xs"
+          onClick={handlePlayed}
+        >
+          <PlayedIcon
+            className={
+              props.status?.hasPlayed ? "fill-cyan-400" : "fill-zinc-400"
+            }
+          />
+          <span className="group-hover:text-zinc-300">played</span>
         </div>
-        <div className="group flex flex-col items-center text-xs">
-          <BacklogIcon className="fill-zinc-400 group-hover:fill-cyan-400" />
-          <span>backlog</span>
+        <div
+          className="group flex flex-col items-center text-xs"
+          onClick={handleBacklog}
+        >
+          <BacklogIcon
+            className={
+              props.status?.hasBacklogged ? "fill-cyan-400" : "fill-zinc-400"
+            }
+          />
+          <span className="group-hover:text-zinc-300">backlog</span>
         </div>
-        <div className="group flex flex-col items-center text-xs">
-          <DroppedIcon className="fill-zinc-400 group-hover:fill-cyan-400" />
-          <span>dropped</span>
+        <div
+          className="group flex flex-col items-center text-xs"
+          onClick={handleDropped}
+        >
+          <DroppedIcon
+            className={
+              props.status?.hasDropped ? "fill-cyan-400 " : "fill-zinc-400 "
+            }
+            onClick={handleDropped}
+          />
+          <span className="group-hover:text-zinc-300">dropped</span>
         </div>
       </div>
     </div>

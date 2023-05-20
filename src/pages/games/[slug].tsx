@@ -19,6 +19,7 @@ import {
 } from "~/components/review";
 import { ExitButton } from "~/components/icons/exitButton";
 import { FormRating } from "~/components/formRating";
+import { Status } from "~/components/status";
 
 type ReviewWithUser =
   RouterOutputs["review"]["getReviewsByUsername"]["reviews"][number];
@@ -93,6 +94,12 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
 
   const { data: userRatingData, isLoading: isRatingLoading } =
     api.rating.getRatingByAuthorAndGameId.useQuery({
+      authorId: user?.id,
+      gameId: gameData?.id,
+    });
+
+  const { data: userStatusData, isLoading: isStatusLoading } =
+    api.status.getStatusByAuthorAndGameId.useQuery({
       authorId: user?.id,
       gameId: gameData?.id,
     });
@@ -231,15 +238,28 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                     <FormRating game={gameData} rating={userRatingData} />
                   </div>
                 )}
+                {!userStatusData && !isStatusLoading && (
+                  <Status game={gameData} />
+                )}
+                {userStatusData && (
+                  <Status game={gameData} status={userStatusData} />
+                )}
                 {isRatingLoading && (
                   <div className="relative mt-2 flex h-fit animate-pulse justify-center rounded-md bg-zinc-600 p-1">
-                    <div className="invisible">
+                    <span className="invisible">
                       <Rating
                         SVGclassName="inline -mx-0.5"
                         size={30}
                         readonly
                       />
-                    </div>
+                    </span>
+                  </div>
+                )}
+                {isStatusLoading && (
+                  <div className="relative mt-2 flex animate-pulse justify-center rounded-md bg-zinc-600">
+                    <span className="invisible">
+                      <Status game={gameData} />
+                    </span>
                   </div>
                 )}
                 {isReviewLoading && (

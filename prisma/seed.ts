@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { prisma } from "../src/server/db";
 import igdb from "igdb-api-node";
 
@@ -14,6 +13,18 @@ type Game = {
   summary?: string;
   rating?: number;
   rating_count?: number;
+  slug: string;
+};
+
+type PrismaGame = {
+  id: number;
+  igdbUpdatedAt: bigint;
+  cover?: string;
+  name: string;
+  releaseDate?: number;
+  summary?: string;
+  igdbRating?: number;
+  igdbRatingCount?: number;
   slug: string;
 };
 
@@ -33,8 +44,8 @@ async function main() {
       .sort("id", "asc")
       .request("/games");
 
-    //eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    const data = response.data.map((game: Game) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    const data: PrismaGame[] = response.data.map((game: Game) => {
       const coverUrl = game.cover?.url;
 
       if (coverUrl) {

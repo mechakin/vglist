@@ -1,4 +1,7 @@
-export function BacklogIcon(props: { className?: string }) {
+export function BacklogIcon(props: {
+  className?: string;
+  onClick?: () => void;
+}) {
   return (
     <svg
       height="35"
@@ -6,6 +9,7 @@ export function BacklogIcon(props: { className?: string }) {
       viewBox="0 0 32 32"
       className={props.className ? props.className : "fill-zinc-400"}
     >
+      <title>backlog</title>
       <path
         d="M28.9,9.4C28.9,9.4,28.9,9.4,28.9,9.4C28.9,9.3,29,9.2,29,9.1c0,0,0,0,0-0.1c0,0,0,0,0-0.1c0-0.1,0-0.2,0-0.3c0,0,0,0,0-0.1
  c0-0.1-0.1-0.2-0.1-0.3c0,0,0,0,0,0c-0.1-0.1-0.1-0.1-0.2-0.2l-11-7c-0.3-0.2-0.8-0.2-1.1,0l-13,9c0,0-0.1,0.1-0.1,0.1
