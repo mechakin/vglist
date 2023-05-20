@@ -17,6 +17,7 @@ import { createPortal } from "react-dom";
 import { Modal } from "~/components/modal";
 import LoadingSpinner from "~/components/icons/loading";
 import { ExitButton } from "~/components/icons/exitButton";
+import dayjs from "dayjs";
 
 type Bio = RouterOutputs["profile"]["getBioByUsername"];
 
@@ -156,7 +157,9 @@ const Bio = (props: { username: string }) => {
       {(data?.bio || user?.username === props.username) && (
         <p className="text-xl">bio</p>
       )}
-      <section className=" text-zinc-300 text-ellipsis overflow-hidden">{data?.bio}</section>
+      <section className=" overflow-hidden text-ellipsis text-zinc-300">
+        {data?.bio}
+      </section>
       {user?.username === props.username && (
         <>
           <button className="pt-1 text-zinc-400" onClick={handleModal}>
@@ -177,6 +180,15 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
   const { data: scoreData } = api.rating.getAverageScoreByUsername.useQuery({
     username,
   });
+
+  const { data: countData } = api.status.getGamesPlayedCountByUsername.useQuery(
+    { username }
+  );
+
+  const { data: recentGameData } =
+    api.status.getRecentlyPlayedByUsername.useQuery({
+      username,
+    });
 
   if (!data) return <NotFound />;
 
@@ -206,12 +218,12 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <div className="rounded-md pt-2 md:w-64">
           <div className="text-xl ">games played</div>
           <section className="pb-4 text-4xl font-medium text-zinc-300">
-            324
+            {countData}
           </section>
           <div className="text-xl">average score</div>
           <section className="text-4xl font-medium text-zinc-300">
-            {scoreData?._avg.score?.toFixed(2)
-              ? scoreData?._avg.score?.toFixed(2)
+            {scoreData?._avg.score?.toFixed(1)
+              ? scoreData?._avg.score?.toFixed(1)
               : "n/a"}
           </section>
           <div className="py-4">
@@ -221,25 +233,38 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
         <div className="w-full md:px-4">
           <div className="flex flex-col">
             <h2 className="pb-4 text-3xl font-medium">recently played</h2>
-            <div className="grid max-w-fit grid-cols-2 gap-4 pb-4 sm:grid-cols-3 lg:grid-cols-4">
-              <div>
-                <Link href={"/games/link-to-game"}>
-                  <Image
-                    src={"/game.webp"}
-                    alt="game"
-                    width={120}
-                    height={0}
-                    className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-                    priority
-                  />
-                </Link>
-                <div className="flex items-center justify-center">
-                  <span className="pt-1 text-zinc-300">Nov 23 </span>
+            {recentGameData?.length === 0 && (
+              <p className="text-lg text-zinc-300">
+                {username} hasn{"'"}t played a game :{"("}
+              </p>
+            )}
+            <div className="grid max-w-fit grid-cols-2 gap-4 pb-8 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
+              {recentGameData?.map((recentGame) => (
+                <div key={recentGame.gameId}>
+                  <Link href={`/games/${recentGame.game.slug}`}>
+                    <Image
+                      src={
+                        recentGame.game.cover
+                          ? recentGame.game.cover
+                          : "/game.webp"
+                      }
+                      alt={recentGame.game.name ? recentGame.game.name : "game"}
+                      width={120}
+                      height={0}
+                      className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
+                      priority
+                    />
+                  </Link>
+                  <div className="flex items-center justify-center">
+                    <span className="pt-1 text-zinc-300">
+                      {dayjs(recentGame.createdAt).fromNow()}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
-          <h2 className="text-3xl font-medium">recently reviewed</h2>
+          <h2 className="pb-2 text-3xl font-medium">recently reviewed</h2>
           <ReviewFeed username={username} cap={true} />
         </div>
       </div>
@@ -265,6 +290,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
   await ssg.review.getLatestReviewsByUsername.prefetch({ username });
   await ssg.rating.getAverageScoreByUsername.prefetch({ username });
   await ssg.profile.getBioByUsername.prefetch({ username });
+  await ssg.status.getGamesPlayedCountByUsername.prefetch({ username });
+  await ssg.status.getRecentlyPlayedByUsername.prefetch({ username });
 
   return {
     props: {

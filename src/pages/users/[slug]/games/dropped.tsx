@@ -18,19 +18,22 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
   });
 
   const {
-    data: ratingData,
+    data: statusData,
     isFetching,
     isLoading,
     hasNextPage,
     fetchNextPage,
-  } = api.rating.getRatingsByUsername.useInfiniteQuery(
+  } = api.status.getDroppedStatusByUsername.useInfiniteQuery(
     { username },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
 
-  const ratings = ratingData?.pages.flatMap((page) => page.ratings) ?? [];
+  const statuses = statusData?.pages.flatMap((page) => page.status) ?? [];
   const ratingCount =
-    ratingData?.pages.flatMap((page) => page.ratingCount)[0] ?? "";
+    statusData?.pages.flatMap((page) => page.statusCount)[0] ?? "";
+    
+  const ratings = statuses?.flatMap((rating) => rating.game.ratings);
+  const scores = ratings.map((rating) => rating.score ? rating.score / 2 : undefined)
 
   if (!data) return <NotFound />;
 
@@ -73,12 +76,12 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
           </Link>
         </div>
         <div className="grid grid-cols-3 place-items-center gap-4 xxs:grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
-          {ratings.map((rating) => (
-            <div className="max-w-fit" key={rating.id}>
-              <Link href={`/games/${rating.game.slug}`}>
+          {statuses.map((status, index) => (
+            <div className="max-w-fit" key={status.id}>
+              <Link href={`/games/${status.game.slug}`}>
                 <Image
-                  src={rating.game.cover ? rating.game.cover : "/game.webp"}
-                  alt={rating.game.name ? rating.game.name : "game"}
+                  src={status.game.cover ? status.game.cover : "/game.webp"}
+                  alt={status.game.name ? status.game.name : "game"}
                   width={120}
                   height={0}
                   className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
@@ -93,7 +96,7 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
                   size={19}
                   emptyColor="#a1a1aa"
                   fillColor="#22d3ee"
-                  initialValue={rating.score / 2}
+                  initialValue={scores[index]}
                 />
               </div>
             </div>
@@ -130,7 +133,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
 
   await ssg.profile.getUserByUsername.prefetch({ username });
-  await ssg.rating.getRatingsByUsername.prefetchInfinite({
+  await ssg.status.getDroppedStatusByUsername.prefetchInfinite({
     username,
   });
 

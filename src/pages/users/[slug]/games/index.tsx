@@ -41,7 +41,6 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
   return (
     <PageLayout>
       <GameNav username={username} />
-
       <div className="flex flex-col md:px-4">
         <h2 className="pb-4 text-3xl font-medium">games played</h2>
         <h3 className="-mt-3  text-lg text-zinc-400">
