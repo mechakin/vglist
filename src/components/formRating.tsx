@@ -12,8 +12,8 @@ export function FormRating(props: { game: Game; rating?: RatingWithUser }) {
   const ctx = api.useContext();
   const [ratingScore, setRatingScore] = useState(0);
 
-  const userRatingScore = props.rating?.rating?.score
-  const userRatingId = props.rating?.rating?.id
+  const userRatingScore = props.rating?.rating?.score;
+  const userRatingId = props.rating?.rating?.id;
 
   useEffect(() => {
     if (userRatingScore) {
@@ -23,14 +23,17 @@ export function FormRating(props: { game: Game; rating?: RatingWithUser }) {
     }
   }, [userRatingScore]);
 
-  const { mutate: mutateCreate } = api.rating.createRatingAndStatus.useMutation({
-    onSuccess: () => {
-      void ctx.rating.invalidate();
-    },
-    onError: () => {
-      toast.error("can't rate this game, please try again");
-    },
-  });
+  const { mutate: mutateCreate } = api.rating.createRatingAndStatus.useMutation(
+    {
+      onSuccess: () => {
+        void ctx.rating.invalidate();
+        void ctx.status.invalidate();
+      },
+      onError: () => {
+        toast.error("can't rate this game, please try again");
+      },
+    }
+  );
 
   const { mutate: mutateUpdate } = api.rating.updateRating.useMutation({
     onSuccess: () => {
