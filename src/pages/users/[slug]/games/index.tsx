@@ -95,21 +95,25 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
                   <Rating
                     SVGclassName="inline -mx-0.5 invisible"
                     allowFraction
+                    
                     readonly
                     size={19}
                     emptyColor="#a1a1aa"
                     fillColor="#22d3ee"
+                    transition
                   />
                 )}
                 {scores[index] !== undefined && (
                   <Rating
                     SVGclassName="inline -mx-0.5"
                     allowFraction
+                   
                     readonly
                     size={19}
                     emptyColor="#a1a1aa"
                     fillColor="#22d3ee"
                     initialValue={scores[index]}
+                    transition
                   />
                 )}
               </div>

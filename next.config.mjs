@@ -6,6 +6,7 @@
 
 /** @type {import("next").NextConfig} */
 const config = {
+  compiler: { styledComponents: true },
   reactStrictMode: true,
 
   /**
@@ -33,7 +34,7 @@ const config = {
         pathname: "/**",
       },
       {
-        protocol: 'https',
+        protocol: "https",
         hostname: "www.gravatar.com",
         port: "",
         pathname: "/**",

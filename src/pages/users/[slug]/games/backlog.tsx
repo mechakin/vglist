@@ -99,6 +99,7 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
                     size={19}
                     emptyColor="#a1a1aa"
                     fillColor="#22d3ee"
+                    transition
                   />
                 )}
                 {scores[index] !== undefined && (
@@ -110,6 +111,7 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
                     emptyColor="#a1a1aa"
                     fillColor="#22d3ee"
                     initialValue={scores[index]}
+                    transition
                   />
                 )}
               </div>

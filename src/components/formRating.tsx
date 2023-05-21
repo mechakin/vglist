@@ -91,6 +91,7 @@ export function FormRating(props: { game: Game; rating?: RatingWithUser }) {
         fillColor="#22d3ee"
         onClick={handleRating}
         initialValue={ratingScore}
+        transition
       />
     </div>
   );

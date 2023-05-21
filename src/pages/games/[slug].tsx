@@ -251,6 +251,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                         SVGclassName="inline -mx-0.5"
                         size={30}
                         readonly
+                        transition
                       />
                     </span>
                   </div>
@@ -346,7 +347,8 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                             size={22}
                             emptyColor="#a1a1aa"
                             fillColor="#22d3ee"
-                            initialValue={review.review.score / 2}
+                            initialValue={review.review.score}
+                            transition
                           />
                         )}
                       </div>

@@ -129,6 +129,7 @@ export function CreateReviewModal(props: {
                         fillColor="#22d3ee"
                         initialValue={value}
                         onClick={onChange}
+                        transition
                       />
                     )}
                   />
@@ -277,6 +278,7 @@ export function UpdateReviewModal(props: {
                           review.review.score ? review.review.score / 2 : value
                         }
                         onClick={onChange}
+                        transition
                       />
                     )}
                   />
@@ -286,10 +288,11 @@ export function UpdateReviewModal(props: {
                   <textarea
                     cols={100}
                     rows={5}
+                    defaultValue={review.review.description}
                     className="w-full overflow-auto rounded-md bg-zinc-300 p-2 text-zinc-900 placeholder-zinc-500 outline-none"
                     {...registerUpdate("description")}
-                    placeholder={review.review.description}
-                  ></textarea>
+                  >
+                  </textarea>
                   <p className="flex w-full justify-end pt-1">
                     {watchUpdate("description")
                       ? `${watchUpdate("description").length} / 10000`
@@ -489,7 +492,7 @@ export default function Review(props: ReviewWithUser) {
             <p className="pr-4 pt-1 font-semibold text-zinc-400 transition duration-75 hover:text-zinc-100">
               <Link href={`/users/${author.username}`}>{author.username}</Link>
             </p>
-            {review.score && (
+            {/* {review.score && (
               <Rating
                 SVGclassName="inline -mx-0.5"
                 allowFraction
@@ -498,8 +501,9 @@ export default function Review(props: ReviewWithUser) {
                 emptyColor="#a1a1aa"
                 fillColor="#22d3ee"
                 initialValue={review.score / 2}
+                transition
               />
-            )}
+            )} */}
           </div>
           <p>{review.description}</p>
           {user?.id === author.id && (

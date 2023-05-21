@@ -107,7 +107,7 @@ export function BioModal(props: {
                     rows={8}
                     className="w-full overflow-auto rounded-md bg-zinc-300 p-2 text-zinc-900 outline-none"
                     {...registerBio("bio")}
-                    placeholder={props.bio?.bio}
+                    defaultValue={props.bio?.bio}
                   ></textarea>
                   <p className="flex w-full justify-end pt-1">
                     {watchBio("bio")
