@@ -108,7 +108,6 @@ const Home: NextPage = () => {
             width={140}
             height={0}
             className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-            priority
           />
         </Link>
         <Link href={"/games/elden-ring"}>
@@ -120,7 +119,6 @@ const Home: NextPage = () => {
             width={140}
             height={0}
             className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-            priority
           />
         </Link>
         <Link href={"/games/resident-evil-4--1"}>
@@ -144,7 +142,6 @@ const Home: NextPage = () => {
             width={140}
             height={0}
             className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-            priority
           />
         </Link>
         <Link href={"/games/pizza-tower"}>
@@ -156,7 +153,6 @@ const Home: NextPage = () => {
             width={140}
             height={0}
             className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-            priority
           />
         </Link>
         <Link href={"/games/league-of-legends"}>
@@ -168,7 +164,6 @@ const Home: NextPage = () => {
             width={140}
             height={0}
             className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-            priority
           />
         </Link>
       </div>

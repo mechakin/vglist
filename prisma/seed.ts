@@ -18,7 +18,7 @@ type Game = {
 
 type PrismaGame = {
   id: number;
-  igdbUpdatedAt: bigint;
+  igdbUpdatedAt: number;
   cover?: string;
   name: string;
   releaseDate?: number;
@@ -44,6 +44,7 @@ async function main() {
       .sort("id", "asc")
       .request("/games");
 
+    
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     const data: PrismaGame[] = response.data.map((game: Game) => {
       const coverUrl = game.cover?.url;

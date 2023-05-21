@@ -61,7 +61,6 @@ const GamesPage: NextPage = () => {
               width={120}
               height={0}
               className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-              priority
             />
           </Link>
         ))}
