@@ -31,69 +31,69 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
   };
 
   async function main() {
-    const client = igdb(
-      process.env.TWITCH_CLIENT_ID,
-      process.env.TWITCH_APP_ACCESS_TOKEN
-    );
-    const maxIGDBResponses = 500;
-    for (let i = 0; i < maxIGDBResponses; i++) {
-      const response = await client
-        .fields(
-          "name,summary,slug,rating,rating_count,first_release_date,cover.url,updated_at"
-        )
-        .limit(500)
-        .offset(500 * i)
-        .sort("id", "asc")
-        .request("/games");
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const formattedResponse: Game[] = response.data;
+    // const client = igdb(
+    //   process.env.TWITCH_CLIENT_ID,
+    //   process.env.TWITCH_APP_ACCESS_TOKEN
+    // );
+    // const maxIGDBResponses = 500;
+    // for (let i = 0; i < maxIGDBResponses; i++) {
+    //   const response = await client
+    //     .fields(
+    //       "name,summary,slug,rating,rating_count,first_release_date,cover.url,updated_at"
+    //     )
+    //     .limit(500)
+    //     .offset(500 * i)
+    //     .sort("id", "asc")
+    //     .request("/games");
+    //   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    //   const formattedResponse: Game[] = response.data;
 
-      formattedResponse.map(async (game: Game) => {
-        const url = game.cover?.url;
+    //   formattedResponse.map(async (game: Game) => {
+    //     const url = game.cover?.url;
 
-        let data: PrismaGame;
+    //     let data: PrismaGame;
 
-        if (url) {
-          const formattedCoverUrl =
-            "https:" + url.replace("t_thumb", "t_cover_big");
+    //     if (url) {
+    //       const formattedCoverUrl =
+    //         "https:" + url.replace("t_thumb", "t_cover_big");
 
-          data = {
-            id: game.id,
-            igdbUpdatedAt: game.updated_at,
-            cover: formattedCoverUrl,
-            name: game.name,
-            slug: game.slug,
-            igdbRating: game.rating,
-            igdbRatingCount: game.rating_count,
-            releaseDate: game.first_release_date,
-            summary: game.summary,
-          };
+    //       data = {
+    //         id: game.id,
+    //         igdbUpdatedAt: game.updated_at,
+    //         cover: formattedCoverUrl,
+    //         name: game.name,
+    //         slug: game.slug,
+    //         igdbRating: game.rating,
+    //         igdbRatingCount: game.rating_count,
+    //         releaseDate: game.first_release_date,
+    //         summary: game.summary,
+    //       };
 
-          await prisma.game.upsert({
-            where: { id: data.id },
-            create: data,
-            update: data,
-          });
-        } else {
-          data = {
-            id: game.id,
-            igdbUpdatedAt: game.updated_at,
-            cover: game.cover?.url,
-            name: game.name,
-            slug: game.slug,
-            igdbRating: game.rating,
-            igdbRatingCount: game.rating_count,
-            releaseDate: game.first_release_date,
-            summary: game.summary,
-          };
-          await prisma.game.upsert({
-            where: { id: data.id },
-            create: data,
-            update: data,
-          });
-        }
-      });
-    }
+    //       await prisma.game.upsert({
+    //         where: { id: data.id },
+    //         create: data,
+    //         update: data,
+    //       });
+    //     } else {
+    //       data = {
+    //         id: game.id,
+    //         igdbUpdatedAt: game.updated_at,
+    //         cover: game.cover?.url,
+    //         name: game.name,
+    //         slug: game.slug,
+    //         igdbRating: game.rating,
+    //         igdbRatingCount: game.rating_count,
+    //         releaseDate: game.first_release_date,
+    //         summary: game.summary,
+    //       };
+    //       await prisma.game.upsert({
+    //         where: { id: data.id },
+    //         create: data,
+    //         update: data,
+    //       });
+    //     }
+    //   });
+    // }
   }
 
   main()
