@@ -35,8 +35,8 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
       process.env.TWITCH_CLIENT_ID,
       process.env.TWITCH_APP_ACCESS_TOKEN
     );
-    const maxIGDBResponses = 10;
-    const startingOffset = 230508;
+    const maxIGDBResponses = 5;
+    const startingOffset = 467;
 
     for (let i = 0; i < maxIGDBResponses; i++) {
       const response = await client
@@ -44,7 +44,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
           "name,summary,slug,rating,rating_count,first_release_date,cover.url,updated_at"
         )
         .limit(500)
-        .offset(startingOffset + i)
+        .offset(500 * (startingOffset + i))
         .sort("id", "asc")
         .request("/games");
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
