@@ -36,7 +36,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
       process.env.TWITCH_APP_ACCESS_TOKEN
     );
     const maxIGDBResponses = 10;
-    const startingOffset = 232221;
+    const startingOffset = 230508;
 
     for (let i = 0; i < maxIGDBResponses; i++) {
       const response = await client
