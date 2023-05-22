@@ -50,7 +50,7 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
       <div className="flex flex-col md:px-4">
         <h2 className="pb-4 text-3xl font-medium">games played</h2>
         <h3 className="-mt-3  text-lg text-zinc-400">
-          {ratingCount} {ratingCount === 1 ? "game" : "games"}
+          {ratingCount} {ratingCount === 1 && !isLoading ? "game" : "games"}
         </h3>
         <div className="gap-2 pb-4 pt-2 xxs:flex">
           <Link
