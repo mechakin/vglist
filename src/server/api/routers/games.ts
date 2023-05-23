@@ -24,7 +24,6 @@ export const gameRouter = createTRPCRouter({
       }
       return {
         games,
-        gamesCount: 230515,
         nextCursor,
       };
     }),

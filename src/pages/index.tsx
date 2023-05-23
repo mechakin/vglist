@@ -34,16 +34,27 @@ const Home: NextPage = () => {
           content="vglist - discover, collect, and share your favorite games"
         />
       </Head>
-      <div className="flex justify-center pt-4">
-        <div className="flex flex-col items-center justify-center">
+      <div className="grid py-4 md:grid-cols-2 md:py-16">
+        <div className="flex flex-col items-center justify-center ">
           <h1 className="pb-8 text-6xl font-semibold">vglist</h1>
-          <h2 className="pb-8 text-3xl text-zinc-300">
+          <h2 className="max-w-sm pb-8 text-center text-3xl text-zinc-300">
             discover, collect, and share your favorite games
           </h2>
           <button className="max-w-fit rounded-md bg-zinc-600 p-2 text-3xl transition hover:bg-zinc-500">
             {!isSignedIn && <Link href={"/register"}>start now</Link>}
             {isSignedIn && <Link href={"/games"}>start now</Link>}
           </button>
+        </div>
+        <div className="flex items-center justify-center">
+          <Image
+            src={
+              "https://images.igdb.com/igdb/image/upload/t_cover_big/co6cl1.png"
+            }
+            alt="super mario 64"
+            width={200}
+            height={0}
+            className="mr-2 hidden h-fit w-fit rotate-12 rounded-md border  border-zinc-600 md:block"
+          />
         </div>
       </div>
 
@@ -99,12 +110,12 @@ const Home: NextPage = () => {
 
       <p className="py-4 text-xl text-zinc-300">check out these games</p>
       <div className="grid grid-cols-2 place-items-center gap-4 xxs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
-        <Link href={"/games/the-legend-of-zelda-breath-of-the-wild"}>
+        <Link href={"/games/the-legend-of-zelda-tears-of-the-kingdom"}>
           <Image
             src={
-              "https://images.igdb.com/igdb/image/upload/t_cover_big/co3p2d.png"
+              "https://images.igdb.com/igdb/image/upload/t_cover_big/co5vmg.png"
             }
-            alt="breath of the wild"
+            alt="the legend of zelda: tears of the kingdom"
             width={140}
             height={0}
             className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
@@ -155,12 +166,12 @@ const Home: NextPage = () => {
             className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
           />
         </Link>
-        <Link href={"/games/league-of-legends"}>
+        <Link href={"/games/xenoblade-chronicles-3"}>
           <Image
             src={
-              "https://images.igdb.com/igdb/image/upload/t_cover_big/co49wj.png"
+              "https://images.igdb.com/igdb/image/upload/t_cover_big/co4ocq.png"
             }
-            alt="league of legends"
+            alt="xenoblade chronicles 3"
             width={140}
             height={0}
             className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
