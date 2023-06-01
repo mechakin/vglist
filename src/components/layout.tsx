@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { SignedIn, SignedOut, useClerk, useUser } from "@clerk/nextjs";
+import {
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  useClerk,
+  useUser,
+} from "@clerk/nextjs";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -59,18 +66,22 @@ const Navbar = () => {
 
           <div className="hidden items-center md:flex">
             <SignedOut>
-              <Link
-                href="/login"
-                className="px-3 text-2xl transition duration-75 hover:text-zinc-400"
-              >
-                login
-              </Link>
-              <Link
-                href="/register"
-                className="px-3 text-2xl transition duration-75 hover:text-zinc-400"
-              >
-                register
-              </Link>
+              <SignInButton mode="modal">
+                <button
+                  className="mx-3 text-2xl transition duration-75 hover:text-zinc-400"
+                  onClick={handleMenu}
+                >
+                  login
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button
+                  className="mx-3 text-2xl transition duration-75 hover:text-zinc-400"
+                  onClick={handleMenu}
+                >
+                  register
+                </button>
+              </SignUpButton>
               <Link
                 href={"/games"}
                 className="px-3 text-2xl transition duration-75 hover:text-zinc-400"
@@ -169,20 +180,16 @@ const Navbar = () => {
         </div>
 
         <SignedOut>
-          <Link
-            href="/login"
-            className="block w-full px-6 py-4 text-2xl transition duration-75 hover:bg-zinc-500"
-            onClick={handleMenu}
-          >
-            login
-          </Link>
-          <Link
-            href="/register"
-            className="block w-full px-6 py-4 text-2xl transition duration-75 hover:bg-zinc-500"
-            onClick={handleMenu}
-          >
-            register
-          </Link>
+          <SignInButton mode="modal">
+            <button className="block w-full px-6 py-4 text-left text-2xl transition duration-75 hover:bg-zinc-500">
+              login
+            </button>
+          </SignInButton>
+          <SignUpButton mode="modal">
+            <button className="block w-full px-6 py-4 text-left text-2xl transition duration-75 hover:bg-zinc-500">
+              register
+            </button>
+          </SignUpButton>
           <Link
             href={"/games"}
             className="block w-full px-6 py-4 text-2xl transition duration-75 hover:bg-zinc-500"

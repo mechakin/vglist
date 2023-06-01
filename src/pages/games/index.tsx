@@ -50,7 +50,9 @@ const GamesPage: NextPage = () => {
         <meta property="twitter:title" content="games" />
       </Head>
       <h2 className="pb-4 text-3xl font-semibold">all games</h2>
-      <h3 className="-mt-2 pb-4 text-lg text-zinc-400">search from over 200000 games!</h3>
+      <h3 className="-mt-2 pb-4 text-lg text-zinc-400">
+        there{"'"}s a lot here
+      </h3>
       <div className="grid grid-cols-3 place-items-center gap-4 xxs:grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
         {games.map((game) => (
           <Link href={`/games/${game.slug}`} key={game.id}>
