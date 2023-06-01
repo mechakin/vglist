@@ -1,5 +1,6 @@
 import { prisma } from "../src/server/db";
 import igdb from "igdb-api-node";
+import algoliasearch from "algoliasearch";
 
 type Game = {
   id: number;
@@ -29,13 +30,19 @@ type PrismaGame = {
 };
 
 async function main() {
-  const client = igdb(
+  const apiClient = igdb(
     process.env.TWITCH_CLIENT_ID,
     process.env.TWITCH_APP_ACCESS_TOKEN
   );
+  const searchClient = algoliasearch(
+    process.env.ALGOLIA_APP_ID ?? "",
+    process.env.ALGOLIA_WRITE_API_KEY ?? ""
+  );
+  const index = searchClient.initIndex("game");
+
   const maxIGDBResponses = 500;
   for (let i = 0; i < maxIGDBResponses; i++) {
-    const response = await client
+    const response = await apiClient
       .fields(
         "name,summary,slug,rating,rating_count,first_release_date,cover.url,updated_at"
       )
@@ -44,7 +51,6 @@ async function main() {
       .sort("id", "asc")
       .request("/games");
 
-    
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     const data: PrismaGame[] = response.data.map((game: Game) => {
       const coverUrl = game.cover?.url;
@@ -59,8 +65,8 @@ async function main() {
           name: game.name,
           releaseDate: game.first_release_date,
           summary: game.summary,
-          igdbRating: game.rating,
-          igdbRatingCount: game.rating_count,
+          igdbRating: game.rating ?? 0,
+          igdbRatingCount: game.rating_count ?? 0,
           slug: game.slug,
         };
       }
@@ -71,14 +77,16 @@ async function main() {
         name: game.name,
         releaseDate: game.first_release_date,
         summary: game.summary,
-        igdbRating: game.rating,
-        igdbRatingCount: game.rating_count,
+        igdbRating: game.rating ?? 0,
+        igdbRatingCount: game.rating_count ?? 0,
         slug: game.slug,
       };
     });
-    await prisma.game.createMany({
-      data,
-    });
+    // await prisma.game.createMany({
+    //   data,
+    // });
+    const search = await index.saveObjects(data, { autoGenerateObjectIDIfNotExist: true });
+    console.log(search)
   }
 }
 

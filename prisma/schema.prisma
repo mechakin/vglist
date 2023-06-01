@@ -45,6 +45,7 @@ model Rating {
 model Status {
   id            String   @id @default(cuid())
   createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt @default(now())
   authorId      String
   isPlaying     Boolean  @default(false)
   hasPlayed     Boolean  @default(false)

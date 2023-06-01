@@ -40,7 +40,7 @@ const Home: NextPage = () => {
           <h2 className="max-w-sm pb-8 text-center text-3xl text-zinc-300">
             discover, collect, and share your favorite games
           </h2>
-          <button className="max-w-fit rounded-md bg-zinc-600 p-2 text-3xl transition hover:bg-zinc-500">
+          <button className={`max-w-fit rounded-md p-2 text-3xl transition bg-zinc-600 hover:bg-zinc-500`}>
             {!isSignedIn && <Link href={"/register"}>start now</Link>}
             {isSignedIn && <Link href={"/games"}>start now</Link>}
           </button>
@@ -54,6 +54,7 @@ const Home: NextPage = () => {
             width={200}
             height={0}
             className="mr-2 hidden h-fit w-fit rotate-12 rounded-md border  border-zinc-600 md:block"
+            priority
           />
         </div>
       </div>
@@ -141,7 +142,6 @@ const Home: NextPage = () => {
             width={140}
             height={0}
             className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-            priority
           />
         </Link>
         <Link href={"/games/hollow-knight"}>
