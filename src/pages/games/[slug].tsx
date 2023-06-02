@@ -3,7 +3,7 @@ import { PageLayout } from "~/components/layout";
 import Image from "next/image";
 import Link from "next/link";
 import { Rating } from "react-simple-star-rating";
-import { SignedIn, SignedOut, useUser } from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import { type RouterOutputs, api } from "~/utils/api";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
@@ -214,11 +214,11 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
             />
             <div className="w-56">
               <SignedOut>
-                <Link href={"/login"}>
+                <SignInButton mode="modal">
                   <button className="mt-2 w-full rounded-md bg-zinc-600 p-1 text-center text-xl transition duration-75 hover:bg-zinc-500">
                     login to review
                   </button>
-                </Link>
+                </SignInButton>
               </SignedOut>
               {!isLoaded && (
                 <Link href={"/login"}>

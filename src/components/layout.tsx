@@ -41,7 +41,7 @@ const Navbar = () => {
   }
 
   function onSubmit(data: typeSchema) {
-    void router.push(`/search/games/${data.input}`);
+    void router.push(`/search/${data.input}`);
   }
 
   let userUrl = "/users";
