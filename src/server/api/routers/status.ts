@@ -29,162 +29,6 @@ export const statusRouter = createTRPCRouter({
       }
       return null;
     }),
-  getPlayedStatusByUsername: publicProcedure
-    .input(
-      z.object({
-        username: z.string(),
-        limit: z.number().min(1).max(100).nullish(),
-        cursor: z.string().nullish(),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const limit = input.limit ?? 40;
-      const { cursor } = input;
-
-      const [user] = await clerkClient.users.getUserList({
-        username: [input.username],
-      });
-
-      const authorId = user?.id;
-
-      const status = await ctx.prisma.status.findMany({
-        where: { authorId, hasPlayed: true },
-        take: limit + 1,
-        cursor: cursor ? { id: cursor } : undefined,
-        orderBy: { id: "desc" },
-        include: { game: { include: { ratings: { where: { authorId } } } } },
-      });
-
-      const statusCount = await ctx.prisma.status.count({
-        where: { authorId, hasPlayed: true },
-      });
-
-      let nextCursor: typeof cursor | undefined = undefined;
-
-      if (status.length > limit) {
-        const nextStatus = status.pop();
-        nextCursor = nextStatus?.id;
-      }
-
-      return { status, statusCount, nextCursor };
-    }),
-  getPlayingStatusByUsername: publicProcedure
-    .input(
-      z.object({
-        username: z.string(),
-        limit: z.number().min(1).max(100).nullish(),
-        cursor: z.string().nullish(),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const limit = input.limit ?? 40;
-      const { cursor } = input;
-
-      const [user] = await clerkClient.users.getUserList({
-        username: [input.username],
-      });
-
-      const authorId = user?.id;
-
-      const status = await ctx.prisma.status.findMany({
-        where: { authorId, isPlaying: true },
-        take: limit + 1,
-        cursor: cursor ? { id: cursor } : undefined,
-        orderBy: { id: "desc" },
-        include: { game: { include: { ratings: { where: { authorId } } } } },
-      });
-
-      const statusCount = await ctx.prisma.status.count({
-        where: { authorId, isPlaying: true },
-      });
-
-      let nextCursor: typeof cursor | undefined = undefined;
-
-      if (status.length > limit) {
-        const nextStatus = status.pop();
-        nextCursor = nextStatus?.id;
-      }
-
-      return { status, statusCount, nextCursor };
-    }),
-  getBackloggedStatusByUsername: publicProcedure
-    .input(
-      z.object({
-        username: z.string(),
-        limit: z.number().min(1).max(100).nullish(),
-        cursor: z.string().nullish(),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const limit = input.limit ?? 40;
-      const { cursor } = input;
-
-      const [user] = await clerkClient.users.getUserList({
-        username: [input.username],
-      });
-
-      const authorId = user?.id;
-
-      const status = await ctx.prisma.status.findMany({
-        where: { authorId, hasBacklogged: true },
-        take: limit + 1,
-        cursor: cursor ? { id: cursor } : undefined,
-        orderBy: { id: "desc" },
-        include: { game: { include: { ratings: { where: { authorId } } } } },
-      });
-
-      const statusCount = await ctx.prisma.status.count({
-        where: { authorId, hasBacklogged: true },
-      });
-
-      let nextCursor: typeof cursor | undefined = undefined;
-
-      if (status.length > limit) {
-        const nextStatus = status.pop();
-        nextCursor = nextStatus?.id;
-      }
-
-      return { status, statusCount, nextCursor };
-    }),
-  getDroppedStatusByUsername: publicProcedure
-    .input(
-      z.object({
-        username: z.string(),
-        limit: z.number().min(1).max(100).nullish(),
-        cursor: z.string().nullish(),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      const limit = input.limit ?? 40;
-      const { cursor } = input;
-
-      const [user] = await clerkClient.users.getUserList({
-        username: [input.username],
-      });
-
-      const authorId = user?.id;
-
-      const status = await ctx.prisma.status.findMany({
-        where: { authorId, hasDropped: true },
-        take: limit + 1,
-        cursor: cursor ? { id: cursor } : undefined,
-        orderBy: { id: "desc" },
-        include: { game: { include: { ratings: { where: { authorId } } } } },
-      });
-
-      const statusCount = await ctx.prisma.status.count({
-        where: { authorId, hasDropped: true },
-      });
-
-      let nextCursor: typeof cursor | undefined = undefined;
-
-      if (status.length > limit) {
-        const nextStatus = status.pop();
-        nextCursor = nextStatus?.id;
-      }
-
-      return { status, statusCount, nextCursor };
-    }),
   getAllStatusByUsername: publicProcedure
     .input(
       z.object({
@@ -228,6 +72,61 @@ export const statusRouter = createTRPCRouter({
             { isPlaying: true },
             { hasBacklogged: true },
           ],
+        },
+      });
+
+      let nextCursor: typeof cursor | undefined = undefined;
+
+      if (status.length > limit) {
+        const nextStatus = status.pop();
+        nextCursor = nextStatus?.id;
+      }
+
+      return { status, statusCount, nextCursor };
+    }),
+  getStatusByUsername: publicProcedure
+    .input(
+      z.object({
+        username: z.string(),
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.string().nullish(),
+        isPlaying: z.boolean().nullish(),
+        hasPlayed: z.boolean().nullish(),
+        hasBacklogged: z.boolean().nullish(),
+        hasDropped: z.boolean().nullish(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit ?? 40;
+      const { cursor, isPlaying, hasBacklogged, hasDropped, hasPlayed } = input;
+
+      const [user] = await clerkClient.users.getUserList({
+        username: [input.username],
+      });
+
+      const authorId = user?.id;
+
+      const status = await ctx.prisma.status.findMany({
+        where: {
+          authorId,
+          isPlaying: isPlaying ?? false,
+          hasPlayed: hasPlayed ?? false,
+          hasBacklogged: hasBacklogged ?? false,
+          hasDropped: hasDropped ?? false,
+        },
+        take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: { id: "desc" },
+        include: { game: { include: { ratings: { where: { authorId } } } } },
+      });
+
+      const statusCount = await ctx.prisma.status.count({
+        where: {
+          authorId,
+          isPlaying: isPlaying ?? false,
+          hasPlayed: hasPlayed ?? false,
+          hasBacklogged: hasBacklogged ?? false,
+          hasDropped: hasDropped ?? false,
         },
       });
 

@@ -12,7 +12,13 @@ import { useState } from "react";
 import Profile from "~/components/profile";
 import { Portal, PortalDiv } from "~/components/portal";
 
-const TABS = ["All", "Played", "Playing", "Dropped", "Backlog"] as const;
+const TABS = [
+  "All",
+  "hasPlayed",
+  "isPlaying",
+  "hasDropped",
+  "hasBacklogged",
+] as const;
 
 function AllStatusFeed(props: { username: string }) {
   const { username } = props;
@@ -103,8 +109,12 @@ function AllStatusFeed(props: { username: string }) {
   );
 }
 
-function PlayingStatusFeed(props: { username: string }) {
-  const { username } = props;
+function SpecificStatusFeed(props: {
+  username: string;
+  status: (typeof TABS)[number];
+}) {
+  const { username, status } = props;
+  const search = { [status]: true };
   const { ref, inView } = useInView();
 
   const {
@@ -113,275 +123,11 @@ function PlayingStatusFeed(props: { username: string }) {
     isLoading,
     hasNextPage,
     fetchNextPage,
-  } = api.status.getPlayingStatusByUsername.useInfiniteQuery(
-    { username },
-    { getNextPageParam: (lastPage) => lastPage.nextCursor }
-  );
-
-  const statuses = statusData?.pages.flatMap((page) => page.status) ?? [];
-  const ratingCount =
-    statusData?.pages.flatMap((page) => page.statusCount)[0] ?? "";
-
-  const ratings = statuses?.flatMap((rating) => rating.game.ratings);
-  const scores = ratings.map((rating) =>
-    rating.score ? rating.score / 2 : undefined
-  );
-
-  if (inView && hasNextPage && !isFetching) {
-    void fetchNextPage();
-  }
-
-  return (
-    <>
-      <Portal>
-        <h3 className="-mt-3  text-lg text-zinc-400">
-          {ratingCount} {ratingCount === 1 && !isLoading ? "game" : "games"}
-        </h3>
-      </Portal>
-      <div className="grid grid-cols-3 place-items-center gap-4 xxs:grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
-        {statuses.map((status, index) => (
-          <div className="max-w-fit" key={status.id}>
-            <Link href={`/games/${status.game.slug}`}>
-              <Image
-                src={status.game.cover ? status.game.cover : "/game.webp"}
-                alt={status.game.name ? status.game.name : "game"}
-                width={120}
-                height={0}
-                className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-                priority
-              />
-            </Link>
-            <div className="flex items-center justify-center">
-              {scores[index] === undefined && (
-                <Rating
-                  SVGclassName="inline -mx-0.5 invisible"
-                  allowFraction
-                  readonly
-                  size={19}
-                  emptyColor="#a1a1aa"
-                  fillColor="#22d3ee"
-                />
-              )}
-              {scores[index] !== undefined && (
-                <Rating
-                  SVGclassName="inline -mx-0.5"
-                  allowFraction
-                  readonly
-                  size={19}
-                  emptyColor="#a1a1aa"
-                  fillColor="#22d3ee"
-                  initialValue={scores[index]}
-                />
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-      {statuses.length === 0 && !isLoading && (
-        <div className="-mt-2 text-lg text-zinc-300">{`${username} hasn't played a game :(`}</div>
-      )}
-      <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
-        intersection observer marker
-      </span>
-      {isLoading && (
-        <div className="flex justify-center pt-4">
-          <LoadingSpinner size={40} />
-        </div>
-      )}
-    </>
-  );
-}
-
-function PlayedStatusFeed(props: { username: string }) {
-  const { username } = props;
-  const { ref, inView } = useInView();
-
-  const {
-    data: statusData,
-    isFetching,
-    isLoading,
-    hasNextPage,
-    fetchNextPage,
-  } = api.status.getPlayedStatusByUsername.useInfiniteQuery(
-    { username },
-    { getNextPageParam: (lastPage) => lastPage.nextCursor }
-  );
-
-  const statuses = statusData?.pages.flatMap((page) => page.status) ?? [];
-  const ratingCount =
-    statusData?.pages.flatMap((page) => page.statusCount)[0] ?? "";
-
-  const ratings = statuses?.flatMap((rating) => rating.game.ratings);
-  const scores = ratings.map((rating) =>
-    rating.score ? rating.score / 2 : undefined
-  );
-
-  if (inView && hasNextPage && !isFetching) {
-    void fetchNextPage();
-  }
-
-  return (
-    <>
-      <Portal>
-        <h3 className="-mt-3  text-lg text-zinc-400">
-          {ratingCount} {ratingCount === 1 && !isLoading ? "game" : "games"}
-        </h3>
-      </Portal>
-      <div className="grid grid-cols-3 place-items-center gap-4 xxs:grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
-        {statuses.map((status, index) => (
-          <div className="max-w-fit" key={status.id}>
-            <Link href={`/games/${status.game.slug}`}>
-              <Image
-                src={status.game.cover ? status.game.cover : "/game.webp"}
-                alt={status.game.name ? status.game.name : "game"}
-                width={120}
-                height={0}
-                className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-                priority
-              />
-            </Link>
-            <div className="flex items-center justify-center">
-              {scores[index] === undefined && (
-                <Rating
-                  SVGclassName="inline -mx-0.5 invisible"
-                  allowFraction
-                  readonly
-                  size={19}
-                  emptyColor="#a1a1aa"
-                  fillColor="#22d3ee"
-                />
-              )}
-              {scores[index] !== undefined && (
-                <Rating
-                  SVGclassName="inline -mx-0.5"
-                  allowFraction
-                  readonly
-                  size={19}
-                  emptyColor="#a1a1aa"
-                  fillColor="#22d3ee"
-                  initialValue={scores[index]}
-                />
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-      {statuses.length === 0 && !isLoading && (
-        <div className="-mt-2 text-lg text-zinc-300">{`${username} hasn't played a game :(`}</div>
-      )}
-      <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
-        intersection observer marker
-      </span>
-      {isLoading && (
-        <div className="flex justify-center pt-4">
-          <LoadingSpinner size={40} />
-        </div>
-      )}
-    </>
-  );
-}
-
-function BacklogStatusFeed(props: { username: string }) {
-  const { username } = props;
-  const { ref, inView } = useInView();
-
-  const {
-    data: statusData,
-    isFetching,
-    isLoading,
-    hasNextPage,
-    fetchNextPage,
-  } = api.status.getBackloggedStatusByUsername.useInfiniteQuery(
-    { username },
-    { getNextPageParam: (lastPage) => lastPage.nextCursor }
-  );
-
-  const statuses = statusData?.pages.flatMap((page) => page.status) ?? [];
-  const ratingCount =
-    statusData?.pages.flatMap((page) => page.statusCount)[0] ?? "";
-
-  const ratings = statuses?.flatMap((rating) => rating.game.ratings);
-  const scores = ratings.map((rating) =>
-    rating.score ? rating.score / 2 : undefined
-  );
-
-  if (inView && hasNextPage && !isFetching) {
-    void fetchNextPage();
-  }
-
-  return (
-    <>
-      <Portal>
-        <h3 className="-mt-3  text-lg text-zinc-400">
-          {ratingCount} {ratingCount === 1 && !isLoading ? "game" : "games"}
-        </h3>
-      </Portal>
-      <div className="grid grid-cols-3 place-items-center gap-4 xxs:grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
-        {statuses.map((status, index) => (
-          <div className="max-w-fit" key={status.id}>
-            <Link href={`/games/${status.game.slug}`}>
-              <Image
-                src={status.game.cover ? status.game.cover : "/game.webp"}
-                alt={status.game.name ? status.game.name : "game"}
-                width={120}
-                height={0}
-                className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-                priority
-              />
-            </Link>
-            <div className="flex items-center justify-center">
-              {scores[index] === undefined && (
-                <Rating
-                  SVGclassName="inline -mx-0.5 invisible"
-                  allowFraction
-                  readonly
-                  size={19}
-                  emptyColor="#a1a1aa"
-                  fillColor="#22d3ee"
-                />
-              )}
-              {scores[index] !== undefined && (
-                <Rating
-                  SVGclassName="inline -mx-0.5"
-                  allowFraction
-                  readonly
-                  size={19}
-                  emptyColor="#a1a1aa"
-                  fillColor="#22d3ee"
-                  initialValue={scores[index]}
-                />
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-      {statuses.length === 0 && !isLoading && (
-        <div className="-mt-2 text-lg text-zinc-300">{`${username} hasn't played a game :(`}</div>
-      )}
-      <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
-        intersection observer marker
-      </span>
-      {isLoading && (
-        <div className="flex justify-center pt-4">
-          <LoadingSpinner size={40} />
-        </div>
-      )}
-    </>
-  );
-}
-
-function DroppedStatusFeed(props: { username: string }) {
-  const { username } = props;
-  const { ref, inView } = useInView();
-
-  const {
-    data: statusData,
-    isFetching,
-    isLoading,
-    hasNextPage,
-    fetchNextPage,
-  } = api.status.getDroppedStatusByUsername.useInfiniteQuery(
-    { username },
+  } = api.status.getStatusByUsername.useInfiniteQuery(
+    {
+      username,
+      ...search,
+    },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
 
@@ -508,42 +254,41 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
         <div className="gap-2 pb-4 pt-2 xxs:flex">
           <button
             className={`mr-2 rounded-md border border-zinc-500 p-1 px-2 text-lg transition duration-75 hover:bg-zinc-500 xxs:mr-0 ${
-              selectedTab === "Playing" ? "bg-zinc-500" : ""
+              selectedTab === "isPlaying" ? "bg-zinc-500" : ""
             }`}
-            onClick={() => setSelectedTab("Playing")}
+            onClick={() => setSelectedTab("isPlaying")}
           >
             playing
           </button>
           <button
             className={`mr-2 rounded-md border border-zinc-500 p-1 px-2 text-lg transition duration-75 hover:bg-zinc-500 xxs:mb-0 xxs:mr-0 ${
-              selectedTab === "Played" ? "bg-zinc-500" : ""
+              selectedTab === "hasPlayed" ? "bg-zinc-500" : ""
             }`}
-            onClick={() => setSelectedTab("Played")}
+            onClick={() => setSelectedTab("hasPlayed")}
           >
             played
           </button>
           <button
             className={`mr-2 rounded-md border border-zinc-500 p-1 px-2 text-lg transition duration-75 hover:bg-zinc-500 xxs:mr-0 ${
-              selectedTab === "Backlog" ? "bg-zinc-500" : ""
+              selectedTab === "hasBacklogged" ? "bg-zinc-500" : ""
             }`}
-            onClick={() => setSelectedTab("Backlog")}
+            onClick={() => setSelectedTab("hasBacklogged")}
           >
             backlog
           </button>
           <button
             className={`mr-2 rounded-md border border-zinc-500 p-1 px-2 text-lg transition duration-75 hover:bg-zinc-500 xxs:mr-0 ${
-              selectedTab === "Dropped" ? "bg-zinc-500" : ""
+              selectedTab === "hasDropped" ? "bg-zinc-500" : ""
             }`}
-            onClick={() => setSelectedTab("Dropped")}
+            onClick={() => setSelectedTab("hasDropped")}
           >
             dropped
           </button>
         </div>
         {selectedTab === "All" && <AllStatusFeed username={username} />}
-        {selectedTab === "Playing" && <PlayingStatusFeed username={username} />}
-        {selectedTab === "Played" && <PlayedStatusFeed username={username} />}
-        {selectedTab === "Backlog" && <BacklogStatusFeed username={username} />}
-        {selectedTab === "Dropped" && <DroppedStatusFeed username={username} />}
+        {selectedTab !== "All" && (
+          <SpecificStatusFeed username={username} status={selectedTab} />
+        )}
       </div>
     </PageLayout>
   );
@@ -567,14 +312,22 @@ export const getStaticProps: GetStaticProps = async (context) => {
   await ssg.status.getAllStatusByUsername.prefetchInfinite({
     username,
   });
-  await ssg.status.getPlayedStatusByUsername.prefetchInfinite({
+  await ssg.status.getStatusByUsername.prefetchInfinite({
     username,
+    hasBacklogged: true,
   });
-  await ssg.status.getPlayingStatusByUsername.prefetchInfinite({ username });
-  await ssg.status.getDroppedStatusByUsername.prefetchInfinite({
+  await ssg.status.getStatusByUsername.prefetchInfinite({
     username,
+    hasPlayed: true,
   });
-  await ssg.status.getBackloggedStatusByUsername.prefetchInfinite({ username });
+  await ssg.status.getStatusByUsername.prefetchInfinite({
+    username,
+    isPlaying: true,
+  });
+  await ssg.status.getStatusByUsername.prefetchInfinite({
+    username,
+    hasDropped: true,
+  });
 
   return {
     props: {
