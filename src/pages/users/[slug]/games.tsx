@@ -13,103 +13,14 @@ import Profile from "~/components/profile";
 import { Portal, PortalDiv } from "~/components/portal";
 
 const TABS = [
-  "All",
+  "allStatus",
   "hasPlayed",
   "isPlaying",
   "hasDropped",
   "hasBacklogged",
 ] as const;
 
-function AllStatusFeed(props: { username: string }) {
-  const { username } = props;
-  const { ref, inView } = useInView();
-
-  const {
-    data: statusData,
-    isFetching,
-    isLoading,
-    hasNextPage,
-    fetchNextPage,
-  } = api.status.getAllStatusByUsername.useInfiniteQuery(
-    { username },
-    { getNextPageParam: (lastPage) => lastPage.nextCursor }
-  );
-
-  const statuses = statusData?.pages.flatMap((page) => page.status) ?? [];
-  const ratingCount =
-    statusData?.pages.flatMap((page) => page.statusCount)[0] ?? "";
-
-  const ratings = statuses?.flatMap((rating) => rating.game.ratings);
-  const scores = ratings.map((rating) =>
-    rating.score ? rating.score / 2 : undefined
-  );
-
-  if (inView && hasNextPage && !isFetching) {
-    void fetchNextPage();
-  }
-
-  return (
-    <>
-      <Portal>
-        <h3 className="-mt-3  text-lg text-zinc-400">
-          {ratingCount} {ratingCount === 1 && !isLoading ? "game" : "games"}
-        </h3>
-      </Portal>
-      <div className="grid grid-cols-3 place-items-center gap-4 xxs:grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
-        {statuses.map((status, index) => (
-          <div className="max-w-fit" key={status.id}>
-            <Link href={`/games/${status.game.slug}`}>
-              <Image
-                src={status.game.cover ? status.game.cover : "/game.webp"}
-                alt={status.game.name ? status.game.name : "game"}
-                width={120}
-                height={0}
-                className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-                priority
-              />
-            </Link>
-            <div className="flex items-center justify-center">
-              {scores[index] === undefined && (
-                <Rating
-                  SVGclassName="inline -mx-0.5 invisible"
-                  allowFraction
-                  readonly
-                  size={19}
-                  emptyColor="#a1a1aa"
-                  fillColor="#22d3ee"
-                />
-              )}
-              {scores[index] !== undefined && (
-                <Rating
-                  SVGclassName="inline -mx-0.5"
-                  allowFraction
-                  readonly
-                  size={19}
-                  emptyColor="#a1a1aa"
-                  fillColor="#22d3ee"
-                  initialValue={scores[index]}
-                />
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-      {statuses.length === 0 && !isLoading && (
-        <div className="-mt-2 text-lg text-zinc-300">{`${username} hasn't played a game :(`}</div>
-      )}
-      <span ref={ref} className={hasNextPage ? "invisible" : "hidden"}>
-        intersection observer marker
-      </span>
-      {isLoading && (
-        <div className="flex justify-center pt-4">
-          <LoadingSpinner size={40} />
-        </div>
-      )}
-    </>
-  );
-}
-
-function SpecificStatusFeed(props: {
+function StatusFeed(props: {
   username: string;
   status: (typeof TABS)[number];
 }) {
@@ -206,7 +117,8 @@ function SpecificStatusFeed(props: {
 }
 
 const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
-  const [selectedTab, setSelectedTab] = useState<(typeof TABS)[number]>("All");
+  const [selectedTab, setSelectedTab] =
+    useState<(typeof TABS)[number]>("allStatus");
 
   const { data } = api.profile.getUserByUsername.useQuery({
     username,
@@ -223,7 +135,7 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
             <Link
               href={`/users/${username}`}
               className="py-2"
-              onClick={() => setSelectedTab("All")}
+              onClick={() => setSelectedTab("allStatus")}
             >
               profile
             </Link>
@@ -232,7 +144,7 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
             <Link
               href={`/users/${username}/games`}
               className="py-2"
-              onClick={() => setSelectedTab("All")}
+              onClick={() => setSelectedTab("allStatus")}
             >
               games
             </Link>
@@ -241,7 +153,7 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
             <Link
               href={`/users/${username}/reviews`}
               className="py-2"
-              onClick={() => setSelectedTab("All")}
+              onClick={() => setSelectedTab("allStatus")}
             >
               reviews
             </Link>
@@ -285,10 +197,7 @@ const ProfileGamePage: NextPage<{ username: string }> = ({ username }) => {
             dropped
           </button>
         </div>
-        {selectedTab === "All" && <AllStatusFeed username={username} />}
-        {selectedTab !== "All" && (
-          <SpecificStatusFeed username={username} status={selectedTab} />
-        )}
+        <StatusFeed username={username} status={selectedTab} />
       </div>
     </PageLayout>
   );
@@ -309,8 +218,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
 
   await ssg.profile.getUserByUsername.prefetch({ username });
-  await ssg.status.getAllStatusByUsername.prefetchInfinite({
+  await ssg.status.getStatusByUsername.prefetchInfinite({
     username,
+    allStatus: true,
   });
   await ssg.status.getStatusByUsername.prefetchInfinite({
     username,
