@@ -15,6 +15,9 @@ import { Logo } from "./icons/logo";
 import { DropdownIcon } from "./icons/dropdown";
 import { SearchIcon } from "./icons/search";
 import { HamburgerIcon } from "./icons/hamburger";
+import { Inter } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"] });
 
 const schema = z.object({
   input: z.string().min(1),
@@ -52,7 +55,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-zinc-800">
-      <div className="mx-auto max-w-6xl px-4">
+      <div className="mx-auto max-w-7xl px-4">
         <div className="flex justify-between">
           <div className="flex space-x-4">
             <Link
@@ -64,7 +67,7 @@ const Navbar = () => {
             </Link>
           </div>
 
-          <div className="hidden items-center md:flex">
+          <div className="hidden items-center lg:flex">
             <SignedOut>
               <SignInButton mode="modal">
                 <button
@@ -146,7 +149,7 @@ const Navbar = () => {
             </form>
           </div>
 
-          <div className="flex items-center md:hidden">
+          <div className="flex items-center lg:hidden">
             <button name="menu" onClick={handleMenu}>
               <HamburgerIcon />
             </button>
@@ -154,7 +157,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      <div className={!open ? "hidden md:hidden" : "pb-4 md:hidden"}>
+      <div className={!open ? "hidden lg:hidden" : "pb-4 lg:hidden"}>
         <div className="mb-2 xl:w-96">
           <form
             onSubmit={(event) => void handleMobileSubmit(onSubmit)(event)}
@@ -201,7 +204,7 @@ const Navbar = () => {
 
         <SignedIn>
           <button
-            className="flex w-full items-center justify-between"
+            className="flex w-full items-center justify-between hover:bg-zinc-500"
             onClick={handleProfile}
           >
             <div className="block w-full px-6 py-4 text-left text-2xl">
@@ -218,7 +221,10 @@ const Navbar = () => {
           <div className={!profileOpen ? "hidden" : "block"}>
             <div className="flex">
               <div className="my-2 ml-6 w-1 bg-zinc-500" />
-              <Link href={userUrl} className="block w-full px-6 py-4 text-2xl">
+              <Link
+                href={userUrl}
+                className="my-2 block w-full px-6 py-4 text-2xl hover:bg-zinc-500"
+              >
                 profile
               </Link>
             </div>
@@ -226,7 +232,7 @@ const Navbar = () => {
               <div className="my-2 ml-6 w-1 bg-zinc-500" />
               <Link
                 href={"/settings"}
-                className="block w-full px-6 py-4 text-2xl "
+                className="my-2 block w-full px-6 py-4 text-2xl hover:bg-zinc-500"
               >
                 settings
               </Link>
@@ -235,7 +241,7 @@ const Navbar = () => {
               <div className="my-2 ml-6 w-1 bg-zinc-500" />
               <button
                 onClick={() => void signOut()}
-                className="block w-full px-6 py-4 text-left text-2xl"
+                className="my-2 block w-full px-6 py-4 text-left text-2xl hover:bg-zinc-500"
               >
                 logout
               </button>
@@ -243,7 +249,7 @@ const Navbar = () => {
           </div>
           <Link
             href={"/games"}
-            className="block w-full px-6 py-4 text-2xl "
+            className="block w-full px-6 py-4 text-2xl hover:bg-zinc-500"
             onClick={handleMenu}
           >
             games
@@ -256,12 +262,12 @@ const Navbar = () => {
 
 export function PageLayout(props: { children: React.ReactNode }) {
   return (
-    <>
+    <div className={inter.className}>
       <Navbar />
       <div className="flex justify-center">
-        <div className="w-full px-6 lg:max-w-6xl">{props.children}</div>
+        <main className="w-full px-6 lg:max-w-7xl">{props.children}</main>
       </div>
       <div className="pb-4" />
-    </>
+    </div>
   );
 }
