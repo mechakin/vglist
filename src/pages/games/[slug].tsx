@@ -1,25 +1,25 @@
-import { type GetStaticProps, type NextPage } from "next";
-import { PageLayout } from "~/components/layout";
-import Image from "next/image";
-import Link from "next/link";
-import { Rating } from "react-simple-star-rating";
+/* eslint-disable @next/next/no-img-element */
 import { SignInButton, SignedIn, SignedOut, useUser } from "@clerk/nextjs";
-import { useState } from "react";
-import { type RouterOutputs, api } from "~/utils/api";
-import { generateSSGHelper } from "~/server/helpers/ssgHelper";
-import NotFound from "~/components/404";
 import dayjs from "dayjs";
+import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
-import LoadingSpinner from "~/components/icons/loading";
+import Link from "next/link";
+import { useState } from "react";
 import { useInView } from "react-intersection-observer";
+import { Rating } from "react-simple-star-rating";
+import NotFound from "~/components/404";
+import { FormRating } from "~/components/formRating";
+import { ExitButton } from "~/components/icons/exitButton";
+import LoadingSpinner from "~/components/icons/loading";
+import { PageLayout } from "~/components/layout";
 import {
   CreateReviewModal,
   DeleteReviewModal,
   UpdateReviewModal,
 } from "~/components/review";
-import { ExitButton } from "~/components/icons/exitButton";
-import { FormRating } from "~/components/formRating";
 import { Status } from "~/components/status";
+import { generateSSGHelper } from "~/server/helpers/ssgHelper";
+import { api, type RouterOutputs } from "~/utils/api";
 
 type ReviewWithUser =
   RouterOutputs["review"]["getReviewsByUsername"]["reviews"][number];
@@ -204,13 +204,12 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
       <PageLayout>
         <div className="py-4 md:flex">
           <div className="flex min-w-fit flex-col pb-4">
-            <Image
+            <img
               src={gameData.cover ? gameData.cover : "/game.webp"}
               alt={gameData.name ? gameData.name : "game"}
               width={140}
               height={0}
               className="h-fit w-56 rounded-md border border-zinc-600 border-b-transparent"
-              priority
             />
             <div className="w-56">
               <SignedOut>
@@ -315,13 +314,12 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                 <div className="min-w-full border-b border-b-zinc-600 pb-4 pt-2 md:flex">
                   <div className="flex items-start justify-between">
                     <Link href={`/users/${review.author.username}`}>
-                      <Image
+                      <img
                         src={review.author.profileImageUrl}
                         alt={review.author.username}
                         width={56}
                         height={56}
                         className="mt-2 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-75"
-                        priority
                       />
                     </Link>
                     {user?.id === review.author.id && (

@@ -1,7 +1,6 @@
+import Head from "next/head";
 import { api } from "~/utils/api";
 import NotFound from "./404";
-import Image from "next/image";
-import Head from "next/head";
 
 export default function Profile(props: { username: string }) {
   const { data } = api.profile.getUserByUsername.useQuery({
@@ -34,7 +33,7 @@ export default function Profile(props: { username: string }) {
         />
       </Head>
       <div className="flex items-end pt-4">
-        <Image
+        <img
           src={data.profileImageUrl}
           alt={`${props.username}'s profile picture`}
           className="h-24 w-24 rounded-md"

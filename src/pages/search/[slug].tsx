@@ -1,14 +1,14 @@
-import { type GetStaticProps, type NextPage } from "next";
-import { PageLayout } from "~/components/layout";
-import Link from "next/link";
-import Image from "next/image";
-import Head from "next/head";
-import { api } from "~/utils/api";
-import { useInView } from "react-intersection-observer";
+/* eslint-disable @next/next/no-img-element */
 import dayjs from "dayjs";
-import LoadingSpinner from "~/components/icons/loading";
-import { generateSSGHelper } from "~/server/helpers/ssgHelper";
+import { type GetStaticProps, type NextPage } from "next";
+import Head from "next/head";
+import Link from "next/link";
 import { useState } from "react";
+import { useInView } from "react-intersection-observer";
+import LoadingSpinner from "~/components/icons/loading";
+import { PageLayout } from "~/components/layout";
+import { generateSSGHelper } from "~/server/helpers/ssgHelper";
+import { api } from "~/utils/api";
 
 const TABS = ["Games", "Users"] as const;
 
@@ -38,13 +38,12 @@ function GameFeed(props: { name: string }) {
       {games.map((game) => (
         <div className="flex border-b border-b-zinc-600 py-4" key={game.id}>
           <Link href={`/games/${game.slug}`}>
-            <Image
+            <img
               src={game.cover ? game.cover : "/game.webp"}
               alt={game.name ? game.name : "game"}
               width={120}
               height={0}
               className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-              priority
             />
           </Link>
           <div className="w-full px-4">
@@ -94,13 +93,12 @@ function UserFeed(props: { username: string }) {
         data.map((user) => (
           <div className="flex border-b border-b-zinc-600 py-4" key={user.id}>
             <Link href={user.username ? `/users/${user.username}` : `/`}>
-              <Image
+              <img
                 src={user.profileImageUrl}
                 alt={user.username ? user.username : "profile"}
                 width={48}
                 height={48}
                 className="h-fit w-fit rounded-md border border-zinc-600 hover:brightness-50"
-                priority
               />
             </Link>
             <div className="px-4">
@@ -118,7 +116,8 @@ function UserFeed(props: { username: string }) {
 }
 
 const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
-  const [selectedTab, setSelectedTab] = useState<(typeof TABS)[number]>("Games");
+  const [selectedTab, setSelectedTab] =
+    useState<(typeof TABS)[number]>("Games");
 
   return (
     <PageLayout>

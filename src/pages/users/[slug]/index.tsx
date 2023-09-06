@@ -1,23 +1,23 @@
+/* eslint-disable @next/next/no-img-element */
+import { useUser } from "@clerk/nextjs";
+import { zodResolver } from "@hookform/resolvers/zod";
+import dayjs from "dayjs";
 import { type GetStaticProps, type NextPage } from "next";
-import Image from "next/image";
-import { type RouterOutputs, api } from "~/utils/api";
-import { PageLayout } from "~/components/layout";
-import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import Link from "next/link";
+import { useState } from "react";
+import { createPortal } from "react-dom";
+import { useForm, type FieldErrors } from "react-hook-form";
+import toast from "react-hot-toast";
+import { z } from "zod";
 import NotFound from "~/components/404";
+import { ExitButton } from "~/components/icons/exitButton";
+import LoadingSpinner from "~/components/icons/loading";
+import { PageLayout } from "~/components/layout";
+import { Modal } from "~/components/modal";
 import Profile from "~/components/profile";
 import { ReviewFeed } from "~/components/review";
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { useUser } from "@clerk/nextjs";
-import { type FieldErrors, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { createPortal } from "react-dom";
-import { Modal } from "~/components/modal";
-import LoadingSpinner from "~/components/icons/loading";
-import { ExitButton } from "~/components/icons/exitButton";
-import dayjs from "dayjs";
+import { generateSSGHelper } from "~/server/helpers/ssgHelper";
+import { api, type RouterOutputs } from "~/utils/api";
 
 type Bio = RouterOutputs["profile"]["getBioByUsername"];
 
@@ -242,7 +242,7 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
               {recentGameData?.map((recentGame) => (
                 <div key={recentGame.gameId}>
                   <Link href={`/games/${recentGame.game.slug}`}>
-                    <Image
+                    <img
                       src={
                         recentGame.game.cover
                           ? recentGame.game.cover
@@ -252,7 +252,6 @@ const ProfilePage: NextPage<{ username: string }> = ({ username }) => {
                       width={120}
                       height={0}
                       className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-                      priority
                     />
                   </Link>
                   <div className="flex items-center justify-center">

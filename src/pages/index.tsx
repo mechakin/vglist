@@ -1,11 +1,11 @@
-import { type GetStaticProps, type NextPage } from "next";
-import { PageLayout } from "~/components/layout";
-import Link from "next/link";
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
 import { useUser } from "@clerk/nextjs";
+import { type GetStaticProps, type NextPage } from "next";
+import Head from "next/head";
+import Link from "next/link";
+import { PageLayout } from "~/components/layout";
 import { ReviewFeed } from "~/components/review";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
-import Head from "next/head";
 
 const Home: NextPage = () => {
   const { isSignedIn } = useUser();
@@ -40,13 +40,15 @@ const Home: NextPage = () => {
           <h2 className="max-w-sm pb-8 text-center text-3xl text-zinc-300">
             discover, collect, and share your favorite games
           </h2>
-          <button className={`max-w-fit rounded-md p-2 text-3xl transition bg-zinc-600 hover:bg-zinc-500`}>
+          <button
+            className={`max-w-fit rounded-md bg-zinc-600 p-2 text-3xl transition hover:bg-zinc-500`}
+          >
             {!isSignedIn && <Link href={"/register"}>start now</Link>}
             {isSignedIn && <Link href={"/games"}>start now</Link>}
           </button>
         </div>
         <div className="flex items-center justify-center">
-          <Image
+          <img
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co6cl1.png"
             }
@@ -54,7 +56,6 @@ const Home: NextPage = () => {
             width={200}
             height={0}
             className="mr-2 hidden h-fit w-fit rotate-12 rounded-md border  border-zinc-600 md:block"
-            priority
           />
         </div>
       </div>
@@ -112,7 +113,7 @@ const Home: NextPage = () => {
       <p className="py-4 text-xl text-zinc-300">check out these games</p>
       <div className="grid grid-cols-2 place-items-center gap-4 xxs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6">
         <Link href={"/games/the-legend-of-zelda-tears-of-the-kingdom"}>
-          <Image
+          <img
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co5vmg.png"
             }
@@ -123,7 +124,7 @@ const Home: NextPage = () => {
           />
         </Link>
         <Link href={"/games/elden-ring"}>
-          <Image
+          <img
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co4jni.jpg"
             }
@@ -134,7 +135,7 @@ const Home: NextPage = () => {
           />
         </Link>
         <Link href={"/games/resident-evil-4--1"}>
-          <Image
+          <img
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co6bo0.png"
             }
@@ -145,7 +146,7 @@ const Home: NextPage = () => {
           />
         </Link>
         <Link href={"/games/hollow-knight"}>
-          <Image
+          <img
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co1rgi.jpg"
             }
@@ -156,7 +157,7 @@ const Home: NextPage = () => {
           />
         </Link>
         <Link href={"/games/pizza-tower"}>
-          <Image
+          <img
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co5uu1.jpg"
             }
@@ -167,7 +168,7 @@ const Home: NextPage = () => {
           />
         </Link>
         <Link href={"/games/xenoblade-chronicles-3"}>
-          <Image
+          <img
             src={
               "https://images.igdb.com/igdb/image/upload/t_cover_big/co4ocq.png"
             }

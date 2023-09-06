@@ -1,16 +1,16 @@
+/* eslint-disable @next/next/no-img-element */
 import { type GetStaticProps, type NextPage } from "next";
-import Image from "next/image";
-import { api } from "~/utils/api";
-import { PageLayout } from "~/components/layout";
-import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import Link from "next/link";
+import { useState } from "react";
+import { useInView } from "react-intersection-observer";
 import { Rating } from "react-simple-star-rating";
 import NotFound from "~/components/404";
-import { useInView } from "react-intersection-observer";
 import LoadingSpinner from "~/components/icons/loading";
-import { useState } from "react";
-import Profile from "~/components/profile";
+import { PageLayout } from "~/components/layout";
 import { Portal, PortalDiv } from "~/components/portal";
+import Profile from "~/components/profile";
+import { generateSSGHelper } from "~/server/helpers/ssgHelper";
+import { api } from "~/utils/api";
 
 const TABS = [
   "allStatus",
@@ -66,13 +66,12 @@ function StatusFeed(props: {
         {statuses.map((status, index) => (
           <div className="max-w-fit" key={status.id}>
             <Link href={`/games/${status.game.slug}`}>
-              <Image
+              <img
                 src={status.game.cover ? status.game.cover : "/game.webp"}
                 alt={status.game.name ? status.game.name : "game"}
                 width={120}
                 height={0}
                 className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
-                priority
               />
             </Link>
             <div className="flex items-center justify-center">

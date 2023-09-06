@@ -1,19 +1,18 @@
-import Image from "next/image";
-import { Rating } from "react-simple-star-rating";
-import Link from "next/link";
-import { type RouterOutputs, api } from "~/utils/api";
-import LoadingSpinner from "./icons/loading";
-import { useInView } from "react-intersection-observer";
 import { useUser } from "@clerk/nextjs";
-import { useState } from "react";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, type FieldErrors, useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import { createPortal } from "react-dom";
-import { Modal } from "./modal";
 import dayjs from "dayjs";
+import Link from "next/link";
+import { useState } from "react";
+import { createPortal } from "react-dom";
+import { Controller, useForm, type FieldErrors } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useInView } from "react-intersection-observer";
+import { Rating } from "react-simple-star-rating";
+import { z } from "zod";
+import { api, type RouterOutputs } from "~/utils/api";
 import { ExitButton } from "./icons/exitButton";
+import LoadingSpinner from "./icons/loading";
+import { Modal } from "./modal";
 
 type ReviewWithUser =
   RouterOutputs["review"]["getReviewsByUsername"]["reviews"][number];
@@ -108,7 +107,7 @@ export function CreateReviewModal(props: {
                 </button>
               </div>
               <div className="sm:flex">
-                <Image
+                <img
                   src={props.game.cover ? props.game.cover : "/game.webp"}
                   alt={props.game.name ? props.game.name : "game"}
                   width={120}
@@ -249,7 +248,7 @@ export function UpdateReviewModal(props: {
                 </button>
               </div>
               <div className="sm:flex">
-                <Image
+                <img
                   src={
                     review.review.game.cover
                       ? review.review.game.cover
@@ -371,7 +370,7 @@ export const DeleteReviewModal = (props: {
               </button>
             </div>
             <div className="sm:flex">
-              <Image
+              <img
                 src={
                   review.review.game.cover
                     ? review.review.game.cover
@@ -444,7 +443,7 @@ export default function Review(props: ReviewWithUser) {
       <div className="border-b border-b-zinc-600 py-4 md:flex">
         <div className="flex items-start justify-between">
           <Link href={`/games/${review.game.slug}`}>
-            <Image
+            <img
               src={review.game.cover ? review.game.cover : "/game.webp"}
               alt={review.game.name ? review.game.name : "game"}
               width={120}
@@ -478,7 +477,7 @@ export default function Review(props: ReviewWithUser) {
           </div>
           <div className="flex items-center pb-3">
             <Link href={`/users/${author.username}`}>
-              <Image
+              <img
                 src={author.profileImageUrl}
                 alt={author.username}
                 width={35}

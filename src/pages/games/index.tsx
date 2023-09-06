@@ -1,13 +1,13 @@
+/* eslint-disable @next/next/no-img-element */
 import { type GetStaticProps, type NextPage } from "next";
-import Image from "next/image";
-import { PageLayout } from "~/components/layout";
-import Link from "next/link";
-import { api } from "~/utils/api";
-import NotFound from "~/components/404";
-import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 import Head from "next/head";
+import Link from "next/link";
 import { useInView } from "react-intersection-observer";
+import NotFound from "~/components/404";
 import LoadingSpinner from "~/components/icons/loading";
+import { PageLayout } from "~/components/layout";
+import { generateSSGHelper } from "~/server/helpers/ssgHelper";
+import { api } from "~/utils/api";
 
 const GamesPage: NextPage = () => {
   const { ref, inView } = useInView();
@@ -56,7 +56,7 @@ const GamesPage: NextPage = () => {
       <div className="grid grid-cols-3 place-items-center gap-4 xxs:grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8">
         {games.map((game) => (
           <Link href={`/games/${game.slug}`} key={game.id}>
-            <Image
+            <img
               src={game.cover ? game.cover : "/game.webp"}
               alt={game.name ? game.name : "game"}
               width={120}

@@ -1,9 +1,9 @@
 import toast from "react-hot-toast";
-import { type RouterOutputs, api } from "~/utils/api";
-import { PlayingIcon } from "./icons/playing";
-import { PlayedIcon } from "./icons/played";
+import { api, type RouterOutputs } from "~/utils/api";
 import { BacklogIcon } from "./icons/backlog";
 import { DroppedIcon } from "./icons/dropped";
+import { PlayedIcon } from "./icons/played";
+import { PlayingIcon } from "./icons/playing";
 
 type Game = RouterOutputs["game"]["getGameBySlug"];
 
@@ -119,7 +119,7 @@ export function Status(props: { game: Game; status?: Status }) {
         >
           <PlayingIcon
             className={
-              props.status?.isPlaying ? "fill-cyan-400" : "fill-zinc-400"
+              props.status?.isPlaying ? "fill-cyan-400 group-hover:fill-cyan-400/60" : "fill-zinc-400 group-hover:fill-zinc-400/50"
             }
           />
           <span className="group-hover:text-zinc-300">playing</span>
@@ -130,7 +130,7 @@ export function Status(props: { game: Game; status?: Status }) {
         >
           <PlayedIcon
             className={
-              props.status?.hasPlayed ? "fill-cyan-400" : "fill-zinc-400"
+              props.status?.hasPlayed ? "fill-cyan-400 group-hover:fill-cyan-400/60" : "fill-zinc-400 group-hover:fill-zinc-400/50"
             }
           />
           <span className="group-hover:text-zinc-300">played</span>
@@ -141,7 +141,7 @@ export function Status(props: { game: Game; status?: Status }) {
         >
           <BacklogIcon
             className={
-              props.status?.hasBacklogged ? "fill-cyan-400" : "fill-zinc-400"
+              props.status?.hasBacklogged ? "fill-cyan-400 group-hover:fill-cyan-400/60" : "fill-zinc-400 group-hover:fill-zinc-400/50"
             }
           />
           <span className="group-hover:text-zinc-300">backlog</span>
@@ -152,7 +152,9 @@ export function Status(props: { game: Game; status?: Status }) {
         >
           <DroppedIcon
             className={
-              props.status?.hasDropped ? "fill-cyan-400 " : "fill-zinc-400 "
+              props.status?.hasDropped
+                ? "fill-cyan-400 group-hover:fill-cyan-400/60"
+                : "fill-zinc-400 group-hover:fill-zinc-400/50"
             }
             onClick={handleDropped}
           />
