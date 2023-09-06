@@ -1,6 +1,7 @@
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { createPortal } from "react-dom";
@@ -107,7 +108,7 @@ export function CreateReviewModal(props: {
                 </button>
               </div>
               <div className="sm:flex">
-                <img
+                <Image
                   src={props.game.cover ? props.game.cover : "/game.webp"}
                   alt={props.game.name ? props.game.name : "game"}
                   width={120}
@@ -248,7 +249,7 @@ export function UpdateReviewModal(props: {
                 </button>
               </div>
               <div className="sm:flex">
-                <img
+                <Image
                   src={
                     review.review.game.cover
                       ? review.review.game.cover
@@ -370,7 +371,7 @@ export const DeleteReviewModal = (props: {
               </button>
             </div>
             <div className="sm:flex">
-              <img
+              <Image
                 src={
                   review.review.game.cover
                     ? review.review.game.cover
@@ -443,13 +444,12 @@ export default function Review(props: ReviewWithUser) {
       <div className="border-b border-b-zinc-600 py-4 md:flex">
         <div className="flex items-start justify-between">
           <Link href={`/games/${review.game.slug}`}>
-            <img
+            <Image
               src={review.game.cover ? review.game.cover : "/game.webp"}
               alt={review.game.name ? review.game.name : "game"}
               width={120}
               height={0}
               className="mb-4 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-50 md:mb-2 "
-              priority
             />
           </Link>
           {user?.id === author.id && (
@@ -477,13 +477,12 @@ export default function Review(props: ReviewWithUser) {
           </div>
           <div className="flex items-center pb-3">
             <Link href={`/users/${author.username}`}>
-              <img
+              <Image
                 src={author.profileImageUrl}
                 alt={author.username}
                 width={35}
                 height={0}
                 className="mr-4 mt-2 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-50"
-                priority
               />
             </Link>
 

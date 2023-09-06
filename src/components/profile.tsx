@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Head from "next/head";
 import { api } from "~/utils/api";
 import NotFound from "./404";
@@ -39,7 +40,6 @@ export default function Profile(props: { username: string }) {
           className="h-24 w-24 rounded-md"
           width={56}
           height={56}
-          priority
         />
 
         <h1 className="px-4 text-2xl font-semibold">{props.username}</h1>

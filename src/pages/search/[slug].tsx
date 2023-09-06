@@ -41,9 +41,9 @@ function GameFeed(props: { name: string }) {
             <img
               src={game.cover ? game.cover : "/game.webp"}
               alt={game.name ? game.name : "game"}
-              width={120}
+              width={170}
               height={0}
-              className="h-fit w-fit rounded-md border border-zinc-600 transition hover:brightness-50"
+              className="rounded-md border border-zinc-600 transition hover:brightness-50"
             />
           </Link>
           <div className="w-full px-4">
