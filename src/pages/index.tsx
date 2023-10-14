@@ -181,7 +181,7 @@ const Home: NextPage = () => {
       </div>
       <div className="md:flex">
         <div className="w-full">
-          <h2 className="pt-12 text-xl text-zinc-300">some recent reviews</h2>
+          <h2 className="pt-12 text-xl text-zinc-300">recent reviews</h2>
           <ReviewFeed />
         </div>
       </div>

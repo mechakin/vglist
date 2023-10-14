@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../../src/server/db";
 import igdb from "igdb-api-node";
+import { env } from "~/env.mjs";
+import algoliasearch from "algoliasearch";
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
   type Game = {
@@ -30,13 +32,31 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
     slug: string;
   };
 
+  type AccessTokenData = {
+    access_token: string;
+    expires_in: number;
+    token_type: string;
+  };
+
+  // should update the offset every month or so
   async function main() {
-    const client = igdb(
-      process.env.TWITCH_CLIENT_ID,
-      process.env.TWITCH_APP_ACCESS_TOKEN
+    const response = await fetch(
+      `https://id.twitch.tv/oauth2/token?client_id=${env.TWITCH_CLIENT_ID}&client_secret=${env.TWITCH_CLIENT_SECRET}&grant_type=client_credentials`,
+      { method: "POST" }
     );
-    const maxIGDBResponses = 5;
-    const startingOffset = 467;
+
+    const { access_token } = (await response.json()) as AccessTokenData;
+
+    const client = igdb(process.env.TWITCH_CLIENT_ID, access_token);
+    const maxIGDBResponses = 10;
+    const startingOffset = 504;
+
+    const searchClient = algoliasearch(
+      env.ALGOLIA_APP_ID,
+      env.ALGOLIA_ADMIN_API_KEY
+    );
+
+    const index = searchClient.initIndex("game");
 
     for (let i = 0; i < maxIGDBResponses; i++) {
       const response = await client
@@ -76,6 +96,12 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
             create: data,
             update: data,
           });
+
+          const algoliaData = { ...data, objectID: data.id };
+
+          const search = await index.saveObject(algoliaData, {});
+
+          console.log(search);
         } else {
           data = {
             id: game.id,
@@ -93,15 +119,23 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
             create: data,
             update: data,
           });
+
+          const algoliaData = { ...data, objectID: data.id };
+
+          const search = await index.saveObject(algoliaData, {});
+
+          console.log(search);
         }
       });
     }
   }
 
   main()
-    .then(async () => {
+    .then(async (d) => {
       await prisma.$disconnect();
-      return res.status(200).json({ message: "successfully updated database" });
+      return res
+        .status(200)
+        .json({ message: "successfully updated database", data: d });
     })
     .catch(async (e: string) => {
       console.error(e);

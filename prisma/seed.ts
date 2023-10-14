@@ -1,6 +1,14 @@
 import { prisma } from "../src/server/db";
 import igdb from "igdb-api-node";
 import algoliasearch from "algoliasearch";
+import { env } from "~/env.mjs";
+import fetch from "node-fetch";
+
+type AccessTokenData = {
+  access_token: string;
+  expires_in: number;
+  token_type: string;
+};
 
 type Game = {
   id: number;
@@ -30,18 +38,23 @@ type PrismaGame = {
 };
 
 async function main() {
-  const apiClient = igdb(
-    process.env.TWITCH_CLIENT_ID,
-    process.env.TWITCH_APP_ACCESS_TOKEN
+  const response = await fetch(
+    `https://id.twitch.tv/oauth2/token?client_id=${env.TWITCH_CLIENT_ID}&client_secret=${env.TWITCH_CLIENT_SECRET}&grant_type=client_credentials`,
+    { method: "POST" }
   );
+
+  const { access_token } = (await response.json()) as AccessTokenData;
+
+  const apiClient = igdb(env.TWITCH_CLIENT_ID, access_token);
   const searchClient = algoliasearch(
-    process.env.ALGOLIA_APP_ID ?? "",
-    process.env.ALGOLIA_WRITE_API_KEY ?? ""
+    env.ALGOLIA_APP_ID,
+    env.ALGOLIA_ADMIN_API_KEY
   );
+
   const index = searchClient.initIndex("game");
 
-  const maxIGDBResponses = 500;
-  for (let i = 0; i < maxIGDBResponses; i++) {
+  const maxIGDBResponses = 600;
+  for (let i = 1; i < maxIGDBResponses; i++) {
     const response = await apiClient
       .fields(
         "name,summary,slug,rating,rating_count,first_release_date,cover.url,updated_at"
@@ -82,10 +95,20 @@ async function main() {
         slug: game.slug,
       };
     });
-    // await prisma.game.createMany({
-    //   data,
-    // });
-    const search = await index.saveObjects(data, { autoGenerateObjectIDIfNotExist: true });
+
+    await prisma.game.createMany({
+      data,
+    });
+
+    const algoliaData = data.map((game) => {
+      return {
+        ...game,
+        objectID: `${game.id}`,
+      };
+    });    
+
+    const search = await index.saveObjects(algoliaData, {});
+
     console.log(search)
   }
 }

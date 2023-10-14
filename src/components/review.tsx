@@ -1,7 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 import { useUser } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { createPortal } from "react-dom";
@@ -108,12 +108,12 @@ export function CreateReviewModal(props: {
                 </button>
               </div>
               <div className="sm:flex">
-                <Image
+                <img
                   src={props.game.cover ? props.game.cover : "/game.webp"}
                   alt={props.game.name ? props.game.name : "game"}
                   width={120}
                   height={0}
-                  className="mt-4 hidden h-fit w-fit rounded-md border border-zinc-600 border-b-transparent sm:block"
+                  className="mt-4 hidden h-fit w-40 rounded-md border border-zinc-600 border-b-transparent sm:block"
                 />
                 <div className="flex flex-col pt-4 text-xl sm:pl-4">
                   <p>rating</p>
@@ -249,7 +249,7 @@ export function UpdateReviewModal(props: {
                 </button>
               </div>
               <div className="sm:flex">
-                <Image
+                <img
                   src={
                     review.review.game.cover
                       ? review.review.game.cover
@@ -260,7 +260,7 @@ export function UpdateReviewModal(props: {
                   }
                   width={120}
                   height={0}
-                  className="mt-4 hidden h-fit w-fit rounded-md border border-zinc-600 border-b-transparent sm:block"
+                  className="mt-4 hidden h-fit w-40 rounded-md border border-zinc-600 border-b-transparent sm:block"
                 />
                 <div className="flex flex-col pt-4 text-xl sm:pl-4">
                   <p>rating</p>
@@ -371,7 +371,7 @@ export const DeleteReviewModal = (props: {
               </button>
             </div>
             <div className="sm:flex">
-              <Image
+              <img
                 src={
                   review.review.game.cover
                     ? review.review.game.cover
@@ -380,7 +380,7 @@ export const DeleteReviewModal = (props: {
                 alt={review.review.game.name ? review.review.game.name : "game"}
                 width={120}
                 height={0}
-                className="mt-4 hidden h-fit w-fit rounded-md border border-zinc-600 border-b-transparent sm:block"
+                className="mt-4 hidden h-fit w-40 rounded-md border border-zinc-600 border-b-transparent sm:block"
               />
 
               <div className="flex flex-col pt-4 text-2xl sm:pl-4">
@@ -444,12 +444,12 @@ export default function Review(props: ReviewWithUser) {
       <div className="border-b border-b-zinc-600 py-4 md:flex">
         <div className="flex items-start justify-between">
           <Link href={`/games/${review.game.slug}`}>
-            <Image
+            <img
               src={review.game.cover ? review.game.cover : "/game.webp"}
               alt={review.game.name ? review.game.name : "game"}
               width={120}
               height={0}
-              className="mb-4 h-fit max-w-min rounded-md border border-zinc-600 transition hover:brightness-50 md:mb-2 "
+              className="mb-4 h-fit w-40 rounded-md border border-zinc-600 transition hover:brightness-50 md:mb-2 "
             />
           </Link>
           {user?.id === author.id && (
@@ -477,7 +477,7 @@ export default function Review(props: ReviewWithUser) {
           </div>
           <div className="flex items-center pb-3">
             <Link href={`/users/${author.username}`}>
-              <Image
+              <img
                 src={author.profileImageUrl}
                 alt={author.username}
                 width={35}

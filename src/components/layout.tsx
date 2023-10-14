@@ -85,12 +85,6 @@ const Navbar = () => {
                   register
                 </button>
               </SignUpButton>
-              <Link
-                href={"/games"}
-                className="px-3 text-2xl transition duration-75 hover:text-zinc-400"
-              >
-                games
-              </Link>
             </SignedOut>
             <SignedIn>
               <div className="group relative z-10 inline-block text-2xl">
@@ -114,12 +108,6 @@ const Navbar = () => {
                   logout
                 </button>
               </div>
-              <Link
-                href={"/games"}
-                className="px-3 text-2xl transition duration-75 hover:text-zinc-400"
-              >
-                games
-              </Link>
             </SignedIn>
 
             <form
@@ -193,13 +181,6 @@ const Navbar = () => {
               register
             </button>
           </SignUpButton>
-          <Link
-            href={"/games"}
-            className="block w-full px-6 py-4 text-2xl transition duration-75 hover:bg-zinc-500"
-            onClick={handleMenu}
-          >
-            games
-          </Link>
         </SignedOut>
 
         <SignedIn>
@@ -247,13 +228,6 @@ const Navbar = () => {
               </button>
             </div>
           </div>
-          <Link
-            href={"/games"}
-            className="block w-full px-6 py-4 text-2xl hover:bg-zinc-500"
-            onClick={handleMenu}
-          >
-            games
-          </Link>
         </SignedIn>
       </div>
     </nav>
