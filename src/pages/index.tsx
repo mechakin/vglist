@@ -8,7 +8,7 @@ import { ReviewFeed } from "~/components/review";
 import { generateSSGHelper } from "~/server/helpers/ssgHelper";
 
 const Home: NextPage = () => {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user } = useUser();
   return (
     <PageLayout>
       <Head>
@@ -44,7 +44,7 @@ const Home: NextPage = () => {
             className={`max-w-fit rounded-md bg-zinc-600 p-2 text-3xl transition hover:bg-zinc-500`}
           >
             {!isSignedIn && <Link href={"/register"}>start now</Link>}
-            {isSignedIn && <Link href={"/games"}>start now</Link>}
+            {isSignedIn && user.username && <Link href={`/users/${user.username}`}>start now</Link>}
           </button>
         </div>
         <div className="flex items-center justify-center">
