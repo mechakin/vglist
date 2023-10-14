@@ -19,7 +19,7 @@ function GameFeed(props: { name: string }) {
     api.game.getGamesByName.useInfiniteQuery(
       { name },
       {
-        getNextPageParam: (lastPage) => lastPage.nextCursor,
+        getNextPageParam: (lastPage) => lastPage.nextCursor
       }
     );
 
@@ -189,7 +189,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
   };
 };
 
-// should see if this is right
 export const getStaticPaths = () => {
   return { paths: [], fallback: "blocking" };
 };

@@ -1,6 +1,16 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import algoliasearch from "algoliasearch/lite";
+import { env } from "~/env.mjs";
+import type { Game } from "@prisma/client";
+
+const searchClient = algoliasearch(
+  env.ALGOLIA_APP_ID,
+  env.ALGOLIA_ADMIN_API_KEY
+);
+
+const index = searchClient.initIndex("game");
 
 export const gameRouter = createTRPCRouter({
   getGameBySlug: publicProcedure
@@ -17,31 +27,25 @@ export const gameRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string(),
-        limit: z.number().min(1).max(100).nullish(),
+        limit: z.number().min(1).max(100).default(20),
         cursor: z.number().nullish(),
       })
     )
-    .query(async ({ ctx, input }) => {
-      const limit = input.limit ?? 16;
-      const { cursor } = input;
-      const games = await ctx.prisma.game.findMany({
-        take: limit + 1,
-        where: { name: { contains: input.name } },
-        cursor: cursor ? { id: cursor } : undefined,
-      });
+    .query(async ({ input }) => {
+      const { cursor, limit } = input;
 
-      const gameCount = await ctx.prisma.game.count({
-        where: { name: { contains: input.name } },
+      const searchResults = await index.search(input.name, {
+        page: cursor ?? 0,
+        hitsPerPage: limit,
       });
 
       let nextCursor: typeof cursor | undefined = undefined;
-      if (games.length > limit) {
-        const nextGame = games.pop();
-        nextCursor = nextGame?.id;
+      if (searchResults.nbHits > limit) {
+        nextCursor = cursor ?? 0 + 1;
       }
       return {
-        games,
-        gameCount,
+        games: searchResults.hits as unknown as Game,
+        gameCount: searchResults.nbHits,
         nextCursor,
       };
     }),
