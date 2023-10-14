@@ -19,7 +19,7 @@ function GameFeed(props: { name: string }) {
     api.game.getGamesByName.useInfiniteQuery(
       { name },
       {
-        getNextPageParam: (lastPage) => lastPage.nextCursor
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
       }
     );
 
@@ -98,7 +98,7 @@ function UserFeed(props: { username: string }) {
                 alt={user.username ? user.username : "profile"}
                 width={48}
                 height={48}
-                className="h-fit w-fit rounded-md border border-zinc-600 hover:brightness-50"
+                className="h-fit w-24 rounded-md border border-zinc-600 hover:brightness-50"
               />
             </Link>
             <div className="px-4">
@@ -144,13 +144,27 @@ const GamesSearchPage: NextPage<{ name: string }> = ({ name }) => {
         <nav className="text-2xl">
           <ul className="flex justify-center gap-3 py-2 text-cyan-400">
             <li className="text-zinc-100">search for</li>
-            <li className="flex items-center">
-              <button onClick={() => setSelectedTab("Games")}>games</button>
-            </li>
-            <li className="text-zinc-100">or</li>
-            <li className="flex items-center text-zinc-400 transition duration-75 hover:text-cyan-400">
-              <button onClick={() => setSelectedTab("Users")}>users</button>
-            </li>
+            {selectedTab === "Games" ? (
+              <>
+                <li className="flex items-center text-cyan-400">
+                  <button onClick={() => setSelectedTab("Games")}>games</button>
+                </li>
+                <li className="text-zinc-100">or</li>
+                <li className="flex items-center text-zinc-400 transition duration-75 hover:text-cyan-400">
+                  <button onClick={() => setSelectedTab("Users")}>users</button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="flex items-center text-zinc-400 transition duration-75 hover:text-cyan-400">
+                  <button onClick={() => setSelectedTab("Games")}>games</button>
+                </li>
+                <li className="text-zinc-100">or</li>
+                <li className="flex items-center text-cyan-400">
+                  <button onClick={() => setSelectedTab("Users")}>users</button>
+                </li>
+              </>
+            )}
           </ul>
         </nav>
         {selectedTab === "Games" ? (

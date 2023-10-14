@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { useUser } from "@clerk/nextjs";
+import { SignUpButton, useUser } from "@clerk/nextjs";
 import { type GetStaticProps, type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -40,12 +40,24 @@ const Home: NextPage = () => {
           <h2 className="max-w-sm pb-8 text-center text-3xl text-zinc-300">
             discover, collect, and share your favorite games
           </h2>
-          <button
-            className={`max-w-fit rounded-md bg-zinc-600 p-2 text-3xl transition hover:bg-zinc-500`}
-          >
-            {!isSignedIn && <Link href={"/register"}>start now</Link>}
-            {isSignedIn && user.username && <Link href={`/users/${user.username}`}>start now</Link>}
-          </button>
+          {!isSignedIn && (
+            <SignUpButton mode="modal">
+              <button
+                className={`max-w-fit rounded-md bg-zinc-600 p-2 text-3xl transition hover:bg-zinc-500`}
+              >
+                start now
+              </button>
+            </SignUpButton>
+          )}
+          {isSignedIn && (
+            <button
+              className={`max-w-fit rounded-md bg-zinc-600 p-2 text-3xl transition hover:bg-zinc-500`}
+            >
+              {isSignedIn && user.username && (
+                <Link href={`/users/${user?.username}`}>start now</Link>
+              )}
+            </button>
+          )}
         </div>
         <div className="flex items-center justify-center">
           <img
