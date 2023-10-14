@@ -10,7 +10,6 @@ import {
   privateProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { ratelimit } from "~/server/helpers/rateLimiter";
 
 export const profileRouter = createTRPCRouter({
   getUserByUsername: publicProcedure
@@ -64,10 +63,6 @@ export const profileRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
 
-      const { success } = await ratelimit.limit(authorId);
-
-      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-
       const bio = await ctx.prisma.profile.create({
         data: {
           authorId,
@@ -81,10 +76,6 @@ export const profileRouter = createTRPCRouter({
     .input(z.object({ bio: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
-
-      const { success } = await ratelimit.limit(authorId);
-
-      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
       const bio = await ctx.prisma.profile.update({
         where: { authorId },

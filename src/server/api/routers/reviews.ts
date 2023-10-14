@@ -8,7 +8,6 @@ import {
   privateProcedure,
 } from "~/server/api/trpc";
 import type { Game, Review } from "@prisma/client";
-import { ratelimit } from "~/server/helpers/rateLimiter";
 
 const addUserDataToReview = async (
   review: (Review & { game: Game }) | null
@@ -230,10 +229,6 @@ export const reviewRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
 
-      const { success } = await ratelimit.limit(authorId);
-
-      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-
       const review = await ctx.prisma.review.create({
         data: {
           authorId,
@@ -254,12 +249,6 @@ export const reviewRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const authorId = ctx.userId;
-
-      const { success } = await ratelimit.limit(authorId);
-
-      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-
       const review = await ctx.prisma.review.update({
         where: {
           id: input.id,
@@ -275,12 +264,6 @@ export const reviewRouter = createTRPCRouter({
   deleteReview: privateProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const authorId = ctx.userId;
-
-      const { success } = await ratelimit.limit(authorId);
-
-      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-
       await ctx.prisma.review.delete({
         where: {
           id: input.id,

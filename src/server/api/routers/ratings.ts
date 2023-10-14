@@ -1,12 +1,10 @@
 import { clerkClient } from "@clerk/nextjs/server";
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import {
   createTRPCRouter,
   publicProcedure,
   privateProcedure,
 } from "~/server/api/trpc";
-import { ratelimit } from "~/server/helpers/rateLimiter";
 
 export const ratingRouter = createTRPCRouter({
   getRatingByAuthorAndGameId: publicProcedure
@@ -111,10 +109,6 @@ export const ratingRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
 
-      const { success } = await ratelimit.limit(authorId);
-
-      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-
       const rating = await ctx.prisma.rating.create({
         data: {
           authorId,
@@ -153,10 +147,6 @@ export const ratingRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
 
-      const { success } = await ratelimit.limit(authorId);
-
-      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-
       const rating = await ctx.prisma.rating.update({
         where: { id: input.id },
 
@@ -172,12 +162,6 @@ export const ratingRouter = createTRPCRouter({
   deleteRating: privateProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const authorId = ctx.userId;
-
-      const { success } = await ratelimit.limit(authorId);
-
-      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-
       await ctx.prisma.rating.delete({
         where: {
           id: input.id,

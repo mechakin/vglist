@@ -1,12 +1,10 @@
 import { clerkClient } from "@clerk/nextjs/server";
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import {
   createTRPCRouter,
   privateProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { ratelimit } from "~/server/helpers/rateLimiter";
 
 export const statusRouter = createTRPCRouter({
   getStatusByAuthorAndGameId: publicProcedure
@@ -172,10 +170,6 @@ export const statusRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
 
-      const { success } = await ratelimit.limit(authorId);
-
-      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
-
       const status = await ctx.prisma.status.create({
         data: {
           authorId,
@@ -201,10 +195,6 @@ export const statusRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
-
-      const { success } = await ratelimit.limit(authorId);
-
-      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
       const status = await ctx.prisma.status.update({
         where: { id: input.id },

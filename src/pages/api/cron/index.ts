@@ -3,41 +3,9 @@ import { prisma } from "../../../../src/server/db";
 import igdb from "igdb-api-node";
 import { env } from "~/env.mjs";
 import algoliasearch from "algoliasearch";
+import type { Game, PrismaGame, AccessTokenData } from "~/utils/types";
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
-  type Game = {
-    id: number;
-    updated_at: number;
-    cover?: {
-      id: number;
-      url: string;
-    };
-    name: string;
-    first_release_date?: number;
-    summary?: string;
-    rating?: number;
-    rating_count?: number;
-    slug: string;
-  };
-
-  type PrismaGame = {
-    id: number;
-    igdbUpdatedAt: number;
-    cover?: string;
-    name: string;
-    releaseDate?: number;
-    summary?: string;
-    igdbRating?: number;
-    igdbRatingCount?: number;
-    slug: string;
-  };
-
-  type AccessTokenData = {
-    access_token: string;
-    expires_in: number;
-    token_type: string;
-  };
-
   // should update the offset every month or so
   async function main() {
     const response = await fetch(
@@ -48,8 +16,8 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
     const { access_token } = (await response.json()) as AccessTokenData;
 
     const client = igdb(process.env.TWITCH_CLIENT_ID, access_token);
-    const maxIGDBResponses = 10;
-    const startingOffset = 504;
+    const maxIGDBResponses = 600;
+    const startingOffset = 500;
 
     const searchClient = algoliasearch(
       env.ALGOLIA_APP_ID,
@@ -90,18 +58,6 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
             releaseDate: game.first_release_date,
             summary: game.summary,
           };
-
-          await prisma.game.upsert({
-            where: { id: data.id },
-            create: data,
-            update: data,
-          });
-
-          const algoliaData = { ...data, objectID: data.id };
-
-          const search = await index.saveObject(algoliaData, {});
-
-          console.log(search);
         } else {
           data = {
             id: game.id,
@@ -114,18 +70,17 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
             releaseDate: game.first_release_date,
             summary: game.summary,
           };
-          await prisma.game.upsert({
-            where: { id: data.id },
-            create: data,
-            update: data,
-          });
-
-          const algoliaData = { ...data, objectID: data.id };
-
-          const search = await index.saveObject(algoliaData, {});
-
-          console.log(search);
         }
+        await prisma.game.createMany({
+          data,
+          skipDuplicates: true,
+        });
+
+        const algoliaData = { ...data, objectID: data.id };
+
+        const search = await index.saveObject(algoliaData, {});
+
+        console.log(search);
       });
     }
   }

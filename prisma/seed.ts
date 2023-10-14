@@ -3,39 +3,7 @@ import igdb from "igdb-api-node";
 import algoliasearch from "algoliasearch";
 import { env } from "~/env.mjs";
 import fetch from "node-fetch";
-
-type AccessTokenData = {
-  access_token: string;
-  expires_in: number;
-  token_type: string;
-};
-
-type Game = {
-  id: number;
-  updated_at: number;
-  cover?: {
-    id: number;
-    url: string;
-  };
-  name: string;
-  first_release_date?: number;
-  summary?: string;
-  rating?: number;
-  rating_count?: number;
-  slug: string;
-};
-
-type PrismaGame = {
-  id: number;
-  igdbUpdatedAt: number;
-  cover?: string;
-  name: string;
-  releaseDate?: number;
-  summary?: string;
-  igdbRating?: number;
-  igdbRatingCount?: number;
-  slug: string;
-};
+import type { Game, PrismaGame, AccessTokenData } from "~/utils/types";
 
 async function main() {
   const response = await fetch(
@@ -54,7 +22,7 @@ async function main() {
   const index = searchClient.initIndex("game");
 
   const maxIGDBResponses = 600;
-  for (let i = 1; i < maxIGDBResponses; i++) {
+  for (let i = 0; i < maxIGDBResponses; i++) {
     const response = await apiClient
       .fields(
         "name,summary,slug,rating,rating_count,first_release_date,cover.url,updated_at"
@@ -98,6 +66,7 @@ async function main() {
 
     await prisma.game.createMany({
       data,
+      skipDuplicates: true,
     });
 
     const algoliaData = data.map((game) => {
@@ -105,11 +74,11 @@ async function main() {
         ...game,
         objectID: `${game.id}`,
       };
-    });    
+    });
 
     const search = await index.saveObjects(algoliaData, {});
 
-    console.log(search)
+    console.log(search);
   }
 }
 
