@@ -345,7 +345,7 @@ const IndividualGamePage: NextPage<{ slug: string }> = ({ slug }) => {
                             size={22}
                             emptyColor="#a1a1aa"
                             fillColor="#22d3ee"
-                            initialValue={review.review.score}
+                            initialValue={review.review.score / 2}
                             transition
                           />
                         )}
