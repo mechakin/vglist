@@ -153,7 +153,7 @@ const Navbar = () => {
           >
             <input
               type="text"
-              className="relative ml-5 block w-[1%] min-w-0 flex-auto rounded-l border border-r-0 border-solid border-zinc-600 bg-transparent bg-clip-padding px-3 py-1.5 text-2xl text-zinc-100 outline-none placeholder:text-zinc-400 focus:outline-none"
+              className="relative ml-5 mr-5 block w-[1%] min-w-0 flex-auto rounded border border-solid border-zinc-600 bg-transparent bg-clip-padding px-3 py-1.5 pr-10 text-2xl text-zinc-100 outline-none placeholder:text-zinc-400 focus:outline-none"
               placeholder="search"
               aria-label="search"
               aria-describedby="button-addon"
@@ -161,7 +161,7 @@ const Navbar = () => {
             />
 
             <button
-              className="mr-4 flex items-center whitespace-nowrap rounded-r border border-l-0 border-y-zinc-600 border-r-zinc-600 px-3 py-1.5 text-center"
+              className="absolute right-5 top-1/2 flex -translate-y-1/2 transform items-center whitespace-nowrap border-l-0 border-y-zinc-600 border-r-zinc-600 px-3 py-1.5 text-center"
               id="submit-button"
               type="submit"
             >
