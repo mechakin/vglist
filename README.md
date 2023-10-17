@@ -1,28 +1,54 @@
-# Create T3 App
+# VGList
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+![demo](https://media.discordapp.net/attachments/1106206570091663410/1163612175890395246/demo-2.png?ex=65403549&is=652dc049&hm=d914d2fcfc73bae1dd7cbc8c137189a318f3a738b8c80581df9bb830bebfffa0&=&width=954&height=537)
 
-## What's next? How do I make an app with this?
+## About
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+Couture is an e-commerce website that offers a curated collection of high-end fashion and accessories.
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+To contribute you will first need to fork the repo and make some adjustments to get it up and running on your local machine. Below are the steps to follow for you to get TypeHero to run on your local machine.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+1. Create a `sh.env` file
+   Provide your values as needed. The .env values can be seen in the `sh.env.example` file.
 
-## Learn More
+2. Configure your database
+   You can use PlanetScale to run your database by [following this link.](https://planetscale.com/docs/tutorials/planetscale-quick-start-guide) After creating an account and creating a database, click the big connect button, select connect with Prisma and then copy the `sh DATABASE_URL` for your `sh .env ` file.
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+3. Create a new Clerk application
+   [Follow this link](https://clerk.com/docs/quickstarts/setup-clerk) to create a new app. Make sure to select user sign in on email address, Discord, and Twitch.
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+   Next, copy the `sh NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `sh CLERK_SECRET_KEY` into the `sh.env` file. Once copied, set up your social connections for [Twitch](https://clerk.com/docs/authentication/social-connections/twitch) and [Discord](https://clerk.com/docs/authentication/social-connections/discord).
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+4. Set up a new Algolia application
+   Follow this link to [create a new app](https://dashboard.algolia.com/users/sign_in). Copy the `Application ID` and the `Admin API Key` values on your `.env` file.
 
-## How do I deploy this?
+In the end your local `.env` file should look something like the following
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+DATABASE_URL='mysql://dev:dev@localhost/vglist'
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_real_value
+CLERK_SECRET_KEY=sk_test_real_value
+TWITCH_CLIENT_ID=real_client_id
+TWITCH_CLIENT_SECRET=real_client_secret
+ALGOLIA_APP_ID=real_app_id
+ALGOLIA_ADMIN_API_KEY=real_admin_api_key
+
+5. Install dependencies
+   Use pnpm to install dependencies.
+
+   ```
+   pnpm install
+   ```
+
+6. Push database schema and seed
+
+   ```
+   pnpm prisma db push
+   pnpm db-seed
+   ```
+
+7. Running the dev server
+   Finally, you can run the dev server:
+
+   ```
+   pnpm dev
+   ```
