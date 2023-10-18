@@ -1,10 +1,12 @@
-# VGList
-
 ![demo](https://media.discordapp.net/attachments/1106206570091663410/1163612175890395246/demo-2.png?ex=65403549&is=652dc049&hm=d914d2fcfc73bae1dd7cbc8c137189a318f3a738b8c80581df9bb830bebfffa0&=&width=954&height=537)
 
 ## About
 
-Couture is an e-commerce website that offers a curated collection of high-end fashion and accessories.
+VGList is a website designed to cater to your every gaming need. Here, users can seamlessly log, rate, review, and discuss a wide array of video games, creating an interactive space to share their gaming experiences. Whether you're an avid gamer or just starting out, this site is your go-to hub to keep track of the games you've played, explore exciting new titles, and engage in lively discussions about your favorite video games. With a user-friendly interface, our website fosters a sense of community among gamers, making it easy to connect with like-minded enthusiasts and uncover hidden gems in the gaming world.
+
+You can see the website live in action here: [https://youtu.be/gmhAOSjIcjg]
+
+## Contributing
 
 To contribute you will first need to fork the repo and make some adjustments to get it up and running on your local machine. Below are the steps to follow for you to get TypeHero to run on your local machine.
 
@@ -22,7 +24,7 @@ To contribute you will first need to fork the repo and make some adjustments to 
 4. Set up a new Algolia application
    Follow this link to [create a new app](https://dashboard.algolia.com/users/sign_in). Copy the `Application ID` and the `Admin API Key` values on your `.env` file.
 
-In the end your local `.env` file should look something like the following
+In the end your local `.env` file should look something like the following:
 
 ```
 DATABASE_URL='mysql://dev:dev@localhost/vglist'
