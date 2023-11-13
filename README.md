@@ -8,7 +8,7 @@ You can see the website live in action here: [https://youtu.be/gmhAOSjIcjg]
 
 ## Contributing
 
-To contribute you will first need to fork the repo and make some adjustments to get it up and running on your local machine. Below are the steps to follow for you to get TypeHero to run on your local machine.
+To contribute you will first need to fork the repo and make some adjustments to get it up and running on your local machine. Below are the steps to follow for you to get VGList to run on your local machine.
 
 1. Create a `env` file
    Provide your values as needed. The .env values can be seen in the `.env.example` file.
