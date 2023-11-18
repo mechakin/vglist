@@ -78,8 +78,8 @@ function GameFeed(props: { name: string }) {
 function UserFeed(props: { username: string }) {
   const { username } = props;
 
-  const { data } = api.profile.getUsersByUsername.useQuery({
-    username: username,
+  const { data } = api.profile.getUsersByQuery.useQuery({
+    query: username,
   });
 
   const userCount = data?.length;
@@ -193,7 +193,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   }
 
   await ssg.game.getGamesByName.prefetchInfinite({ name });
-  await ssg.profile.getUsersByUsername.prefetch({ username: name });
+  await ssg.profile.getUsersByQuery.prefetch({ query: name });
 
   return {
     props: {

@@ -28,19 +28,13 @@ export const profileRouter = createTRPCRouter({
 
       return filterUserForClient(user);
     }),
-  getUsersByUsername: publicProcedure
-    .input(z.object({ username: z.string() }))
+  getUsersByQuery: publicProcedure
+    .input(z.object({ query: z.string() }))
     .query(async ({ input }) => {
       const users = await clerkClient.users.getUserList({
-        query: input.username,
+        query: input.query,
       });
 
-      if (!users) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Users not found.",
-        });
-      }
       return filterUsersForClient(users);
     }),
   getBioByUsername: publicProcedure
@@ -88,4 +82,13 @@ export const profileRouter = createTRPCRouter({
 
       return bio;
     }),
+  deleteBio: privateProcedure.mutation(async ({ ctx }) => {
+    const authorId = ctx.userId;
+
+    const bio = await ctx.prisma.profile.delete({
+      where: { authorId },
+    });
+
+    return bio;
+  }),
 });

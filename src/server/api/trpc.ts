@@ -20,6 +20,15 @@ import { prisma } from "~/server/db";
 
 import { getAuth } from "@clerk/nextjs/server";
 
+import type {
+  SignedInAuthObject,
+  SignedOutAuthObject,
+} from "@clerk/nextjs/dist/api";
+
+interface AuthContext {
+  auth: SignedInAuthObject | SignedOutAuthObject;
+}
+
 /**
  * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
  * it from here.
@@ -30,11 +39,13 @@ import { getAuth } from "@clerk/nextjs/server";
  *
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
-// const createInnerTRPCContext = (_opts: CreateContextOptions) => {
-//   return {
-//     prisma,
-//   };
-// };
+export const createInnerTRPCContext = ({ auth }: AuthContext) => {
+  const userId = auth.userId;
+  return {
+    userId,
+    prisma,
+  };
+};
 
 /**
  * This is the actual context you will use in your router. It will be used to process every request

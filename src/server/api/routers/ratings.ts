@@ -162,10 +162,12 @@ export const ratingRouter = createTRPCRouter({
   deleteRating: privateProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      await ctx.prisma.rating.delete({
+      const rating = await ctx.prisma.rating.delete({
         where: {
           id: input.id,
         },
       });
+
+      return rating;
     }),
 });

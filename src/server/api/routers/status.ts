@@ -210,4 +210,17 @@ export const statusRouter = createTRPCRouter({
 
       return status;
     }),
+  deleteStatus: privateProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const status = await ctx.prisma.status.delete({
+        where: { id: input.id },
+      });
+
+      return status;
+    }),
 });
