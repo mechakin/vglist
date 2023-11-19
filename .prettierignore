@@ -1,0 +1,8 @@
+.env*
+node_modules
+*.log
+
+.next
+.contentlayer
+.vercel
+public
