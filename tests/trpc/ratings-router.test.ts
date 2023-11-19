@@ -111,14 +111,14 @@ describe("getRatingsByUsername", () => {
     const caller = appRouter.createCaller(ctx);
 
     await caller.rating.createRatingAndStatus(input);
-  })
-  
+  });
+
   it("returns ratings for valid username query", async () => {
     const ctx = createInnerTRPCContext({ auth: {} as SignedOutAuthObject });
 
     const input: RouterInputs["rating"]["getRatingsByUsername"] = {
       username: "test",
-      limit: 1
+      limit: 1,
     };
 
     const caller = appRouter.createCaller(ctx);

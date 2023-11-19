@@ -43,7 +43,7 @@ describe("getGamesByName", () => {
 
     const input: RouterInputs["game"]["getGamesByName"] = {
       name: "Mario & Sonic at the Sochi 2014 Olympic Winter Games",
-      limit: 1
+      limit: 1,
     };
 
     const caller = appRouter.createCaller(ctx);
@@ -56,7 +56,7 @@ describe("getGamesByName", () => {
         }),
       ],
       gameCount: 2,
-      nextCursor: 1
+      nextCursor: 1,
     });
   });
 

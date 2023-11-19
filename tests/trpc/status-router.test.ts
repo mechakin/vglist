@@ -221,7 +221,7 @@ describe("getStatusByUsername", () => {
             isPlaying: false,
             hasPlayed: true,
             hasDropped: false,
-            hasBacklogged: false,     
+            hasBacklogged: false,
           }),
         ],
         statusCount: 2,

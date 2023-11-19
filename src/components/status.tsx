@@ -119,7 +119,9 @@ export function Status(props: { game: Game; status?: Status }) {
         >
           <PlayingIcon
             className={
-              props.status?.isPlaying ? "fill-cyan-400 group-hover:fill-cyan-400/60" : "fill-zinc-400 group-hover:fill-zinc-400/50"
+              props.status?.isPlaying
+                ? "fill-cyan-400 group-hover:fill-cyan-400/60"
+                : "fill-zinc-400 group-hover:fill-zinc-400/50"
             }
           />
           <span className="group-hover:text-zinc-300">playing</span>
@@ -130,7 +132,9 @@ export function Status(props: { game: Game; status?: Status }) {
         >
           <PlayedIcon
             className={
-              props.status?.hasPlayed ? "fill-cyan-400 group-hover:fill-cyan-400/60" : "fill-zinc-400 group-hover:fill-zinc-400/50"
+              props.status?.hasPlayed
+                ? "fill-cyan-400 group-hover:fill-cyan-400/60"
+                : "fill-zinc-400 group-hover:fill-zinc-400/50"
             }
           />
           <span className="group-hover:text-zinc-300">played</span>
@@ -141,7 +145,9 @@ export function Status(props: { game: Game; status?: Status }) {
         >
           <BacklogIcon
             className={
-              props.status?.hasBacklogged ? "fill-cyan-400 group-hover:fill-cyan-400/60" : "fill-zinc-400 group-hover:fill-zinc-400/50"
+              props.status?.hasBacklogged
+                ? "fill-cyan-400 group-hover:fill-cyan-400/60"
+                : "fill-zinc-400 group-hover:fill-zinc-400/50"
             }
           />
           <span className="group-hover:text-zinc-300">backlog</span>

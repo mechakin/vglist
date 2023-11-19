@@ -1,11 +1,6 @@
 export function DropdownIcon() {
   return (
-    <svg
-      width="35px"
-      height="35px"
-      viewBox="0 0 24 24"
-      fill="none"
-    >
+    <svg width="35px" height="35px" viewBox="0 0 24 24" fill="none">
       <path
         fillRule="evenodd"
         clipRule="evenodd"
