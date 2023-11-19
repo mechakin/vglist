@@ -5,12 +5,15 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "test": "vitest run",
-    "coverage": "vitest run --coverage",
     "postinstall": "prisma generate",
     "lint": "next lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "start": "next start",
-    "db-seed": "NODE_ENV=development prisma db seed"
+    "test": "vitest run",
+    "coverage": "vitest run --coverage",
+    "db-seed": "NODE_ENV=development prisma db seed",
+    "ts:check": "tsc --noEmit"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

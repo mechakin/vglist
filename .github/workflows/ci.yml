@@ -28,7 +28,7 @@ jobs:
       - name: Setup environment variables
         run: |
           cp .env.example .env
-          echo "NEXTAUTH_SECRET=supersecret" >> .env
+          echo "DATABASE_URL=mysql://dev:pscale_pw_dev@aws.connect.psdb.cloud/vglist?sslaccept=strict" >> .env
 
       - name: Push schema to database
         run: pnpx prisma db push
