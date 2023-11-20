@@ -28,7 +28,7 @@ jobs:
       - name: Setup environment variables
         run: |
           cp .env.example .env
-          echo "DATABASE_URL="${{ secrets.DATABASE_URL }}" >> .env
+          echo "DATABASE_URL="${{ secrets.DATABASE_URL }}"" >> .env
 
       - name: Push schema to database
         run: pnpx prisma db push
