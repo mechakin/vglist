@@ -104,7 +104,7 @@ describe("getRatingsByUsername", () => {
     });
 
     const input: RouterInputs["rating"]["createRatingAndStatus"] = {
-      gameId: 2608,
+      gameId: 2609,
       score: 5,
     };
 
@@ -126,7 +126,7 @@ describe("getRatingsByUsername", () => {
     await expect(caller.rating.getRatingsByUsername(input)).resolves.toEqual(
       expect.objectContaining({
         ratingCount: 2,
-        ratings: [expect.objectContaining({ gameId: 2608, score: 5 })],
+        ratings: [expect.objectContaining({ gameId: 2609, score: 5 })],
       })
     );
   });
@@ -140,7 +140,7 @@ describe("getRatingsByUsername", () => {
 
     const status = await caller.status.getStatusByAuthorAndGameId({
       authorId: "fakeId",
-      gameId: 2608,
+      gameId: 2609,
     });
 
     if (!status?.id) return;
@@ -153,7 +153,7 @@ describe("getRatingsByUsername", () => {
 
     const ratingId = await caller.rating.getRatingByAuthorAndGameId({
       authorId: "fakeId",
-      gameId: 2608,
+      gameId: 2609,
     });
 
     if (!ratingId?.rating?.id) return;

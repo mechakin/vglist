@@ -28,7 +28,7 @@ jobs:
       - name: Setup environment variables
         run: |
           cp .env.example .env
-          echo "DATABASE_URL="fake.com" >> .env
+          echo "DATABASE_URL="${{ secrets.DATABASE_URL }}" >> .env
 
       - name: Push schema to database
         run: pnpx prisma db push
@@ -36,8 +36,8 @@ jobs:
       - name: Build application
         run: pnpm build
 
-      # - name: Run all tests
-      #   run: pnpm test
+      - name: Run all tests
+        run: pnpm test
   lint:
     runs-on: ubuntu-latest
     steps:
