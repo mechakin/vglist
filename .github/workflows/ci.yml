@@ -28,7 +28,13 @@ jobs:
       - name: Setup environment variables
         run: |
           cp .env.example .env
-          echo "DATABASE_URL="${{ secrets.DATABASE_URL }}"" >> .env
+          echo "DATABASE_URL=""${{ secrets.DATABASE_URL }}"" >> .env
+          echo "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}" >> .env
+          echo "CLERK_SECRET_KEY="${{ secrets.CLERK_SECRET_KEY }}" >> .env
+          echo "TWITCH_CLIENT_ID="${{ secrets.TWITCH_CLIENT_ID }}" >> .env
+          echo "TWITCH_CLIENT_SECRET="${{ secrets.TWITCH_CLIENT_SECRET }}" >> .env
+          echo "ALGOLIA_APP_ID="${{ secrets.ALGOLIA_APP_ID }}" >> .env
+          echo "ALGOLIA_ADMIN_API_KEY="${{ secrets.ALGOLIA_ADMIN_API_KEY }}" >> .env
 
       - name: Push schema to database
         run: pnpx prisma db push
