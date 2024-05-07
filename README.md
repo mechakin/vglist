@@ -1,4 +1,4 @@
-![demo](https://media.discordapp.net/attachments/1106206570091663410/1163612175890395246/demo-2.png?ex=65403549&is=652dc049&hm=d914d2fcfc73bae1dd7cbc8c137189a318f3a738b8c80581df9bb830bebfffa0&=&width=954&height=537)
+![demo](https://cdn.discordapp.com/attachments/1106206570091663410/1237517677430308875/Screenshot_2024-05-07_173144.png?ex=663befa6&is=663a9e26&hm=1e9ba6cd5062bc708921452e47313fd4d8405dcf8ac296ee30fa45261f0a0daf&)
 
 ## About
 
